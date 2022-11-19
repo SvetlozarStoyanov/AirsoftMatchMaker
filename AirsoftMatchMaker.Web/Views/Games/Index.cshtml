@@ -1,0 +1,58 @@
+﻿@using System.Text.RegularExpressions;
+@model IEnumerable<GameListModel>
+<table class=" table table-bordered  table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Map
+            </th>
+            <th>
+                Game Mode
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Result 
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var game in Model)
+        {
+            <tr>
+                <td width="50%">
+                    @game.Name
+                </td>
+                <td width="30%">
+                    @game.MapName
+                </td>
+                <td width="30%">
+                    @game.GameModeName
+                </td>
+                <td width="30%">
+                    @string.Join(" ", Regex.Matches(game.GameStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())
+                </td>
+                <td width="30%">
+                    @game.Result
+                </td>
+
+                <td>
+                    <div class="w-75 btn-group" role="group">
+                        <a asp-controller="Games" asp-action="Details" asp-route-id="@game.Id" class="btn btn-primary mx-2">
+                            <i class="bi bi-info-square-fill"></i>
+                            Details
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>

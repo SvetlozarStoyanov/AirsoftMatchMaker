@@ -1,0 +1,80 @@
+﻿@using System.Text.RegularExpressions;
+@model VendorViewModel
+
+@{
+    ViewBag.Title = "Vendor Details";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;">@Model.UserName</p>
+            <h1>Items on sale:</h1>
+            <div class="container">
+                <h2>AmmoBoxes</h2>
+                @foreach (var ammoBox in Model.AmmoBoxes)
+                {
+                    <a class="btn" asp-controller="AmmoBoxes" asp-action="Details" asp-route-id="@ammoBox.Id">
+
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">@ammoBox.Name</h5>
+                                @*      @if (ammoBox.ImageUrl != null)
+                            {
+                            <img class="w-25" src="@ammoBox.ImageUrl" />
+                            }*@
+                                <p class="card-text">@ammoBox.Amount</p>
+                                <p class="card-text">@ammoBox.Price credits</p>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+            <div class="container">
+                <h2>Clothes</h2>
+                @foreach (var clothing in Model.Clothes)
+                {
+                    <a class="btn" asp-controller="Clothes" asp-action="Details" asp-route-id="@clothing.Id">
+
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">@clothing.Name</h5>
+                                @if (clothing.ImageUrl != null)
+                                {
+                                    <img class="w-25" src="@clothing.ImageUrl" />
+                                }
+                                <p class="card-text">@clothing.Price credits</p>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+            <div class="container">
+                <h2>Weapons</h2>
+                @foreach (var weapon in Model.Weapons)
+                {
+                    <a class="btn" asp-controller="Weapons" asp-action="Details" asp-route-id="@weapon.Id">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">@weapon.Name</h5>
+                                @if (weapon.ImageUrl != null)
+                                {
+                                    <img class="w-25" src="@weapon.ImageUrl" />
+                                }
+                                @*else
+                            {
+                            <img src=""  />
+                            }*@
+                                <p class="card-text">@weapon.Price credits</p>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+</div>

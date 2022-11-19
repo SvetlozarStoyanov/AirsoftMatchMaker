@@ -1,0 +1,94 @@
+﻿@using System.Text.RegularExpressions;
+@model TeamViewModel
+
+@{
+    ViewBag.Title = "Team Details";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;">@Model.Name</p>
+
+            <p>
+                Wins:
+                <b>@Model.Wins</b>
+            </p>
+            <p>
+                Wins:
+                <b>@Model.Losses</b>
+            </p>
+            <p>
+                Average Skill Points:
+                <b>@Model.AverageSkillPoints</b>
+            </p>
+
+
+            @*          <div class="form-inline">
+            @if (this.User.Identity.IsAuthenticated)
+            {
+            <a class="btn btn-warning" asp-controller="Houses" asp-action="Edit"
+            asp-route-id="@Model.Id">Edit</a>
+            <a class="ml-2 btn btn-danger" asp-controller="Houses" asp-action="Delete"
+            asp-route-id="@Model.Id">Delete</a>
+            @if (!Model.IsRented)
+            {
+            <form class="ml-2" asp-controller="Houses"
+            asp-action="Rent" asp-route-id="@Model.Id" method="post">
+            <input class="btn btn-primary" type="submit" value="Rent" />
+            </form>
+            }
+            else
+            {
+            <form class="ml-2" asp-controller="Houses" asp-action="Leave"
+            asp-route-id="@Model.Id" method="post">
+            <input class="btn btn-primary" type="submit" value="Leave" />
+            </form>
+            }
+            }
+            </div>*@
+
+            <div class="container">
+                <h2>Players</h2>
+                @foreach (var player in Model.Players)
+                {
+                    <a class="btn" asp-controller="Players" asp-action="Details" asp-route-id="@player.Id">
+
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">@player.UserName</h5>
+                                @* @if (player.ImageUrl != null)
+                            {
+                            <img class="w-25" src="@player.ImageUrl" />
+                            }*@
+                                <p class="card-text">@player.SkillLevel</p>
+                                <p class="card-text">@player.PlayerClassName</p>
+
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+            <div class="container">
+                <h2>Games</h2>
+                @foreach (var game in Model.Games)
+                {
+                    <a class="btn" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">@game.Name</h5>
+                                <p class="card-text">@game.Result</p>
+                                <p class="card-text">@string.Join(" ", Regex.Matches(game.GameStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</p>
+                                <p class="card-text">@game.Date</p>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+</div>

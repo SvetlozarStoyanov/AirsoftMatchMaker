@@ -1,0 +1,39 @@
+﻿@using System.Text.RegularExpressions;
+@model RoleRequestViewModel
+
+@{
+    ViewBag.Title = "Role Request Details";
+    string roleController = Model.RoleName + "s";
+    string roleAction = $"Grant{Model.RoleName}Role";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;">@Model.UserName</p>
+            <p>
+                Requested Role:
+                <b>@Model.RoleName</b>
+            </p>
+                <span>
+                    <a class="btn btn-primary" asp-area="Administrator" asp-controller="@roleController" asp-action="@roleAction" asp-route-userid="@Model.UserId" asp-route-roleRequestid="@Model.Id">Grant role</a>
+                    <a class="btn btn-danger" asp-area="Administrator" asp-controller="RoleRequests" asp-action="DeleteRequest" asp-route-id="@Model.Id">Deny role</a>
+                </span>
+            <div class="container">
+                <h2>Roles</h2>
+                @foreach (var role in Model.UserRoles)
+                {
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">@role</h5>
+                            <p class="card-text"></p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

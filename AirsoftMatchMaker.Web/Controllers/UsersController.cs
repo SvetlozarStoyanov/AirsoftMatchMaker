@@ -1,0 +1,97 @@
+﻿using AirsoftMatchMaker.Core.Models.Users;
+using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
+namespace AirsoftMatchMaker.Web.Controllers
+{
+    public class UsersController : Controller
+    {
+        private readonly UserManager<User> userManager;
+        private readonly SignInManager<User> signInManager;
+        private readonly RoleManager<Role> roleManager;
+        public UsersController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager)
+        {
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            this.roleManager = roleManager;
+        }
+        [HttpGet]
+        public IActionResult Register()
+        {
+            UserRegisterModel model = new UserRegisterModel();
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Register(UserRegisterModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var user = new User()
+            {
+                UserName = model.Username,
+                Email = model.Email
+            };
+            var result = await userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                await signInManager.SignInAsync(user, isPersistent: false);
+                await userManager.AddToRoleAsync(user, "GuestUser");
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpGet]
+        public IActionResult Login()
+        {
+            UserLoginModel model = new UserLoginModel();
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(UserLoginModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var result = await signInManager.PasswordSignInAsync(model.Username, model.Password,
+                isPersistent: false,
+                lockoutOnFailure: false);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login!");
+                return View(model);
+            }
+
+            return RedirectToAction(nameof(LoginRedirect));
+        }
+
+        public async Task<IActionResult> LoginRedirect()
+        {
+            var user = await userManager.GetUserAsync(User);
+            bool isAdmin = await userManager.IsInRoleAsync(user, "Administrator");
+            if (isAdmin)
+            {
+                return Redirect("/Administrator/Home/Index");
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> LogoutAndLogin()
+        {
+            var user = await userManager.GetUserAsync(User);
+            await signInManager.SignOutAsync();
+            await signInManager.SignInAsync(user, isPersistent: false);
+            return RedirectToAction("Index", "RoleRequests");
+        }
+    }
+}

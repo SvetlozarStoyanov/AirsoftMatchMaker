@@ -1,0 +1,5 @@
+﻿@using System.Text.RegularExpressions;
+@model IEnumerable<RoleListModel>
+<partial name="_UserRoles" model="@ViewBag.UserRoles"></partial>
+
+<partial name="_RequestableRoles" model="@Model"></partial>
