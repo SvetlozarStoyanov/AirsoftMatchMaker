@@ -1,6 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Roles;
-using AirsoftMatchMaker.Infrastructure.Data;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,8 +23,8 @@ namespace AirsoftMatchMaker.Core.Services
                     Id = r.Id,
                     Name = r.Name,
                     Description = r.Description,
-                }).ToListAsync();
-
+                })
+                .ToListAsync();
             return roles;
         }
 
@@ -38,10 +37,23 @@ namespace AirsoftMatchMaker.Core.Services
                     Id = r.Id,
                     Name = r.Name,
                     Description = r.Description,
-                }).ToListAsync();
+                })
+                .ToListAsync();
 
             return roles;
-
+        }
+        public async Task<IEnumerable<RoleListModel>> GetRoleByIdsAsync(IEnumerable<string> roleIds)
+        {
+            var roles = await roleManager.Roles
+                .Where(r => roleIds.Contains(r.Id))
+                .Select(r => new RoleListModel()
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Description = r.Description,
+                })
+                .ToListAsync();
+            return roles;
         }
     }
 }

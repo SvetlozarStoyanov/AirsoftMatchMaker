@@ -3,9 +3,9 @@
     public class RoleRequestListModel
     {
         public int Id { get; set; }
-        public string RoleId { get; set; }
-        public string RoleName { get; set; }
-        public string UserId { get; set; }
-        public string UserName { get; set; }
+        public string RoleId { get; set; } = null;
+        public string RoleName { get; set; } = null;
+        public string UserId { get; set; } = null;
+        public string UserName { get; set; } = null;
     }
 }

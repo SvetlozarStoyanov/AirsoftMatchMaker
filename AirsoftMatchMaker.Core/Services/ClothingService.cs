@@ -17,6 +17,7 @@ namespace AirsoftMatchMaker.Core.Services
         public async Task<IEnumerable<ClothingListModel>> GetAllClothesAsync()
         {
             var clothes = await repository.AllReadOnly<Clothing>()
+                .Where(c => c.PlayerId == null && c.VendorId != null)
                 .Include(c => c.Vendor)
                 .ThenInclude(c => c.User)
                 .Select(c => new ClothingListModel()
@@ -25,7 +26,6 @@ namespace AirsoftMatchMaker.Core.Services
                     Name = c.Name,
                     ClothingColor = c.ClothingColor,
                     Price = c.Price,
-
                 })
                 .ToListAsync();
             return clothes;
@@ -53,6 +53,40 @@ namespace AirsoftMatchMaker.Core.Services
                     PlayerName = c.PlayerId != null ? c.Player.User.UserName : null,
                 }).FirstOrDefaultAsync();
             return clothing;
+        }
+
+        public async Task BuyClothingAsync(string buyerId, int vendorId, int clothingId)
+        {
+            var buyer = await repository.All<Player>()
+                .Where(p => p.UserId == buyerId)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync();
+            if (buyer == null)
+            {
+                return;
+            }
+            var vendor = await repository.All<Vendor>()
+                .Where(v => v.Id == vendorId)
+                .Include(v => v.User)
+                .FirstOrDefaultAsync();
+            if (vendor == null)
+            {
+                return;
+            }
+            var clothing = await repository.GetByIdAsync<Clothing>(clothingId);
+            if (clothing == null)
+            {
+                return;
+            }
+            if (buyer.User.Credits < clothing.Price)
+            {
+                return;
+            }
+            buyer.User.Credits -= clothing.Price;
+            vendor.User.Credits += clothing.Price;
+            buyer.Clothes.Add(clothing);
+            vendor.Clothes.Remove(clothing);
+            await repository.SaveChangesAsync();
         }
     }
 }

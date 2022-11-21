@@ -38,5 +38,12 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="id"></param>
         /// <returns></returns>
         Task DeleteRoleRequestAsync(int id);
+
+        /// <summary>
+        /// Returns roles requested by user with given Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<IEnumerable<RoleRequestListModel>> GetRequestedRolesByUserIdAsync(string userId);
     }
 }

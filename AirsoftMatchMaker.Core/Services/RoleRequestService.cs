@@ -89,5 +89,21 @@ namespace AirsoftMatchMaker.Core.Services
            .FirstOrDefaultAsync();
             return roleRequest;
         }
+
+        public async Task<IEnumerable<RoleRequestListModel>> GetRequestedRolesByUserIdAsync(string userId)
+        {
+            var requestedRoles = await repository.AllReadOnly<RoleRequest>()
+                .Where(rrq => rrq.UserId == userId)
+                .Select(rrq => new RoleRequestListModel()
+                {
+                    Id = rrq.Id,
+                    RoleId = rrq.RoleId,
+                    RoleName = rrq.Role.Name,
+                    UserId = rrq.UserId,
+                    UserName = rrq.User.UserName
+                })
+                .ToListAsync();
+            return requestedRoles;
+        }
     }
 }

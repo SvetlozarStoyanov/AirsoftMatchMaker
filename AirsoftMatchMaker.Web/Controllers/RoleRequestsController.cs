@@ -28,9 +28,15 @@ namespace AirsoftMatchMaker.Web.Controllers
         {
             var user = await userManager.GetUserAsync(User);
             var userRoleNames = await userManager.GetRolesAsync(user);
-            var model = await roleService.GetRequestableRolesAsync(userRoleNames);
             ViewBag.UserRoles = await roleService.GetUserRolesAsync(userRoleNames);
-
+            var requestedRoles = await roleRequestService.GetRequestedRolesByUserIdAsync(User.Id());
+            if (requestedRoles.Any())
+            {
+                ViewBag.RequestedRoles = await roleService.GetRoleByIdsAsync(requestedRoles.Select(rrq => rrq.RoleId));
+                ViewBag.RequestedRoleIds = requestedRoles.Select(rrq => rrq.Id).ToArray();
+                return View(null);
+            }
+            var model = await roleService.GetRequestableRolesAsync(userRoleNames);
             return View(model);
         }
 
@@ -53,7 +59,15 @@ namespace AirsoftMatchMaker.Web.Controllers
             await userManager.RemoveFromRoleAsync(user, model.RoleName);
             TempData.Add("success", $"You are no longer a {model.RoleName}!");
 
-            return RedirectToAction("LogoutAndLogin","Users");
+            return RedirectToAction("LogoutAndLogin", "Users");
+        }
+
+        public async Task<IActionResult> DeleteRoleRequest(int id)
+        {
+            await roleRequestService.DeleteRoleRequestAsync(id);
+            TempData.Add("success", $"Successfully cancelled role request!");
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

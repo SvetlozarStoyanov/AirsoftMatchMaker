@@ -14,6 +14,8 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
+
+
         public async Task<IEnumerable<AmmoBoxListModel>> GetAllAmmoBoxesAsync()
         {
             var ammoBoxes = await repository.AllReadOnly<AmmoBox>()
@@ -51,5 +53,54 @@ namespace AirsoftMatchMaker.Core.Services
 
             return ammoBox;
         }
+
+        public async Task<AmmoBoxBuyModel> GetAmmoBoxToBuyByIdAsync(int id)
+        {
+            var ammoBox = await repository.AllReadOnly<AmmoBox>()
+                .Where(ab => ab.Id == id)
+                .Include(ab => ab.Vendor)
+                .Select(ab => new AmmoBoxBuyModel()
+                {
+                    Id = ab.Id,
+                    Name = ab.Name,
+                    AmmoAmount = ab.Amount,
+                    Price = ab.Price,
+                    Quantity = ab.Quantity,
+                    VendorId = ab.VendorId.Value,
+                    VendorName = ab.Vendor.User.UserName,
+                })
+                .FirstOrDefaultAsync();
+
+            return ammoBox;
+        }
+
+        public async Task BuyAmmoBoxAsync(string playerUserId, AmmoBoxBuyModel model)
+        {
+            
+            var player = await repository.All<Player>()
+                .Where(p => p.UserId == playerUserId)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync();
+            if (player == null && player.User.Credits < model.Price * model.BuyCount)
+            {
+                return;
+            }
+            var vendor = await repository.All<Vendor>()
+                .Where(v => v.Id == model.VendorId)
+                .Include(v => v.User)
+                .FirstOrDefaultAsync();
+            if (vendor == null)
+            {
+                return;
+            }
+            player.User.Credits -= model.Price * model.BuyCount;
+            vendor.User.Credits += model.Price * model.BuyCount;
+            player.Ammo += model.AmmoAmount * model.BuyCount;
+            var ammoBox = await repository.GetByIdAsync<AmmoBox>(model.Id);
+            ammoBox.Quantity -= model.BuyCount;
+            await repository.SaveChangesAsync();
+        }
+
+     
     }
 }

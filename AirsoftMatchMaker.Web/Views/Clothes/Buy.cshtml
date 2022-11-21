@@ -1,8 +1,8 @@
 ﻿@using System.Text.RegularExpressions;
-@model AmmoBoxViewModel
+@model ClothingViewModel
 
 @{
-    ViewBag.Title = "Ammo Box Details";
+    ViewBag.Title = "Buy Clothing";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -10,18 +10,14 @@
 
 <div class="container" style="display:inline">
     <div class="row">
-        @*   <div class="col-4">
-        <img class="card-img-top" style="width: 20rem;"
-        src="@Model.ImageUrl" alt="House Image">
-        </div>*@
         <div class="card col-8 border-0">
             <p style="font-size:25px;">@Model.Name</p>
-            @*<p>Located in: <b>@Model.Address</b></p>*@
             <p>
-                Ammo : @Model.Amount
+                Description: @Model.Description
             </p>
             <p>
-                Boxes left : @Model.Quantity
+                Color:
+                <b>@string.Join(" ", Regex.Matches(Model.ClothingColor.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
             </p>
 
             @if (Model.VendorName != null)
@@ -33,14 +29,15 @@
                     </b>
                 </p>
             }
-         
             <p>
                 Price:
                 <b>
                     @Model.Price credits
                 </b>
             </p>
-
+            <form asp-controller="Clothes" asp-action="Buy" asp-route-clothingId="@Model.Id" asp-route-vendorId="@Model.VendorId" method="post">
+                <button class="btn btn-success">Buy</button>
+            </form>
         </div>
     </div>
 </div>
