@@ -62,5 +62,23 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
             await ammoBoxService.CreateAmmoBoxAsync(User.Id(),model);
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Restock(int id)
+        {
+            var model = await ammoBoxService.GetAmmoBoxForRestockByIdAsync(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Restock(AmmoBoxRestockModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            await ammoBoxService.RestockAmmoBox(User.Id(), model);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

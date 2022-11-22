@@ -1,10 +1,9 @@
 ﻿@using System.Text.RegularExpressions;
 @model IEnumerable<ClothingListModel>
 <div>
-
     <a asp-area="Vendor" asp-controller="Clothes" asp-action="Create" class="btn btn-primary mx-2">
-        <i class="bi bi-info-square-fill"></i>
-        Create
+        <i class="bi bi-plus-circle"></i>
+        Import
     </a>
 </div>
 <table class=" table table-bordered  table-striped" style="width:100%">
@@ -32,7 +31,7 @@
                     @clothing.Name
                 </td>
                 <td width="30%">
-                    @string.Join(" ", Regex.Matches(clothing.ClothingColor.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())
+                    @string.Join(" ", Regex.Matches(clothing.ClothingColor.ToString(),"[A-Z][a-z]*").Select(m => m.Value).ToArray())
                 </td>
                 <td width="30%">
                     @clothing.Price credits

@@ -127,5 +127,42 @@ namespace AirsoftMatchMaker.Core.Services
             //await repository.AddAsync<AmmoBox>(ammoBox);
             await repository.SaveChangesAsync();
         }
+
+        public async Task<AmmoBoxRestockModel> GetAmmoBoxForRestockByIdAsync(int id)
+        {
+            var ammoBox = await repository.AllReadOnly<AmmoBox>()
+                .Where(ab => ab.Id == id)
+                .Select(ab => new AmmoBoxRestockModel()
+                {
+                    Id = ab.Id,
+                    Name = ab.Name,
+                    Quantity = ab.Quantity,
+                    AmmoAmount = ab.Amount,
+                    Price = ab.Price,
+                    VendorId = ab.VendorId.Value
+                })
+                .FirstOrDefaultAsync();
+            return ammoBox;
+        }
+
+        public async Task RestockAmmoBox(string vendorUserId, AmmoBoxRestockModel model)
+        {
+            var vendor = await repository.All<Vendor>()
+                .Where(v => v.UserId == vendorUserId)
+                .FirstOrDefaultAsync();
+            if (vendor.Id != model.Id)
+            {
+                return;
+            }
+            var ammoBox = await repository.GetByIdAsync<AmmoBox>(model.Id);
+            if (ammoBox == null)
+            {
+                return;
+            }
+            ammoBox.Quantity += model.QuantityAdded;
+            await repository.SaveChangesAsync();
+        }
+
+
     }
 }

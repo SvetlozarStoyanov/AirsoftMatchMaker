@@ -38,6 +38,21 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        Task CreateAmmoBoxAsync(string vendorUserId,AmmoBoxCreateModel model);
+        Task CreateAmmoBoxAsync(string vendorUserId, AmmoBoxCreateModel model);
+
+        /// <summary>
+        /// Returns ammoBox model with current Quantity and vendor Id. With the option of adding more quantity to it.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<AmmoBoxRestockModel> GetAmmoBoxForRestockByIdAsync(int id);
+
+        /// <summary>
+        /// Adds quantity to already existing <see cref="AmmoBox ammoBox"/>
+        /// </summary>
+        /// <param name="vendorUserId"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task RestockAmmoBox(string vendorUserId, AmmoBoxRestockModel model);
     }
 }

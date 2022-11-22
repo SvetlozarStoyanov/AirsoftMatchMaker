@@ -25,7 +25,7 @@
                 <b>@string.Join(" ", Regex.Matches(Model.ClothingColor.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
             </p>
             
-            @if (Model.VendorName != null)
+@*            @if (Model.VendorName != null)
             {
                 <p>
                     Vendor:
@@ -42,7 +42,7 @@
                         <a class="btn btn-primary btn-info" asp-controller="Players" asp-action="Details" asp-route-id="@Model.PlayerId.Value"> @Model.PlayerName</a>
                     </b>
                 </p>
-            }
+            }*@
             <p>
                 Price:
                 <b>
