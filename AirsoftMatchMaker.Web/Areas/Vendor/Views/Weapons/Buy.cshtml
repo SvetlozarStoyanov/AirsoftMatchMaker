@@ -1,0 +1,46 @@
+﻿@using System.Text.RegularExpressions;
+@model WeaponViewModel
+
+@{
+    ViewBag.Title = "Buy Weapon";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+
+<div class="container" style="display:inline">
+    <div class="row">
+        @*   <div class="col-4">
+        <img class="card-img-top" style="width: 20rem;"
+        src="@Model.ImageUrl" alt="House Image">
+        </div>*@
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;">@Model.Name</p>
+            @*<p>Located in: <b>@Model.Address</b></p>*@
+            <p>
+                Type:
+                <b>@string.Join(" ", Regex.Matches(Model.WeaponType.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
+            </p>
+
+            <p>
+                Description: @Model.Description
+            </p>
+            <p>
+                Vendor:
+                <b>
+                    <a class="btn btn-primary btn-info" asp-controller="Vendors" asp-action="Details" asp-route-id="@Model.VendorId.Value"> @Model.VendorName</a>
+                </b>
+            </p>
+
+            <p>
+                Range:
+                <b>
+                    @Model.PreferedEngagementDistance
+                </b>
+            </p>
+            <form asp-controller="Weapons" asp-action="Buy" asp-route-weaponId="@Model.Id" asp-route-vendorId="@Model.VendorId" method="post">
+                <button class="btn btn-success">Buy</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+﻿@using System.Text.RegularExpressions;
+@model WeaponCreateTypeSelectModel
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form asp-area="Vendor" asp-controller="Weapons" asp-action="Create" method="post">
+            <div class="form-group">
+                <label asp-for="WeaponType">Color</label>
+                <select asp-for="WeaponType" class="form-control">
+                    @foreach (var color in Model.WeaponTypes)
+                    {
+                        <option value="@color">@string.Join(" ", Regex.Matches(color.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</option>
+                    }
+                </select>
+            </div>
+            <div class="text-center">
+                <input class="btn btn-primary mt-3" type="submit" value="Save" />
+            </div>
+        </form>
+    </div>
+</div>
+

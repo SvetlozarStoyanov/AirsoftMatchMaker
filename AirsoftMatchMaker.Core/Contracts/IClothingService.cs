@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Models.Clothes;
+using AirsoftMatchMaker.Infrastructure.Data.Entities;
 
 namespace AirsoftMatchMaker.Core.Contracts
 {
@@ -25,6 +26,13 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="clothingId"></param>
         /// <returns></returns>
         Task BuyClothingAsync(string buyerId, int vendorId, int clothingId);
-      
+
+        /// <summary>
+        /// Creates a <see cref="Clothing clothing"/> from <see cref="ClothingCreateModel model"/>
+        /// </summary>
+        /// <param name="vendorUserId"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task CreateClothingAsync(string vendorUserId, ClothingCreateModel model);
     }
 }

@@ -12,8 +12,8 @@ namespace AirsoftMatchMaker.Core.Models.Weapons
         public string Name { get; set; } = null!;
 
         public string Description { get; set; } = null!;
-        public decimal FeetPerSecond { get; set; }
-        public decimal FireRate { get; set; }
+        public double FeetPerSecond { get; set; }
+        public double FireRate { get; set; }
         public decimal Price { get; set; }
         public string? ImageUrl { get; set; }
         public int AverageAmmoExpendedPerGame { get; set; }

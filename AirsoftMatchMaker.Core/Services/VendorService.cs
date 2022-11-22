@@ -31,11 +31,11 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 UserId = userId,
             };
-            var player = await repository.All<Player>().FirstOrDefaultAsync(v => v.UserId == userId);
-            if (player != null)
-            {
-                player.IsActive = false;
-            }
+            //var player = await repository.All<Player>().FirstOrDefaultAsync(v => v.UserId == userId);
+            //if (player != null)
+            //{
+            //    player.IsActive = false;
+            //}
             await repository.AddAsync<Vendor>(newVendor);
             await repository.SaveChangesAsync();
         }
@@ -64,7 +64,7 @@ namespace AirsoftMatchMaker.Core.Services
                     Id = v.Id,
                     UserId = v.UserId,
                     UserName = v.User.UserName,
-                    AmmoBoxesForSaleCount = v.AmmoBoxes.Count,
+                    AmmoBoxesForSaleCount = v.AmmoBoxes.Sum(ab => ab.Quantity),
                     ClothesForSaleCount = v.Clothes.Count,
                     WeaponsForSaleCount = v.Weapons.Count,
                 })

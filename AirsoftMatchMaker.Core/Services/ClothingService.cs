@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.AmmoBoxes;
 using AirsoftMatchMaker.Core.Models.Clothes;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
@@ -86,6 +87,31 @@ namespace AirsoftMatchMaker.Core.Services
             vendor.User.Credits += clothing.Price;
             buyer.Clothes.Add(clothing);
             vendor.Clothes.Remove(clothing);
+            await repository.SaveChangesAsync();
+        }
+
+        public async Task CreateClothingAsync(string vendorUserId, ClothingCreateModel model)
+        {
+            var vendor = await repository.All<Vendor>()
+                .Where(v => v.UserId == vendorUserId && v.IsActive)
+                .Include(v => v.User)
+                .Include(v => v.Clothes)
+                .FirstOrDefaultAsync();
+
+            if (vendor == null)
+            {
+                return;
+            }
+            var clotting = new Clothing()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                ImageUrl = model.ImageUrl,
+                Price = model.Price,
+                ClothingColor = model.ClothingColor
+            };
+            vendor.Clothes.Add(clotting);
+            //await repository.AddAsync<AmmoBox>(ammoBox);
             await repository.SaveChangesAsync();
         }
     }

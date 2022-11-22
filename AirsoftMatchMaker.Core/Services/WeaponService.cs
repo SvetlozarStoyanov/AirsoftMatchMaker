@@ -1,7 +1,10 @@
-﻿using AirsoftMatchMaker.Core.Contracts;
+﻿using AirsoftMatchMaker.Core.Common.Constants;
+using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.Weapons;
 using AirsoftMatchMaker.Core.Models.Weapons;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirsoftMatchMaker.Core.Services
@@ -28,7 +31,6 @@ namespace AirsoftMatchMaker.Core.Services
                     Price = w.Price,
                     PreferedEngagementDistance = w.PreferedEngagementDistance,
                     WeaponType = w.WeaponType
-
                 })
                 .ToListAsync();
             return weapons;
@@ -95,6 +97,131 @@ namespace AirsoftMatchMaker.Core.Services
             buyer.Weapons.Add(weapon);
             vendor.Weapons.Remove(weapon);
             await repository.SaveChangesAsync();
+        }
+
+        public async Task CreateWeaponAsync(string vendorUserId, WeaponCreateModel model)
+        {
+            var vendor = await repository.All<Vendor>()
+                .Where(v => v.UserId == vendorUserId && v.IsActive)
+                .Include(v => v.User)
+                .Include(v => v.Weapons)
+                .FirstOrDefaultAsync();
+            if (vendor == null)
+            {
+                return;
+            }
+            var weapon = new Weapon()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                ImageUrl = model.ImageUrl,
+                FeetPerSecond = model.FeetPerSecond,
+                FireRate = model.FireRate,
+                Price = model.Price,
+                WeaponType = model.WeaponType,
+                PreferedEngagementDistance = model.PreferedEngagementDistance,
+                AverageAmmoExpendedPerGame = model.AverageAmmoExpendedPerGame,
+            };
+            vendor.Weapons.Add(weapon);
+            await repository.SaveChangesAsync();
+        }
+
+        public WeaponCreateModel CreateWeaponCreateModelByWeaponType(WeaponType weaponType)
+        {
+            WeaponCreateModel model = new WeaponCreateModel();
+            switch (weaponType)
+            {
+                case WeaponType.Pistol:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    break;
+
+                case WeaponType.Shotgun:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    break;
+                case WeaponType.SubmachineGun:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    break;
+                case WeaponType.AssaultRifle:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    break;
+                case WeaponType.SniperRifle:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    break;
+                default:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    model.PreferedEngagementDistances = Enum.GetValues<PreferedEngagementDistance>();
+                    break;
+            }
+            return model;
+        }
+
+        public IEnumerable<string> ValidateWeaponParameters(WeaponCreateModel model)
+        {
+            List<string> errors = new List<string>();
+            switch (model.WeaponType)
+            {
+                case WeaponType.Pistol:
+                    if (model.FeetPerSecond < WeaponConstants.PistolFeetPerSecondMin && model.FireRate > WeaponConstants.PistolFeetPerSecondMax)
+                    {
+                        errors.Add($"Invalid feet per second! Range [{WeaponConstants.PistolFeetPerSecondMin}:{WeaponConstants.PistolFeetPerSecondMax}]");
+                    }
+                    if (model.FireRate < WeaponConstants.PistolFireRateMin && model.FireRate > WeaponConstants.PistolFireRateMax)
+                    {
+                        errors.Add($"Invalid fire rate! Range [{WeaponConstants.PistolFireRateMin}:{WeaponConstants.PistolFireRateMax}]");
+                    }
+                    break;
+                case WeaponType.Shotgun:
+                    if (model.FeetPerSecond < WeaponConstants.ShotgunFeetPerSecondMin && model.FireRate > WeaponConstants.ShotgunFeetPerSecondMax)
+                    {
+                        errors.Add($"Invalid feet per second! Range [{WeaponConstants.PistolFeetPerSecondMin}:{WeaponConstants.PistolFeetPerSecondMax}]");
+                    }
+                    if (model.FireRate < WeaponConstants.ShotgunFireRateMin && model.FireRate > WeaponConstants.ShotgunFireRateMax)
+                    {
+                        errors.Add($"Invalid fire rate! Range [{WeaponConstants.ShotgunFireRateMin}:{WeaponConstants.ShotgunFireRateMax}]");
+                    }
+                    break;
+                case WeaponType.SubmachineGun:
+                    if (model.FeetPerSecond < WeaponConstants.SubmachineGunFeetPerSecondMin && model.FireRate > WeaponConstants.SubmachineGunFeetPerSecondMax)
+                    {
+                        errors.Add($"Invalid feet per second! Range [{WeaponConstants.SubmachineGunFeetPerSecondMin}:{WeaponConstants.SubmachineGunFeetPerSecondMax}]");
+                    }
+                    if (model.FireRate < WeaponConstants.SubmachineGunFireRateMin && model.FireRate > WeaponConstants.SubmachineGunFireRateMax)
+                    {
+                        errors.Add($"Invalid fire rate! Range [{WeaponConstants.SubmachineGunFireRateMin}:{WeaponConstants.SubmachineGunFireRateMax}]");
+                    }
+                    break;
+                case WeaponType.AssaultRifle:
+                    if (model.FeetPerSecond < WeaponConstants.AssaultRifleFeetPerSecondMin && model.FireRate > WeaponConstants.AssaultRifleFeetPerSecondMax)
+                    {
+                        errors.Add($"Invalid feet per second! Range [{WeaponConstants.AssaultRifleFeetPerSecondMin}:{WeaponConstants.AssaultRifleFeetPerSecondMax}]");
+                    }
+                    if (model.FireRate < WeaponConstants.AssaultRifleFireRateMin && model.FireRate > WeaponConstants.AssaultRifleFireRateMax)
+                    {
+                        errors.Add($"Invalid fire rate! Range [{WeaponConstants.AssaultRifleFireRateMin}:{WeaponConstants.AssaultRifleFireRateMax}]");
+                    }
+                    break;
+                case WeaponType.SniperRifle:
+                    if (model.FeetPerSecond < WeaponConstants.SniperRifleFeetPerSecondMin && model.FireRate > WeaponConstants.SniperRifleFeetPerSecondMax)
+                    {
+                        errors.Add($"Invalid feet per second! Range [{WeaponConstants.SniperRifleFeetPerSecondMin}:{WeaponConstants.SniperRifleFeetPerSecondMax}]");
+                    }
+                    if (model.FireRate < WeaponConstants.SniperRifleFireRateMin && model.FireRate > WeaponConstants.SniperRifleFireRateMax)
+                    {
+                        errors.Add($"Invalid fire rate! Range [{WeaponConstants.SniperRifleFireRateMin}:{WeaponConstants.SniperRifleFireRateMax}]");
+                    }
+                    break;
+                default:
+                    if (model.FeetPerSecond < WeaponConstants.HeavyFeetPerSecondMin && model.FireRate > WeaponConstants.HeavyFeetPerSecondMax)
+                    {
+                        errors.Add($"Invalid feet per second! Range [{WeaponConstants.HeavyFeetPerSecondMin}:{WeaponConstants.HeavyFeetPerSecondMax}]");
+                    }
+                    if (model.FireRate < WeaponConstants.HeavyFireRateMin && model.FireRate > WeaponConstants.HeavyFireRateMax)
+                    {
+                        errors.Add($"Invalid fire rate! Range [{WeaponConstants.HeavyFireRateMin}:{WeaponConstants.HeavyFireRateMax}]");
+                    }
+                    break;
+            }
+            return errors;
         }
     }
 }

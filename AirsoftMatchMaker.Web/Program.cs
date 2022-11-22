@@ -1,10 +1,9 @@
-using AirsoftMatchMaker.Infrastructure.Data;
-using AirsoftMatchMaker.Infrastructure.Data.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Services;
+using AirsoftMatchMaker.Infrastructure.Data;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +76,11 @@ app.MapAreaControllerRoute(
             name: "Administrator",
             areaName: "Administrator",
             pattern: "Administrator/{controller=Home}/{action=Index}/{id?}");
+
+app.MapAreaControllerRoute(
+            name: "Vendor",
+            areaName: "Vendor",
+            pattern: "Vendor/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

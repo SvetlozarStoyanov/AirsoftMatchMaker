@@ -39,8 +39,10 @@ namespace AirsoftMatchMaker.Web.Controllers
             {
                 await signInManager.SignInAsync(user, isPersistent: false);
                 await userManager.AddToRoleAsync(user, "GuestUser");
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            ModelState.AddModelError(string.Empty,"Username already taken!");
+            return RedirectToAction(nameof(Register));
         }
         [HttpGet]
         public IActionResult Login()
@@ -74,6 +76,11 @@ namespace AirsoftMatchMaker.Web.Controllers
             if (isAdmin)
             {
                 return Redirect("/Administrator/Home/Index");
+            }
+            bool isVendor = await userManager.IsInRoleAsync(user, "Vendor");
+            if (isVendor)
+            {
+                return Redirect("/Vendor/Home/Index");
             }
             return RedirectToAction("Index", "Home");
         }

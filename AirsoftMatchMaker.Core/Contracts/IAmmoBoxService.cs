@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Models.AmmoBoxes;
+using AirsoftMatchMaker.Infrastructure.Data.Entities;
 
 namespace AirsoftMatchMaker.Core.Contracts
 {
@@ -25,11 +26,18 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<AmmoBoxBuyModel> GetAmmoBoxToBuyByIdAsync(int id);
 
         /// <summary>
-        /// Player buys ammo. Reduces ammoBox quantity by 1 . If quantity reaches 0 it does not delete from the database
+        /// Player buys ammo. Reduces ammoBox quantity by <see cref="AmmoBoxBuyModel.AmmoAmount"/>. If quantity reaches 0 it does not delete from the database.
         /// </summary>
         /// <param name="playerUserId"></param>
-        /// <param name="vendorId"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         Task BuyAmmoBoxAsync(string playerUserId, AmmoBoxBuyModel model);
+
+        /// <summary>
+        /// Creates <see cref="AmmoBox"/> from given model.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task CreateAmmoBoxAsync(string vendorUserId,AmmoBoxCreateModel model);
     }
 }

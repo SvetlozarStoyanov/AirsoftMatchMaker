@@ -8,10 +8,10 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-
-        var userDto = await UserManager.FindByIdAsync(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
-
+       
+            var userDto = await UserManager.FindByIdAsync(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
+        
+     
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
         </li>
@@ -27,10 +27,10 @@
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Register">Register</a>
+            <a class="nav-link text-dark" asp-controller="Users" asp-action="Register">Register</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Login">Login</a>
+            <a class="nav-link text-dark" asp-controller="Users" asp-action="Login">Login</a>
         </li>
     }
 </ul>

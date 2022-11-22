@@ -6,10 +6,6 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Entities
 {
     public class Clothing
     {
-        public Clothing()
-        {
-            
-        }
         [Key]
         public int Id { get; set; }
         [Required]
