@@ -1,5 +1,4 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
-using AirsoftMatchMaker.Core.Models.AmmoBoxes;
 using AirsoftMatchMaker.Core.Models.Clothes;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
@@ -102,7 +101,7 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 return;
             }
-            var clotting = new Clothing()
+            var clothing = new Clothing()
             {
                 Name = model.Name,
                 Description = model.Description,
@@ -110,8 +109,8 @@ namespace AirsoftMatchMaker.Core.Services
                 Price = model.Price,
                 ClothingColor = model.ClothingColor
             };
-            vendor.Clothes.Add(clotting);
-            //await repository.AddAsync<AmmoBox>(ammoBox);
+            vendor.User.Credits -= model.FinalImportPrice;
+            vendor.Clothes.Add(clothing);
             await repository.SaveChangesAsync();
         }
     }

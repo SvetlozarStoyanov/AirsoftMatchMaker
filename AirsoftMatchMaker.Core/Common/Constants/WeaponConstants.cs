@@ -10,9 +10,9 @@
         public const double ShotgunFireRateMax = 400.00;
         public const double AssaultRifleFireRateMin = 400.0;
         public const double AssaultRifleFireRateMax = 1500.00;
-        public const double SniperRifleFireRateMin = 200.0;
-        public const double SniperRifleFireRateMax = 300.00;
-        public const double HeavyFireRateMin = 20.00;
+        public const double SniperRifleFireRateMin = 20.00;
+        public const double SniperRifleFireRateMax = 150;
+        public const double HeavyFireRateMin = 4.00;
         public const double HeavyFireRateMax = 6000;
 
         public const double PistolFeetPerSecondMin = 100;

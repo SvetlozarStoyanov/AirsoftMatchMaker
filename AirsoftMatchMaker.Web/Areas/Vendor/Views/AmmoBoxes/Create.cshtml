@@ -17,13 +17,19 @@
             </div>
             <div class="form-group">
                 <label asp-for="Price"></label>
-                <input asp-for="Price" class="form-control" >
+                <input id="price" asp-for="Price" class="form-control" >
                 <span asp-validation-for="Price" class="small text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Quantity"></label>
-                <input asp-for="Quantity" class="form-control">
+                <input id="addedQuantity" asp-for="Quantity" class="form-control">
                 <span asp-validation-for="Quantity" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FinalImportPrice">Final price</label>
+                <input id="finalImportPriceForUI" asp-for="FinalImportPrice" class="form-control" disabled>
+                <input id="finalImportPriceForSubmit" asp-for="FinalImportPrice" class="form-control" hidden>
+                <span asp-validation-for="FinalImportPrice" class="small text-danger"></span>
             </div>
             <div class="text-center">
                 <input class="btn btn-primary mt-3" type="submit" value="Save" />
@@ -32,3 +38,4 @@
     </div>
 </div>
 
+<script src="~/js/Areas/Vendor/Views/AmmoBoxes/calculateFinalImportPrice.js"></script>

@@ -112,7 +112,13 @@ namespace AirsoftMatchMaker.Core.Services
                 .FirstOrDefaultAsync();
             return vendor;
         }
-
+        public async Task<bool> CheckIfVendorHasEnoughCreditsAsync(string vendorUserId, decimal finalPrice)
+        {
+            var user = await repository.GetByIdAsync<User>(vendorUserId);
+            if (user.Credits < finalPrice)
+                return false;
+            return true;
+        }
 
     }
 }

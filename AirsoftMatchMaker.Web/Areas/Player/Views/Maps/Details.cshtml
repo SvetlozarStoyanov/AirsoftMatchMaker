@@ -1,0 +1,66 @@
+﻿@using System.Text.RegularExpressions;
+@model MapViewModel
+
+@{
+    ViewBag.Title = "Map Details";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+
+<div class="container" style="display:inline">
+    <div class="row">
+        @*   <div class="col-4">
+        <img class="card-img-top" style="width: 20rem;"
+        src="@Model.ImageUrl" alt="House Image">
+        </div>*@
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;">@Model.Name</p>
+            @*<p>Located in: <b>@Model.Address</b></p>*@
+            <p>
+                Description: @Model.Description
+            </p>
+            <p>
+                GameMode:
+                <b>
+                    <a class="btn btn-primary btn-info" asp-controller="GameModes" asp-action="Details" asp-route-id="@Model.GameModeId"> @Model.GameModeName</a>
+                </b>
+            </p>
+
+            <p>
+                Terrain:
+                <b>
+                    <b>@string.Join(" ", Regex.Matches(Model.Terrain.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
+                </b>
+            </p>
+            <p>
+                Average engagement distance:
+                <b>
+                    <b>@string.Join(" ", Regex.Matches(Model.AverageEngagementDistance.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
+                </b>
+            </p>
+            <p>
+                Map Size:
+                <b>
+                    <b>@string.Join(" ", Regex.Matches(Model.Mapsize.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
+                </b>
+            </p>
+            <h2>Games</h2>
+            <div class="container">
+                @foreach (var game in Model.Games)
+                {
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                                <a class="btn btn-secondary" asp-area="Player" asp-controller="Games" asp-action="Details">
+                                <h5 class="card-title">@game.Name</h5>
+                            </a>
+                            <h6 class="card-text">@game.Result</h6>
+                            <h6>@game.Date</h6>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+</div>

@@ -14,5 +14,6 @@ namespace AirsoftMatchMaker.Core.Models.AmmoBoxes
         public decimal Price { get; set; }
         [Range(1, 1000)]
         public int Quantity { get; set; }
+        public decimal FinalImportPrice { get; set; }
     }
 }

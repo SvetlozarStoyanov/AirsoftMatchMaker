@@ -31,5 +31,13 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <paramt type="int" name="id"></param>
         /// <returns><see cref="VendorViewModel"/></returns>
         Task<VendorViewModel> GetVendorByIdAsync(int id);
+
+        /// <summary>
+        /// Returns <see cref="true"/> if vendor has enough credits to import the ammoBox, returns false otherwise.
+        /// </summary>
+        /// <param name="vendorUserId"></param>
+        /// <param name="finalPrice"></param>
+        /// <returns></returns>
+        Task<bool> CheckIfVendorHasEnoughCreditsAsync(string vendorUserId, decimal finalPrice);
     }
 }

@@ -104,6 +104,8 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
+       
+
         public async Task CreateAmmoBoxAsync(string vendorUserId, AmmoBoxCreateModel model)
         {
             var vendor = await repository.All<Vendor>()
@@ -123,6 +125,7 @@ namespace AirsoftMatchMaker.Core.Services
                 Price = model.Price,
                 Quantity = model.Quantity,
             };
+            vendor.User.Credits -= model.FinalImportPrice;
             vendor.AmmoBoxes.Add(ammoBox);
             //await repository.AddAsync<AmmoBox>(ammoBox);
             await repository.SaveChangesAsync();
@@ -149,8 +152,9 @@ namespace AirsoftMatchMaker.Core.Services
         {
             var vendor = await repository.All<Vendor>()
                 .Where(v => v.UserId == vendorUserId)
+                .Include(v => v.User)
                 .FirstOrDefaultAsync();
-            if (vendor.Id != model.Id)
+            if (vendor.Id != model.VendorId)
             {
                 return;
             }
@@ -159,6 +163,7 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 return;
             }
+            vendor.User.Credits -= model.FinalImportPrice;
             ammoBox.Quantity += model.QuantityAdded;
             await repository.SaveChangesAsync();
         }

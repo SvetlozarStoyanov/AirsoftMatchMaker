@@ -12,9 +12,12 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
     public class ClothesController : Controller
     {
         private readonly IClothingService clothingService;
-        public ClothesController(IClothingService clothingService)
+        private readonly IVendorService vendorService;
+
+        public ClothesController(IClothingService clothingService, IVendorService vendorService)
         {
             this.clothingService = clothingService;
+            this.vendorService = vendorService;
         }
 
         public async Task<IActionResult> Index()
@@ -66,8 +69,9 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ClothingCreateModel model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(),model.FinalImportPrice))
             {
+                model.Colors = Enum.GetValues<ClothingColor>();
                 return View(model);
             }
             await clothingService.CreateClothingAsync(User.Id(), model);

@@ -1,0 +1,57 @@
+﻿@using System.Text.RegularExpressions;
+@model IEnumerable<WeaponListModel>
+<table class=" table table-bordered  table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Range
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var weapon in Model)
+        {
+            <tr>
+                <td width="50%">
+                    @weapon.Name
+                </td>
+                <td width="30%">
+                    @string.Join(" ", Regex.Matches(weapon.WeaponType.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())
+                </td>
+                <td width="30%">
+                    @weapon.PreferedEngagementDistance.ToString()
+                </td>
+                <td width="30%">
+                    @weapon.Price
+                </td>
+                <td>
+                    <div class="w-75 btn-group" role="group">
+                        <a asp-area="Player" asp-controller="Weapons" asp-action="Details" asp-route-id="@weapon.Id" class="btn btn-primary mx-2">
+                            <i class="bi bi-info-square-fill"></i>
+                            Details
+                        </a>
+                    </div>
+                    <div class="w-75 btn-group" role="group">
+                            <a asp-area="Player" asp-controller="Weapons" asp-action="Buy" asp-route-id="@weapon.Id" class="btn btn-success mx-2">
+                            <i class="bi bi-info-square-fill"></i>
+                            Buy
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>

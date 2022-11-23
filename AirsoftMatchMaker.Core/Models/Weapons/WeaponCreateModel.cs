@@ -23,5 +23,6 @@ namespace AirsoftMatchMaker.Core.Models.Weapons
         public WeaponType WeaponType { get; init; }
         public PreferedEngagementDistance PreferedEngagementDistance { get; set; }
         public ICollection<PreferedEngagementDistance> PreferedEngagementDistances { get; set; }
+        public decimal FinalImportPrice { get; set; }
     }
 }

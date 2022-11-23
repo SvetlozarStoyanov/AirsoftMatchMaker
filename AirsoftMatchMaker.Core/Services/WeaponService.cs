@@ -122,6 +122,7 @@ namespace AirsoftMatchMaker.Core.Services
                 PreferedEngagementDistance = model.PreferedEngagementDistance,
                 AverageAmmoExpendedPerGame = model.AverageAmmoExpendedPerGame,
             };
+            vendor.User.Credits -= model.FinalImportPrice;
             vendor.Weapons.Add(weapon);
             await repository.SaveChangesAsync();
         }
@@ -142,10 +143,10 @@ namespace AirsoftMatchMaker.Core.Services
                     model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
                     break;
                 case WeaponType.AssaultRifle:
-                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Medium;
                     break;
                 case WeaponType.SniperRifle:
-                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Long;
                     break;
                 default:
                     model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
@@ -161,7 +162,7 @@ namespace AirsoftMatchMaker.Core.Services
             switch (model.WeaponType)
             {
                 case WeaponType.Pistol:
-                    if (model.FeetPerSecond < WeaponConstants.PistolFeetPerSecondMin && model.FireRate > WeaponConstants.PistolFeetPerSecondMax)
+                    if (model.FeetPerSecond < WeaponConstants.PistolFeetPerSecondMin || model.FireRate > WeaponConstants.PistolFeetPerSecondMax)
                     {
                         errors.Add($"Invalid feet per second! Range [{WeaponConstants.PistolFeetPerSecondMin}:{WeaponConstants.PistolFeetPerSecondMax}]");
                     }
@@ -171,51 +172,51 @@ namespace AirsoftMatchMaker.Core.Services
                     }
                     break;
                 case WeaponType.Shotgun:
-                    if (model.FeetPerSecond < WeaponConstants.ShotgunFeetPerSecondMin && model.FireRate > WeaponConstants.ShotgunFeetPerSecondMax)
+                    if (model.FeetPerSecond < WeaponConstants.ShotgunFeetPerSecondMin || model.FireRate > WeaponConstants.ShotgunFeetPerSecondMax)
                     {
                         errors.Add($"Invalid feet per second! Range [{WeaponConstants.PistolFeetPerSecondMin}:{WeaponConstants.PistolFeetPerSecondMax}]");
                     }
-                    if (model.FireRate < WeaponConstants.ShotgunFireRateMin && model.FireRate > WeaponConstants.ShotgunFireRateMax)
+                    if (model.FireRate < WeaponConstants.ShotgunFireRateMin || model.FireRate > WeaponConstants.ShotgunFireRateMax)
                     {
                         errors.Add($"Invalid fire rate! Range [{WeaponConstants.ShotgunFireRateMin}:{WeaponConstants.ShotgunFireRateMax}]");
                     }
                     break;
                 case WeaponType.SubmachineGun:
-                    if (model.FeetPerSecond < WeaponConstants.SubmachineGunFeetPerSecondMin && model.FireRate > WeaponConstants.SubmachineGunFeetPerSecondMax)
+                    if (model.FeetPerSecond < WeaponConstants.SubmachineGunFeetPerSecondMin || model.FireRate > WeaponConstants.SubmachineGunFeetPerSecondMax)
                     {
                         errors.Add($"Invalid feet per second! Range [{WeaponConstants.SubmachineGunFeetPerSecondMin}:{WeaponConstants.SubmachineGunFeetPerSecondMax}]");
                     }
-                    if (model.FireRate < WeaponConstants.SubmachineGunFireRateMin && model.FireRate > WeaponConstants.SubmachineGunFireRateMax)
+                    if (model.FireRate < WeaponConstants.SubmachineGunFireRateMin || model.FireRate > WeaponConstants.SubmachineGunFireRateMax)
                     {
                         errors.Add($"Invalid fire rate! Range [{WeaponConstants.SubmachineGunFireRateMin}:{WeaponConstants.SubmachineGunFireRateMax}]");
                     }
                     break;
                 case WeaponType.AssaultRifle:
-                    if (model.FeetPerSecond < WeaponConstants.AssaultRifleFeetPerSecondMin && model.FireRate > WeaponConstants.AssaultRifleFeetPerSecondMax)
+                    if (model.FeetPerSecond < WeaponConstants.AssaultRifleFeetPerSecondMin || model.FireRate > WeaponConstants.AssaultRifleFeetPerSecondMax)
                     {
                         errors.Add($"Invalid feet per second! Range [{WeaponConstants.AssaultRifleFeetPerSecondMin}:{WeaponConstants.AssaultRifleFeetPerSecondMax}]");
                     }
-                    if (model.FireRate < WeaponConstants.AssaultRifleFireRateMin && model.FireRate > WeaponConstants.AssaultRifleFireRateMax)
+                    if (model.FireRate < WeaponConstants.AssaultRifleFireRateMin || model.FireRate > WeaponConstants.AssaultRifleFireRateMax)
                     {
                         errors.Add($"Invalid fire rate! Range [{WeaponConstants.AssaultRifleFireRateMin}:{WeaponConstants.AssaultRifleFireRateMax}]");
                     }
                     break;
                 case WeaponType.SniperRifle:
-                    if (model.FeetPerSecond < WeaponConstants.SniperRifleFeetPerSecondMin && model.FireRate > WeaponConstants.SniperRifleFeetPerSecondMax)
+                    if (model.FeetPerSecond < WeaponConstants.SniperRifleFeetPerSecondMin || model.FireRate > WeaponConstants.SniperRifleFeetPerSecondMax)
                     {
                         errors.Add($"Invalid feet per second! Range [{WeaponConstants.SniperRifleFeetPerSecondMin}:{WeaponConstants.SniperRifleFeetPerSecondMax}]");
                     }
-                    if (model.FireRate < WeaponConstants.SniperRifleFireRateMin && model.FireRate > WeaponConstants.SniperRifleFireRateMax)
+                    if (model.FireRate < WeaponConstants.SniperRifleFireRateMin || model.FireRate > WeaponConstants.SniperRifleFireRateMax)
                     {
                         errors.Add($"Invalid fire rate! Range [{WeaponConstants.SniperRifleFireRateMin}:{WeaponConstants.SniperRifleFireRateMax}]");
                     }
                     break;
                 default:
-                    if (model.FeetPerSecond < WeaponConstants.HeavyFeetPerSecondMin && model.FireRate > WeaponConstants.HeavyFeetPerSecondMax)
+                    if (model.FeetPerSecond < WeaponConstants.HeavyFeetPerSecondMin || model.FireRate > WeaponConstants.HeavyFeetPerSecondMax)
                     {
                         errors.Add($"Invalid feet per second! Range [{WeaponConstants.HeavyFeetPerSecondMin}:{WeaponConstants.HeavyFeetPerSecondMax}]");
                     }
-                    if (model.FireRate < WeaponConstants.HeavyFireRateMin && model.FireRate > WeaponConstants.HeavyFireRateMax)
+                    if (model.FireRate < WeaponConstants.HeavyFireRateMin || model.FireRate > WeaponConstants.HeavyFireRateMax)
                     {
                         errors.Add($"Invalid fire rate! Range [{WeaponConstants.HeavyFireRateMin}:{WeaponConstants.HeavyFireRateMax}]");
                     }

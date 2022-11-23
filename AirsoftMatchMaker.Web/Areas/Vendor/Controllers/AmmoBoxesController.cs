@@ -11,9 +11,12 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
     public class AmmoBoxesController : Controller
     {
         private readonly IAmmoBoxService ammoBoxService;
-        public AmmoBoxesController(IAmmoBoxService ammoBoxService)
+        private readonly IVendorService vendorService;
+
+        public AmmoBoxesController(IAmmoBoxService ammoBoxService, IVendorService vendorService)
         {
             this.ammoBoxService = ammoBoxService;
+            this.vendorService = vendorService;
         }
 
         public async Task<IActionResult> Index()
@@ -55,10 +58,11 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AmmoBoxCreateModel model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice))
             {
                 return View(model);
             }
+          
             await ammoBoxService.CreateAmmoBoxAsync(User.Id(),model);
             return RedirectToAction(nameof(Index));
         }
@@ -73,7 +77,7 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         [HttpPost]
         public async Task<IActionResult> Restock(AmmoBoxRestockModel model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice))
             {
                 return View(model);
             }

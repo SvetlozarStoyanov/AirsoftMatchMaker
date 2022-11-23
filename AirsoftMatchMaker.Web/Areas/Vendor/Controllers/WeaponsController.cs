@@ -12,10 +12,12 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
     public class WeaponsController : Controller
     {
         private readonly IWeaponService weaponService;
+        private readonly IVendorService vendorService;
 
-        public WeaponsController(IWeaponService weaponService)
+        public WeaponsController(IWeaponService weaponService, IVendorService vendorService)
         {
             this.weaponService = weaponService;
+            this.vendorService = vendorService;
         }
 
         public async Task<IActionResult> Index()
@@ -64,7 +66,7 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
             return View(selectModel);
         }
 
-        
+        [HttpGet]
         public async Task<IActionResult> Create(WeaponCreateTypeSelectModel selectModel)
         {
             if (!ModelState.IsValid)
@@ -77,9 +79,10 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(WeaponCreateModel model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice))
             {
-                return View("Create", model);
+                model = weaponService.CreateWeaponCreateModelByWeaponType(model.WeaponType);
+                return View(model);
             }
             var errors = weaponService.ValidateWeaponParameters(model);
             if (errors.Count() > 0)
@@ -88,7 +91,8 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error);
                 }
-                return View("Create", model);
+                model = weaponService.CreateWeaponCreateModelByWeaponType(model.WeaponType);
+                return View(model);
             }
             await weaponService.CreateWeaponAsync(User.Id(), model);
             return RedirectToAction(nameof(Index));

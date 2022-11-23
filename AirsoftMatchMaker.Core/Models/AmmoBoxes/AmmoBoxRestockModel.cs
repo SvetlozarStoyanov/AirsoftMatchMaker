@@ -9,5 +9,7 @@
         public decimal Price { get; set; }
         public int QuantityAdded { get; set; }
         public int VendorId { get; set; }
+        public decimal FinalImportPrice { get; set; }
+
     }
 }

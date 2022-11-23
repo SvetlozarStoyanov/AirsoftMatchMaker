@@ -19,6 +19,7 @@ namespace AirsoftMatchMaker.Core.Models.Clothes
         [Range(1, 100)]
         public decimal Price { get; set; }
         public ClothingColor ClothingColor { get; set; }
-        public ICollection<ClothingColor> Colors { get; init; }
+        public ICollection<ClothingColor> Colors { get; set; }
+        public decimal FinalImportPrice { get; set; }
     }
 }
