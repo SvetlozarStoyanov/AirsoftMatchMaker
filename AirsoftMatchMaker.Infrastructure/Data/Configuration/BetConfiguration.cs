@@ -22,12 +22,18 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 new Bet()
                 {
                     Id = 1,
-                    UserId = "b2451308-1197-4362-be78-f7ea7ca35fe9",
+                    UserId = "cc1cb39b-c0cf-41ed-856c-d3943aec605a",
                     GameId = 1,
                     CreditsBet = 20,
-                    WinningTeamId = 1,
-                    TeamRedRate = 1.25m,
-                    TeamBlueRate = 0.65m,
+                    WinningTeamId = 1
+                },
+                new Bet()
+                {
+                    Id = 2,
+                    UserId = "1f5be09b-2910-4ac0-8ff5-5c525ddf1b61",
+                    GameId = 1,
+                    CreditsBet = 10,
+                    WinningTeamId = 2
                 }
             };
             return bets;

@@ -16,5 +16,9 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="id"></param>
         /// <returns><see cref="GameViewModel"/></returns>
         Task<GameViewModel> GetGameByIdAsync(int id);
+
+        Task<GameCreateModel> CreateGameModel(string dateTimeString);
+
+        Task CreateGameAsync(string matchmakerUserId, GameCreateModel model);
     }
 }

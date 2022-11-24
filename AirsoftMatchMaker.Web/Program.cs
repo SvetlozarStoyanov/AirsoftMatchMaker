@@ -78,6 +78,11 @@ app.MapAreaControllerRoute(
             pattern: "Administrator/{controller=Home}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
+            name: "Matchmaker",
+            areaName: "Matchmaker",
+            pattern: "Matchmaker/{controller=Home}/{action=Index}/{id?}");
+
+app.MapAreaControllerRoute(
             name: "Vendor",
             areaName: "Vendor",
             pattern: "Vendor/{controller=Home}/{action=Index}/{id?}");

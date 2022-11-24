@@ -73,6 +73,11 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 {
                     UserId = "cc1cb39b-c0cf-41ed-856c-d3943aec605a",
                     RoleId = "b48af83e-7873-4ecd-82de-5d517e7b31f9"
+                }, 
+                new IdentityUserRole<string>()
+                {
+                    UserId = "1f5be09b-2910-4ac0-8ff5-5c525ddf1b61",
+                    RoleId = "b48af83e-7873-4ecd-82de-5d517e7b31f9"
                 },
                 new IdentityUserRole<string>()
                 {

@@ -19,7 +19,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Entities
         public string? Result { get; set; }
         public DateTime Date { get; set; }
         public decimal EntryFee { get; set; }
-        public GameStatus GameStatus { get; set; }
+        public GameStatus GameStatus { get; set; } = GameStatus.Upcoming;
 
         [ForeignKey(nameof(Entities.Map.Id))]
         public int MapId { get; set; }
@@ -38,12 +38,15 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Entities
         [InverseProperty(nameof(Entities.Team.GamesAsTeamRed))]
         public virtual Team TeamRed { get; set; } = null!;
         public int TeamRedPoints { get; set; }
+        public int TeamRedOdds { get; set; }
+
 
         [ForeignKey(nameof(Entities.Team.Id))]
         public int TeamBlueId { get; set; }
         [InverseProperty(nameof(Entities.Team.GamesAsTeamBlue))]
         public virtual Team TeamBlue { get; set; } = null!;
         public int TeamBluePoints { get; set; }
+        public int TeamBlueOdds { get; set; }
 
         public virtual ICollection<Bet> Bets { get; set; }
     }

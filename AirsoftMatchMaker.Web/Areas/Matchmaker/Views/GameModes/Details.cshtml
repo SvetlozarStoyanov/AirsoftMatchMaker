@@ -1,0 +1,87 @@
+﻿@using System.Text.RegularExpressions;
+@model GameModeViewModel
+
+@{
+    ViewBag.Title = "Game Mode Details";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;">@Model.Name</p>
+
+            <p>
+                Description: @Model.Description
+            </p>
+            <p>
+                Points required to win:
+                <b>
+                    @Model.PointsToWin points
+                </b>
+            </p>
+
+            @*          <div class="form-inline">
+            @if (this.User.Identity.IsAuthenticated)
+            {
+            <a class="btn btn-warning" asp-controller="Houses" asp-action="Edit"
+            asp-route-id="@Model.Id">Edit</a>
+            <a class="ml-2 btn btn-danger" asp-controller="Houses" asp-action="Delete"
+            asp-route-id="@Model.Id">Delete</a>
+            @if (!Model.IsRented)
+            {
+            <form class="ml-2" asp-controller="Houses"
+            asp-action="Rent" asp-route-id="@Model.Id" method="post">
+            <input class="btn btn-primary" type="submit" value="Rent" />
+            </form>
+            }
+            else
+            {
+            <form class="ml-2" asp-controller="Houses" asp-action="Leave"
+            asp-route-id="@Model.Id" method="post">
+            <input class="btn btn-primary" type="submit" value="Leave" />
+            </form>
+            }
+            }
+            </div>*@
+
+            <div class="container">
+                <h2>Maps which feature this game mode: </h2>
+                @foreach (var map in Model.Maps)
+                {
+                    <a class="btn" asp-area="Matchmaker" asp-controller="Maps" asp-action="Details" asp-route-id="@map.Id">
+
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">@map.Name</h5>
+                                @if (map.ImageUrl != null)
+                                {
+                                    <img class="w-25" src="@map.ImageUrl" />
+                                }
+                                <p class="card-text"></p>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+            <div class="container">
+                <h2>Games with this game mode</h2>
+                @foreach (var game in Model.Games)
+                {
+                    <a class="btn" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
+
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">@game.Name</h5>
+                                <p class="card-text"></p>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+</div>

@@ -16,6 +16,10 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<IEnumerable<RoleListModel>> GetRequestableRolesAsync(IEnumerable<string> roleNames)
         {
+            if (roleNames.Any(r => r == "Administrator" || r == "Matchmaker" || r == "Vendor" || r == "Player"))
+            {
+                return new List<RoleListModel>();
+            }
             var roles = await roleManager.Roles
                 .Where(r => !roleNames.Contains(r.Name) && r.Name != "Administrator")
                 .Select(r => new RoleListModel()

@@ -30,6 +30,8 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     MapId = 1,
                     TeamRedId = 1,
                     TeamBlueId = 2,
+                    TeamRedOdds = -100,
+                    TeamBlueOdds = +100
                 },
                 new Game()
                 {
@@ -41,7 +43,9 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     GameModeId = 1,
                     MapId = 2,
                     TeamRedId = 2,
-                    TeamBlueId = 1
+                    TeamBlueId = 1,
+                    TeamRedOdds = +100,
+                    TeamBlueOdds = -100,
                 },
             };
             return games;

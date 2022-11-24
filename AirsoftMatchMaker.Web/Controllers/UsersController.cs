@@ -87,6 +87,11 @@ namespace AirsoftMatchMaker.Web.Controllers
             {
                 return Redirect("/Player/Home/Index");
             }
+            bool isMatchmaker = await userManager.IsInRoleAsync(user, "Matchmaker");
+            if (isMatchmaker)
+            {
+                return Redirect("/Matchmaker/Home/Index");
+            }
             return RedirectToAction("Index", "Home");
         }
 

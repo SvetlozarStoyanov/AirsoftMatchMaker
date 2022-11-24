@@ -1,11 +1,12 @@
 ﻿@using System.Text.RegularExpressions;
 @model WeaponCreateTypeSelectModel
 
+<h2 class="text-center">Select Weapon Type</h2>
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
         <form asp-area="Vendor" asp-controller="Weapons" asp-action="Create" method="get">
             <div class="form-group">
-                <label asp-for="WeaponType">Color</label>
+                <label asp-for="WeaponType">Weapon Type</label>
                 <select asp-for="WeaponType" class="form-control">
                     @foreach (var color in Model.WeaponTypes)
                     {
