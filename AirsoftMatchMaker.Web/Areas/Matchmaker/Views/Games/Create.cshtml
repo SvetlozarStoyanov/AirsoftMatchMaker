@@ -8,7 +8,7 @@
         <section>
             <form asp-area="Matchmaker" asp-controller="Games" asp-action="Create" method="post">
                 <div class="form-group">
-                    <label  asp-for="DateString" >@Model.DateString</label>
+                    <label asp-for="DateString">Date</label>
                     <input asp-for="DateString" class="form-control" disabled />
                     <input asp-for="DateString" class="form-control" hidden />
                     <span asp-validation-for="DateString" class="small text-danger"></span>
@@ -20,7 +20,7 @@
                     <input asp-for="Maps" class="form-control" hidden />
                 </div>
                 <div class="form-group">
-                    <label asp-for="EntryFee"></label>
+                    <label asp-for="EntryFee">Entry Fee</label>
                     <input asp-for="EntryFee" class="form-control" />
                     <span asp-validation-for="EntryFee" class="small text-danger"></span>
                 </div>
@@ -62,7 +62,7 @@
     </div>
 </div>
 
-<script ></script>
+<script></script>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

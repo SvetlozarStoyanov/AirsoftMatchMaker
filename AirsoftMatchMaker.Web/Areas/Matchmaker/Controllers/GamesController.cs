@@ -33,25 +33,16 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
             return View(model);
         }
 
-        public IActionResult SelectGameDate()
+        public async Task<IActionResult> SelectGameDate()
         {
-            var startDate = DateTime.Now.AddDays(1);
-            var endDate = DateTime.Now.AddDays(7);
-            var dates = Enumerable.Range(0, (int)(endDate - startDate).TotalDays + 1)
-                      .Select(x => startDate.AddDays(x).ToString())
-                      .ToList();
-           
-            var selectDateModel = new GameSelectDateModel()
-            {
-                Dates = dates
-            };
+            var selectDateModel = await gameService.GetNextSevenAvailableDatesAsync();
             return View(selectDateModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create(GameSelectDateModel selectDateModel)
         {
-            var createModel = await gameService.CreateGameModel(selectDateModel.DateTime);
+            var createModel = await gameService.CreateGameModelAsync(selectDateModel.DateTime);
             return View(createModel);
         }
 
@@ -60,7 +51,7 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
         {
             if (!ModelState.IsValid || model.TeamRedId == model.TeamBlueId)
             {
-                var createModel = await gameService.CreateGameModel(model.DateString);
+                var createModel = await gameService.CreateGameModelAsync(model.DateString);
                 return View(createModel);
             }
             await gameService.CreateGameAsync(User.Id(), model);

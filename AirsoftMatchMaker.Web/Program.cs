@@ -29,19 +29,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IRepository, Repository>();
-builder.Services.AddScoped<IPlayerService, PlayerService>();
-builder.Services.AddScoped<IWeaponService, WeaponService>();
-builder.Services.AddScoped<IClothingService, ClothingService>();
-builder.Services.AddScoped<IAmmoBoxService, AmmoBoxService>();
-builder.Services.AddScoped<IMapService, MapService>();
-builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddScoped<IGameModeService, GameModeService>();
-builder.Services.AddScoped<ITeamService, TeamService>();
-builder.Services.AddScoped<IVendorService, VendorService>();
-builder.Services.AddScoped<IMatchmakerService, MatchmakerService>();
-builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddScoped<IRoleRequestService, RoleRequestService>();
+builder.Services.AddApplicationServices();
 
 
 builder.Services.ConfigureApplicationCookie(options =>
