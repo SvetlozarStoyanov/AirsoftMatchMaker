@@ -18,5 +18,6 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Entities
         [ForeignKey(nameof(Entities.Team.Id))]
         public int WinningTeamId { get; set; }
         public decimal CreditsBet { get; set; }
+        public int Odds { get; set; }
     }
 }

@@ -15,6 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IAmmoBoxService, AmmoBoxService>();
             services.AddScoped<IMapService, MapService>();
             services.AddScoped<IGameService, GameService>();
+            services.AddScoped<IBetService, BetService>();
             services.AddScoped<IGameModeService, GameModeService>();
             services.AddScoped<ITeamService, TeamService>();
             services.AddScoped<IVendorService, VendorService>();
