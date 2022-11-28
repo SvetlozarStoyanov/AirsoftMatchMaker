@@ -2,7 +2,7 @@
 @model AmmoBoxBuyModel
 
 @{
-    ViewBag.Title = "Ammo Box Details";
+    ViewBag.Title = "Buy ammo";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -14,21 +14,18 @@
         <div class="card col-8 border-0">
             <p style="font-size:25px;">@Model.Name</p>
             <form asp-controller="AmmoBoxes" asp-action="Buy" method="post">
-                <input asp-for="AmmoAmount" class="form-control" hidden />
-                <label asp-for="AmmoAmount">
-                    <p>
-                        Ammo : @Model.AmmoAmount
-                    </p>
-                </label>
+                <input asp-for="VendorId" hidden />
+                <div class="form-group">
+                    <label  asp-for="AmmoAmount">Ammo in one box</label>
+                    <input id="ammoAmountInitial" asp-for="AmmoAmount" hidden />
+                    <input asp-for="AmmoAmount" class="form-control" disabled />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price">Price per box </label>
+                    <input id="price" asp-for="Price" class="form-control" disabled />
+                    <input asp-for="Price" hidden />
 
-                <label asp-for="Price">
-                    Price:
-                    <b>
-                        @Model.Price credits
-                    </b>
-                </label>
-                <input asp-for="Price" class="form-control" hidden/>
-                <input asp-for="VendorId" class="form-control" hidden/>
+                </div>
 
                 @if (Model.VendorName != null)
                 {
@@ -39,15 +36,30 @@
                         </b>
                     </p>
                 }
-                <label asp-for="BuyCount">Select quantity to buy</label>
-                <select asp-for="BuyCount">
-                    @for (int i = 1; i <= Model.Quantity; i++)
-                    {
-                        <option value="@i">@i</option>
-                    }
-                </select>
-                <button class="btn btn-success">Buy</button>
+                <div class="form-group">
+                    <label asp-for="QuantityToBuy">Select quantity to buy</label>
+                    <select id="quantityToBuy" asp-for="QuantityToBuy" class="form-control">
+                        @for (int i = 1; i <= Model.Quantity; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ammo that will be received</label>
+                    <input id="ammoAmountFinal" class="form-control" disabled />
+                </div>
+                <div class="form-group">
+                    <label asp-for="FinalPrice">Final Price</label>
+                    <input id="finalPriceForUi" asp-for="FinalPrice" class="form-control" disabled />
+                    <input id="finalPriceForSubmit" asp-for="FinalPrice" hidden />
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-success">Buy</button>
+                </div>
             </form>
         </div>
     </div>
 </div>
+
+<script src="~/js/Areas/Player/Views/AmmoBoxes/calculateAmmBoxesFinalPrice.js"></script>

@@ -80,7 +80,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Where(p => p.UserId == playerUserId)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync();
-            if (player == null || player.User.Credits < model.Price * model.BuyCount)
+            if (player == null || player.User.Credits < model.Price * model.QuantityToBuy)
             {
                 return;
             }
@@ -96,11 +96,11 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 return;
             }
-            player.User.Credits -= model.Price * model.BuyCount;
-            vendor.User.Credits += model.Price * model.BuyCount;
-            player.Ammo += model.AmmoAmount * model.BuyCount;
+            player.User.Credits -= model.Price * model.QuantityToBuy;
+            vendor.User.Credits += model.Price * model.QuantityToBuy;
+            player.Ammo += model.AmmoAmount * model.QuantityToBuy;
             var ammoBox = await repository.GetByIdAsync<AmmoBox>(model.Id);
-            ammoBox.Quantity -= model.BuyCount;
+            ammoBox.Quantity -= model.QuantityToBuy;
             await repository.SaveChangesAsync();
         }
 

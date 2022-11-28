@@ -39,8 +39,8 @@
                         </b>
                     </p>
                 }
-                <label asp-for="BuyCount">Select quantity to buy</label>
-                <select asp-for="BuyCount">
+                <label asp-for="QuantityToBuy">Select quantity to buy</label>
+                <select asp-for="QuantityToBuy">
                     @for (int i = 1; i <= Model.Quantity; i++)
                     {
                         <option value="@i">@i</option>

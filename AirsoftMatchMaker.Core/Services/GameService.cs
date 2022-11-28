@@ -120,27 +120,39 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(t => t.GamesAsTeamRed)
                 .Include(t => t.GamesAsTeamBlue)
                 .ToListAsync();
-
-            while (availableDates.Count < 7)
+            int i = 0;
+            while (availableDates.Count < 7 && i < 30)
             {
                 int mapCount = maps.Count;
                 int teamsCount = teams.Count;
                 foreach (var map in maps)
                 {
-                    mapCount -= map.Games.Count(g => g.Date.Day == dateTime.Date.Day);
+                    if (map.Games.Any(g => g.Date.Date == dateTime.Date))
+                    {
+                        mapCount--;
+                    }
+                    //mapCount -= map.Games.Count(g => g.Date.Day == dateTime.Date.Day);
                 }
                 foreach (var team in teams)
                 {
-                    teamsCount -= team.GamesAsTeamRed.Count(g => g.Date.Day == dateTime.Date.Day);
-                    teamsCount -= team.GamesAsTeamBlue.Count(g => g.Date.Day == dateTime.Date.Day);
+                    if (team.GamesAsTeamRed.Any(g => g.GameStatus == GameStatus.Upcoming) || team.GamesAsTeamBlue.Any(g => g.GameStatus == GameStatus.Upcoming))
+                    {
+                        teamsCount--;
+                    }
+                    //teamsCount -= team.GamesAsTeamRed.Count(g => g.Date.Day == dateTime.Date.Day);
+                    //teamsCount -= team.GamesAsTeamBlue.Count(g => g.Date.Day == dateTime.Date.Day);
                 }
                 if (teamsCount > 1 && mapCount > 0)
                 {
                     availableDates.Add(dateTime);
                 }
                 dateTime = dateTime.AddDays(1);
+                i++;
             }
-
+            if (availableDates.Count == 0)
+            {
+                return null;
+            }
             var model = new GameSelectDateModel()
             {
                 Dates = availableDates
@@ -172,8 +184,8 @@ namespace AirsoftMatchMaker.Core.Services
                 .ToListAsync();
             foreach (var team in teams)
             {
-                team.GamesAsTeamRed = team.GamesAsTeamRed.Where(g => g.Date.Day == dateTime.Date.Day).ToList();
-                team.GamesAsTeamBlue = team.GamesAsTeamBlue.Where(g => g.Date.Day == dateTime.Date.Day).ToList();
+                team.GamesAsTeamRed = team.GamesAsTeamRed.Where(g => g.GameStatus == GameStatus.Upcoming).ToList();
+                team.GamesAsTeamBlue = team.GamesAsTeamBlue.Where(g => g.GameStatus == GameStatus.Upcoming).ToList();
             }
             teams = teams.Where(t => t.GamesAsTeamRed.Count == 0 && t.GamesAsTeamBlue.Count == 0).ToList();
             GameCreateModel model = new GameCreateModel()

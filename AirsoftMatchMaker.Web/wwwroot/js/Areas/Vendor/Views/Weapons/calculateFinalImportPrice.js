@@ -2,6 +2,8 @@
 const finalImportPriceForSubmit = document.getElementById('finalImportPriceForSubmit');
 const finalImportPriceForUI = document.getElementById('finalImportPriceForUI');
 
+calculatePrice();
+
 function UpdatePricePerUnit() {
     var NameValue = pricePerUnit.value;
     console.log(NameValue);

@@ -36,6 +36,11 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
         public async Task<IActionResult> SelectGameDate()
         {
             var selectDateModel = await gameService.GetNextSevenAvailableDatesAsync();
+            if (selectDateModel == null)
+            {
+                TempData.Add("error", "No games can be made right now!");
+                return RedirectToAction(nameof(Index));
+            }
             return View(selectDateModel);
         }
 

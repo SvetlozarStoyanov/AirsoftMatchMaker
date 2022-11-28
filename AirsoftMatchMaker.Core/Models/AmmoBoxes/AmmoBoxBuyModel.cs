@@ -9,6 +9,7 @@
         public int Quantity { get; set; }
         public int VendorId { get; set; }
         public string VendorName { get; set; }
-        public int BuyCount { get; set; }
+        public int QuantityToBuy { get; set; }
+        public decimal FinalPrice { get; set; }
     }
 }
