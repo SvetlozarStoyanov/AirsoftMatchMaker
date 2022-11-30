@@ -42,8 +42,5 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns></returns>
         Task CreateGameAsync(string matchmakerUserId, GameCreateModel model);
 
-
-        Task SimulateGameAsync(int gameId);
-
     }
 }
