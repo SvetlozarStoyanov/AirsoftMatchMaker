@@ -70,5 +70,20 @@ namespace AirsoftMatchMaker.Core.Services
                 .FirstOrDefaultAsync();
             return team;
         }
+
+        public async Task JoinTeamAsync(string userId, int teamId)
+        {
+            var player = await repository.AllReadOnly<Player>()
+                .Where(p => p.UserId == userId && p.IsActive)
+                .FirstOrDefaultAsync();
+
+            var team = await repository.All<Team>()
+                .Where(t => t.Id == teamId)
+                .Include(t => t.Players)
+                .FirstOrDefaultAsync();
+
+            team.Players.Add(player);
+            await repository.SaveChangesAsync();
+        }
     }
 }

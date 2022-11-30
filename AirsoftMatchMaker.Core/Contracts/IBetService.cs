@@ -20,6 +20,9 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="bool"/></returns>
         Task<bool> HasUserAlreadyBetOnGameAsync(string userId, int gameId);
 
+
+        Task<bool> IsUserInOneOfTheTeamsInTheGameAsync(string userId, int gameId);
+
         /// <summary>
         /// Creates <see cref="BetCreateModel model"/> with given gameId
         /// </summary>

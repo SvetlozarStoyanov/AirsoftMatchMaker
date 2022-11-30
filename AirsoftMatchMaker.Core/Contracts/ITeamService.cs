@@ -16,5 +16,8 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="id"></param>
         /// <returns><see cref="TeamViewModel"/></returns>
         Task<TeamViewModel> GetTeamByIdAsync(int id);
+
+
+        Task JoinTeamAsync(string userId, int teamId);
     }
 }
