@@ -1,6 +1,4 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
-using AirsoftMatchMaker.Core.Models.Games;
-using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +9,11 @@ namespace AirsoftMatchMaker.Web.Areas.Administrator.Controllers
     public class GamesController : Controller
     {
         private readonly IGameService gameService;
-        public GamesController(IGameService gameService)
+        private readonly IGameSimulationService gameSimulationService;
+        public GamesController(IGameService gameService, IGameSimulationService gameSimulationService)
         {
             this.gameService = gameService;
+            this.gameSimulationService = gameSimulationService;
         }
 
         public async Task<IActionResult> Index()
@@ -34,7 +34,7 @@ namespace AirsoftMatchMaker.Web.Areas.Administrator.Controllers
 
         public async Task<IActionResult> Simulate(int id)
         {
-            await gameService.SimulateGameAsync(id);
+            await gameSimulationService.SimulateGameAsync(id);
             return RedirectToAction(nameof(Details), new { id = id });
         }
     }

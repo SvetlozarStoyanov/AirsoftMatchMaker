@@ -21,7 +21,7 @@ namespace AirsoftMatchMaker.Web.Controllers
             var model = await gameService.GetGameByIdAsync(id);
             if (model == null)
             {
-                TempData["error"] = $"Gamewith {id} id does not exist!";
+                TempData["error"] = $"Game with {id} id does not exist!";
                 return RedirectToAction(nameof(Index));
             }
             return View(model);

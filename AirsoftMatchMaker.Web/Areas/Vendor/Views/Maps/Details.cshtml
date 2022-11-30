@@ -23,7 +23,7 @@
             <p>
                 GameMode:
                 <b>
-                    <a class="btn btn-primary btn-info" asp-area="Player" asp-controller="GameModes" asp-action="Details" asp-route-id="@Model.GameModeId"> @Model.GameModeName</a>
+                    <a class="btn btn-primary btn-info" asp-area="Vendor" asp-controller="GameModes" asp-action="Details" asp-route-id="@Model.GameModeId"> @Model.GameModeName</a>
                 </b>
             </p>
 
@@ -51,7 +51,7 @@
                 {
                     <div class="card" style="width: 18rem;">
                         <div class="card-body">
-                            <a class="btn btn-secondary" asp-area="Player" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
+                            <a class="btn btn-secondary" asp-area="Vendor" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
                                 <h5 class="card-title">@game.Name</h5>
                             </a>
                             <h6 class="card-text">@game.Result</h6>

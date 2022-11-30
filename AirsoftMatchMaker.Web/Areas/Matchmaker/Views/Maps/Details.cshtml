@@ -51,7 +51,7 @@
                 {
                     <div class="card" style="width: 18rem;">
                         <div class="card-body">
-                            <a class="btn btn-secondary" asp-area="Matchmaker" asp-controller="Games" asp-action="Details">
+                            <a class="btn btn-secondary" asp-area="Matchmaker" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
                                 <h5 class="card-title">@game.Name</h5>
                             </a>
                             <h6 class="card-text">@game.Result</h6>

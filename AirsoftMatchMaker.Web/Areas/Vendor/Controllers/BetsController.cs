@@ -1,13 +1,13 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Bets;
-using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AirsoftMatchMaker.Web.Controllers
+namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
 {
-    [Authorize]
+    [Area("Vendor")]
+    [Authorize(Roles = "Vendor")]
     public class BetsController : Controller
     {
         private readonly IBetService betService;
@@ -75,7 +75,6 @@ namespace AirsoftMatchMaker.Web.Controllers
                 TempData.Add("error", "Cannot access that bet!");
                 return RedirectToAction(nameof(Mine));
             }
-            
             return View(model);
         }
 

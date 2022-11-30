@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
+namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
 {
-    [Area("Player")]
-    [Authorize(Roles = "Player")]
+    [Area("Vendor")]
+    [Authorize(Roles = "Vendor")]
     public class GamesController : Controller
     {
         private readonly IGameService gameService;

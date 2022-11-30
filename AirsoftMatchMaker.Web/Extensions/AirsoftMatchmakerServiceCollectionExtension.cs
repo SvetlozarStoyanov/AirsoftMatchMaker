@@ -22,7 +22,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IMatchmakerService, MatchmakerService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IRoleRequestService, RoleRequestService>();
-
+            services.AddScoped<IGameSimulationService, GameSimulationService>();
+            services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
+            services.AddHostedService<RepeatingService>();
             return services;
         }
     }

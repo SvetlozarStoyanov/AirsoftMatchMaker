@@ -1,0 +1,60 @@
+﻿@model BetCreateModel
+
+<h2 class="text-center">Bet on game</h2>
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form asp-area="Player" asp-controller="Bets" asp-action="Create" method="post">
+            <input asp-for="GameId" hidden />
+            <div class="form-group">
+                <label asp-for="GameName">Game Name</label>
+                <input asp-for="GameName" class="form-control" disabled>
+                <input asp-for="GameName" hidden>
+                <span asp-validation-for="GameName" class="small text-danger"></span>
+            </div>
+            @* <div class="form-group">
+            <label asp-for="CreditsPlaced"></label>
+            <input asp-for="CreditsPlaced" class="form-control">
+            <span asp-validation-for="CreditsPlaced" class="small text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="TeamRedOdds">Odds for red team</label>
+                <input asp-for="TeamRedOdds" class="form-control" disabled>
+                <input asp-for="TeamRedOdds" class="form-control" hidden>
+                <span asp-validation-for="TeamRedOdds" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TeamBlueOdds">Odds for blue team</label>
+                <input asp-for="TeamBlueOdds" class="form-control" disabled>
+                <input asp-for="TeamBlueOdds" class="form-control" hidden>
+                <span asp-validation-for="TeamBlueOdds" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WinningTeamId">Select a tam</label>
+                <select asp-for="WinningTeamId" class="form-control">
+                    <option value="@Model.TeamRedId">@Model.TeamRedName</option>
+                    <option value="@Model.TeamBlueId">@Model.TeamBlueName</option>
+                </select>
+            </div>
+            @*<div class="form-group">
+            <label asp-for="Quantity"></label>
+            <input id="addedQuantity" asp-for="Quantity" class="form-control">
+            <span asp-validation-for="Quantity" class="small text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="CreditsPlaced">Credits bet</label>
+                <select asp-for="CreditsPlaced" class="form-control">
+                    @for (int i = 1; i <= Model.UserCredits; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+            <div class="text-center">
+                <input class="btn btn-primary mt-3" type="submit" value="Save" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@*<script src="~/js/Areas/Vendor/Views/AmmoBoxes/calculateFinalImportPrice.js"></script>*@

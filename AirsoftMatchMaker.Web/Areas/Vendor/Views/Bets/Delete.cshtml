@@ -1,0 +1,46 @@
+﻿@using System.Text.RegularExpressions;
+@model BetDeleteModel
+
+@{
+    ViewBag.Title = "Bet Details";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+
+<form asp-area="Vendor" asp-controller="Bets" asp-action="Delete" method="post">
+    <input asp-for="Id" hidden />
+    <input asp-for="UserId" hidden />
+    <div class="container" style="display:inline">
+        <div class="row">
+            <div class="card col-8 border-0">
+                <p style="font-size:25px;">@Model.GameName</p>
+
+                <p>
+                    Credits bet: @Model.CreditsBet
+                </p>
+                <p>
+                    Odds:
+                    <b>
+                        @Model.Odds
+                    </b>
+                </p>
+                <p>
+                    Chosen team:
+                    <b>
+                        @Model.WinningTeamName
+                    </b>
+                </p>
+                <p>
+                    Payout:
+                    <b>
+                        @Model.PotentialProfit
+                    </b>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-danger" type="submit">Delete</button>
+    </div>
+</form>

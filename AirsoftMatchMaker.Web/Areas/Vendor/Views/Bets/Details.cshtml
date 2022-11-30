@@ -1,0 +1,44 @@
+﻿@using System.Text.RegularExpressions;
+@model BetViewModel
+
+@{
+    ViewBag.Title = "Delete Bet";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;">@Model.GameName</p>
+            <p>
+                Status:
+                <b>@string.Join(" ", Regex.Matches(Model.BetStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
+            </p>
+
+            <p>
+                Credits bet: @Model.CreditsBet
+            </p>
+            <p>
+                Odds:
+                <b>
+                    @Model.Odds
+                </b>
+            </p>
+            <p>
+                Chosen team:
+                <b>
+                    @Model.WinningTeamName
+                </b>
+            </p>
+            <p>
+                Payout:
+                <b>
+                    @Model.PotentialProfit
+                </b>
+            </p>
+        </div>
+    </div>
+
+</div>
