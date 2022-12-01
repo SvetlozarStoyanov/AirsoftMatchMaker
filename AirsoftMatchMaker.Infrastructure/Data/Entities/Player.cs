@@ -28,6 +28,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Entities
         [ForeignKey(nameof(Entities.PlayerClass.Id))]
         public int PlayerClassId { get; set; } = 1;
         public virtual PlayerClass PlayerClass { get; set; }
+        public virtual ICollection<TeamRequest> TeamRequests { get; set; }
         public virtual ICollection<Weapon> Weapons { get; set; }
         public virtual ICollection<Clothing> Clothes { get; set; }
     }

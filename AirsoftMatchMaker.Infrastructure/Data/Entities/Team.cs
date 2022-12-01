@@ -10,6 +10,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Entities
             Players = new HashSet<Player>();
             GamesAsTeamRed = new HashSet<Game>();
             GamesAsTeamBlue = new HashSet<Game>();
+            TeamRequests = new HashSet<TeamRequest>();
         }
         [Key]
         public int Id { get; set; }
@@ -18,6 +19,9 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Entities
         public string Name { get; set; } = null!;
         public int Wins { get; set; }
         public int Losses { get; set; }
+
+        public virtual ICollection<TeamRequest> TeamRequests { get; set; }
+
         public virtual ICollection<Player> Players { get; set; } = null!;
 
         [InverseProperty(nameof(Entities.Game.TeamRed))]
