@@ -35,6 +35,7 @@ namespace AirsoftMatchMaker.Web.Areas.Administrator.Controllers
         public async Task<IActionResult> Simulate(int id)
         {
             await gameSimulationService.SimulateGameAsync(id);
+            await gameSimulationService.PayoutBetsByGameIdAsync(id);
             return RedirectToAction(nameof(Details), new { id = id });
         }
     }
