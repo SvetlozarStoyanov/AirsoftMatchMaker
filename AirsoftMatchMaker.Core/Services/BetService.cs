@@ -16,6 +16,24 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
+        public async Task<IEnumerable<BetListModel>> GetUserBetsAsync(string userId)
+        {
+            var bets = await repository.AllReadOnly<Bet>()
+                .Where(b => b.UserId == userId)
+                .Include(b => b.Game)
+                .Select(b => new BetListModel()
+                {
+                    Id = b.Id,
+                    GameName = b.Game.Name,
+                    CreditsBet = b.CreditsBet,
+                    ChosenTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
+                    Odds = b.Odds,
+                    BetStatus = b.BetStatus,
+                })
+                .ToListAsync();
+            return bets;
+        }
+
         public async Task<bool> HasUserAlreadyBetOnGameAsync(string userId, int gameId)
         {
             return await repository.AllReadOnly<Bet>()
@@ -160,7 +178,7 @@ namespace AirsoftMatchMaker.Core.Services
                     WinningTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
                     CreditsBet = b.CreditsBet,
                     Odds = b.Odds,
-                    PotentialProfit = CalculatePotentialProfit(b.Odds, b.CreditsBet),
+                    PotentialProfit = CalculateProfit(b.Odds, b.CreditsBet),
                 })
                 .FirstOrDefaultAsync();
             return bet;
@@ -180,7 +198,7 @@ namespace AirsoftMatchMaker.Core.Services
                     CreditsBet = b.CreditsBet,
                     WinningTeamId = b.WinningTeamId,
                     WinningTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
-                    PotentialProfit = CalculatePotentialProfit(b.Odds, b.CreditsBet),
+                    PotentialProfit = CalculateProfit(b.Odds, b.CreditsBet),
                     Odds = b.Odds
                 })
                 .FirstOrDefaultAsync();
@@ -260,26 +278,9 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<BetListModel>> GetUserBetsAsync(string userId)
-        {
-            var bets = await repository.AllReadOnly<Bet>()
-                .Where(b => b.UserId == userId)
-                .Include(b => b.Game)
-                .Select(b => new BetListModel()
-                {
-                    Id = b.Id,
-                    GameName = b.Game.Name,
-                    CreditsBet = b.CreditsBet,
-                    ChosenTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
-                    Odds = b.Odds,
-                    BetStatus = b.BetStatus,
-                })
-                .ToListAsync();
-            return bets;
-        }
+       
 
-
-        private static decimal CalculatePotentialProfit(int odds, decimal creditsBet)
+        private static decimal CalculateProfit(int odds, decimal creditsBet)
         {
             var profit = creditsBet;
             if (odds < 0)
