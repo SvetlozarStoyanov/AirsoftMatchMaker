@@ -100,6 +100,29 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
+        public async Task PayoutBetsByGameIdAsync(int gameId)
+        {
+            var game = await repository.All<Game>()
+                .Where(g => g.Id == gameId)
+                .Include(g => g.Bets)
+                .ThenInclude(b => b.User)
+                .FirstOrDefaultAsync();
+            if (game == null || game.GameStatus == GameStatus.Upcoming)
+            {
+                throw new ArgumentException("Cannot payout bets on unfinished game!");
+            }
+            var winningTeamId = game.TeamRedPoints > game.TeamBluePoints ? game.TeamRedId : game.TeamRedPoints < game.TeamBluePoints ? game.TeamBlueId : 0;
+            var winningBetters = new List<User>();
+            foreach (var bet in game.Bets)
+            {
+                if (bet.WinningTeamId == winningTeamId)
+                    bet.User.Credits += CalculateBetPayout(bet.Odds, bet.CreditsBet);
+                bet.BetStatus = BetStatus.Finished;
+            }
+            await repository.SaveChangesAsync();
+        }
+
+
         private int CalculateTeamImpactForSimulation(List<Player> players, int wins, int losses, Map map)
         {
             var averageSkillPoints = players.Average(p => p.SkillPoints);
@@ -372,6 +395,18 @@ namespace AirsoftMatchMaker.Core.Services
             game.GameStatus = GameStatus.Finished;
         }
 
-
+        private static decimal CalculateBetPayout(int odds, decimal creditsBet)
+        {
+            var profit = creditsBet;
+            if (odds < 0)
+            {
+                profit += profit * (100 / (decimal)Math.Abs(odds));
+            }
+            else
+            {
+                profit += profit * ((decimal)odds / 100);
+            }
+            return Math.Round(profit, 2);
+        }
     }
 }

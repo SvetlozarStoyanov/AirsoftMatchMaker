@@ -16,5 +16,11 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="gameId"></param>
         /// <returns></returns>
         Task SimulateGameAsync(int gameId);
+
+        /// <summary>
+        /// Pays out the profit to the bettors who correctly predicted the result of the <see cref="Game game"/> with given id.
+        /// </summary>
+        /// <returns></returns>
+        Task PayoutBetsByGameIdAsync(int gameId);
     }
 }
