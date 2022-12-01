@@ -1,0 +1,76 @@
+﻿@model IEnumerable<TeamRequestListModel>
+@if (ViewBag.ViewType == "Index")
+{
+    <h2 class="text-center">Players declined from joining the team</h2>
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Class
+                </th>
+                <th>
+                    Skill Level
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var teamRequest in Model)
+            {
+                <tr>
+                    <td width="30%">
+                        @teamRequest.Player.UserName
+                    </td>
+                    <td width="30%">
+                        @teamRequest.Player.PlayerClassName
+                    </td>
+                    <td width="30%">
+                        @teamRequest.Player.SkillLevel
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (ViewBag.ViewType == "Mine")
+{
+    <h2 class="text-center">Declined requests</h2>
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    Team Name
+                </th>
+
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var teamRequest in Model)
+            {
+                <tr>
+                    <td width="30%">
+                        @teamRequest.TeamName
+                    </td>
+                    <td>
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-area="Player" asp-controller="TeamRequests" asp-action="Delete" asp-route-id="@teamRequest.Id" class="btn btn-danger mx-2">
+                                <i class="bi bi-trash"></i>
+                                Delete request
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

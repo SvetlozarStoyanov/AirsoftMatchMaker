@@ -30,5 +30,8 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             }
             return View(model);
         }
+
+
+
     }
 }

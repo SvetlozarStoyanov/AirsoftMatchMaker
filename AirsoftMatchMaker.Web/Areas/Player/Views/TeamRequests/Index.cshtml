@@ -1,0 +1,19 @@
+﻿@model IEnumerable<TeamRequestListModel>
+<h1 class="text-center">Team Requests</h1>
+@if (ViewBag.PendingRequests.Count > 0)
+{
+    <partial name="_PendingRequests" model="ViewBag.PendingRequests" />
+}
+@if (ViewBag.AcceptedJoinRequests.Count > 0)
+{
+    <partial name="_AcceptedJoinRequests" model="ViewBag.AcceptedJoinRequests" />
+}
+@if (ViewBag.AcceptedLeaveRequests.Count > 0)
+{
+    <partial name="_AcceptedLeaveRequests" model="ViewBag.AcceptedLeaveRequests" />
+}
+@if (ViewBag.DeclinedJoinRequests.Count > 0)
+{
+    <partial name="_DeclinedJoinRequests" model="ViewBag.DeclinedJoinRequests" />
+}
+
