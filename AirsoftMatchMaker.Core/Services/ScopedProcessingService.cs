@@ -9,7 +9,7 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class ScopedProcessingService : IScopedProcessingService
     {
-        private readonly PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+        private PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
         private readonly IGameSimulationService gameSimulationService;
         public ScopedProcessingService(IGameSimulationService gameSimulationService)
         {
@@ -18,15 +18,18 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task DoWork(CancellationToken stoppingToken)
         {
-            while (await timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested)
+            do
             {
                 var gameIds = await gameSimulationService.FindGamesToSimulateAsync(DateTime.Now);
                 foreach (var gameId in gameIds)
                 {
                     await gameSimulationService.SimulateGameAsync(gameId);
-                    Console.WriteLine($"Game with id {gameId} has been simulated!");
+                    await gameSimulationService.PayoutBetsByGameIdAsync(gameId);
+                    Console.WriteLine($"Game with id {gameId} has been simulated and it's bets have been paid out!");
                 }
-            }
+                timer = new PeriodicTimer(TimeSpan.FromMinutes(15));
+            } while (await timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested);
+
         }
     }
 }
