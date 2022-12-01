@@ -25,6 +25,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data
         public DbSet<Matchmaker> Matchmakers { get; set; } = null!;
         //public DbSet<Role> Roles { get; set; } = null!;
         public DbSet<RoleRequest> RoleRequests { get; set; } = null!;
+        public DbSet<TeamRequest> TeamRequests { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -86,6 +87,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data
             builder.ApplyConfiguration(new MapConfiguration());
             builder.ApplyConfiguration(new GameConfiguration());
             builder.ApplyConfiguration(new BetConfiguration());
+            builder.ApplyConfiguration(new TeamRequestConfiguration());
 
             base.OnModelCreating(builder);
         }
