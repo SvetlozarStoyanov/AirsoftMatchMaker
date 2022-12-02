@@ -1,9 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AirsoftMatchMaker.Core.Services
 {
@@ -11,9 +7,11 @@ namespace AirsoftMatchMaker.Core.Services
     {
         private PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
         private readonly IGameSimulationService gameSimulationService;
-        public ScopedProcessingService(IGameSimulationService gameSimulationService)
+        private readonly IBackgroundTeamService backgroundTeamService;
+        public ScopedProcessingService(IGameSimulationService gameSimulationService, IBackgroundTeamService backgroundTeamService)
         {
             this.gameSimulationService = gameSimulationService;
+            this.backgroundTeamService = backgroundTeamService;
         }
 
         public async Task DoWork(CancellationToken stoppingToken)
@@ -27,7 +25,12 @@ namespace AirsoftMatchMaker.Core.Services
                     await gameSimulationService.PayoutBetsByGameIdAsync(gameId);
                     Console.WriteLine($"Game with id {gameId} has been simulated and it's bets have been paid out!");
                 }
-                timer = new PeriodicTimer(TimeSpan.FromMinutes(15));
+                var teamRequestIds = await backgroundTeamService.GetPlayersToAssignOrRemoveFromTeamsTeamRequestIdsAsync();
+                if (teamRequestIds.Any())
+                {
+                    await backgroundTeamService.AssignOrRemovePlayerFromTeamByTeamRequestIdsAsync(teamRequestIds);
+                }
+                timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
             } while (await timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested);
 
         }

@@ -27,15 +27,23 @@ namespace AirsoftMatchMaker.Core.Services
             return teamRequest.PlayerId == playerId;
         }
 
-        public async Task<bool> IsPlayerEligibleToJoinTeamAsync(string userId, int teamId)
+        public async Task<bool> IsTeamRequestValidAsync(string userId, int teamId, TeamRequestType teamRequestType)
         {
             var player = await repository.All<Player>()
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
-            if (player.TeamId != null || await HasOtherTeamHasAlreadyAcceptedPlayer(player.Id))
+            switch (teamRequestType)
             {
-                return false;
+                case TeamRequestType.Join:
+                    if (player.TeamId != null || await HasOtherTeamHasAlreadyAcceptedPlayer(player.Id))
+                        return false;
+                    break;
+                case TeamRequestType.Leave:
+                    if (player.TeamId != teamId)
+                        return false;
+                    break;
             }
+
             return true;
         }
 
@@ -47,6 +55,18 @@ namespace AirsoftMatchMaker.Core.Services
                     .FirstOrDefaultAsync();
             return await repository.AllReadOnly<TeamRequest>()
                 .AnyAsync(tr => tr.PlayerId == playerId && tr.TeamId == teamId);
+        }
+
+        public async Task<bool> CanUserAcceptOrDeclineTeamRequestAsync(string userId, int teamRequestId)
+        {
+            var teamRequest = await repository.AllReadOnly<TeamRequest>()
+                .Where(tr => tr.Id == teamRequestId)
+                .Include(tr => tr.Team)
+                .ThenInclude(t => t.Players)
+                .ThenInclude(p => p.User)
+                .FirstOrDefaultAsync();
+
+            return teamRequest.Team.Players.Any(p => p.User.Id == userId);
         }
 
         public async Task<IEnumerable<TeamRequestListModel>> GetTeamRequestsForTeamByUserIdAsync(string userId)
