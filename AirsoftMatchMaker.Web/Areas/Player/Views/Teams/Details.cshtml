@@ -2,7 +2,7 @@
 @model TeamViewModel
 
 @{
-    ViewBag.Title = "Team Details";
+    ViewBag.Title = "My team";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -29,15 +29,11 @@
                 <h2>Players</h2>
                 @foreach (var player in Model.Players)
                 {
-                        <a class="btn" asp-area="Player" asp-controller="Players" asp-action="Details" asp-route-id="@player.Id">
+                    <a class="btn" asp-area="Player" asp-controller="Players" asp-action="Details" asp-route-id="@player.Id">
 
                         <div class="card" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title">@player.UserName</h5>
-                                @* @if (player.ImageUrl != null)
-                            {
-                            <img class="w-25" src="@player.ImageUrl" />
-                            }*@
                                 <p class="card-text">@player.SkillLevel</p>
                                 <p class="card-text">@player.PlayerClassName</p>
 
@@ -64,5 +60,4 @@
             </div>
         </div>
     </div>
-</div>
 </div>
