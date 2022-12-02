@@ -4,6 +4,8 @@ namespace AirsoftMatchMaker.Core.Contracts
 {
     public interface ITeamService
     {
+        Task<bool> DoesPlayerHaveTeam(string userId);
+
         /// <summary>
         /// Returns all Teams
         /// </summary>
@@ -18,6 +20,6 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<TeamViewModel> GetTeamByIdAsync(int id);
 
 
-        Task JoinTeamAsync(string userId, int teamId);
+        Task<TeamViewModel> GetPlayersTeamAsync(string userId);
     }
 }
