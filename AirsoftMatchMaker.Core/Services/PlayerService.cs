@@ -4,6 +4,7 @@ using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Core.Models.Weapons;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirsoftMatchMaker.Core.Services
@@ -14,6 +15,22 @@ namespace AirsoftMatchMaker.Core.Services
         public PlayerService(IRepository repository)
         {
             this.repository = repository;
+        }
+
+        public async Task<bool> CanUserLeavePlayerRole(string userId)
+        {
+            var player = await repository.AllReadOnly<Player>()
+                .Where(p => p.UserId == userId)
+                .Include(p => p.Team)
+                .ThenInclude(p => p.GamesAsTeamRed)
+                .Include(p => p.Team)
+                .ThenInclude(p => p.GamesAsTeamBlue)
+                .FirstOrDefaultAsync();
+            if (player.Team == null)
+                return true;
+            if (player.Team.GamesAsTeamRed.Any(g => g.GameStatus == GameStatus.Upcoming) || player.Team.GamesAsTeamBlue.Any(g => g.GameStatus == GameStatus.Upcoming))
+                return false;
+            return true;
         }
 
         public async Task GrantPlayerRoleAsync(string userId)
@@ -38,7 +55,7 @@ namespace AirsoftMatchMaker.Core.Services
         {
             var player = await repository.All<Player>()
                 .FirstOrDefaultAsync(p => p.UserId == userId);
-            if (player == null) 
+            if (player == null)
             {
                 return;
             }

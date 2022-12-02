@@ -38,6 +38,11 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
                 TempData.Add("error", "You are not a player!");
                 return RedirectToAction("Index", "RoleRequests");
             }
+            if (!(await playerService.CanUserLeavePlayerRole(User.Id())))
+            {
+                TempData.Add("error", "You cannot leave player role until your next game is completed!");
+                return RedirectToAction("Index", "RoleRequests");
+            }
             await playerService.RemoveFromPlayerRoleAsync(User.Id());
             RoleRequestRouteModel model = new RoleRequestRouteModel()
             {
@@ -46,7 +51,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             };
             return RedirectToAction("LeaveRole", "RoleRequests", model);
         }
-        
+
         public async Task<IActionResult> Index()
         {
             var model = await playerService.GetAllPlayersAsync();

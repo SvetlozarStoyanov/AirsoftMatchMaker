@@ -4,6 +4,8 @@ namespace AirsoftMatchMaker.Core.Contracts
 {
     public interface IPlayerService
     {
+        Task<bool> CanUserLeavePlayerRole(string userId);
+
         /// <summary>
         /// Checks for player with given userId and marks them as active, 
         /// if there is no player with this id it creates a new one and marks them as active.
