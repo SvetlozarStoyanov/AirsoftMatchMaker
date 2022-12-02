@@ -24,8 +24,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IRoleRequestService, RoleRequestService>();
             services.AddScoped<ITeamRequestService, TeamRequestService>();
             services.AddScoped<IGameSimulationService, GameSimulationService>();
-            //services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
-            //services.AddHostedService<RepeatingService>();
+            services.AddScoped<IBackgroundTeamService, BackgroundTeamService>();
+            services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
+            services.AddHostedService<RepeatingService>();
             return services;
         }
     }
