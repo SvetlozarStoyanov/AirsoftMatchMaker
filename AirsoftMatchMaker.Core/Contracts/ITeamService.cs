@@ -4,6 +4,11 @@ namespace AirsoftMatchMaker.Core.Contracts
 {
     public interface ITeamService
     {
+       /// <summary>
+       /// Returns true if player has a team , false otherwise.
+       /// </summary>
+       /// <param name="userId"></param>
+       /// <returns><see cref="bool"/></returns>
         Task<bool> DoesPlayerHaveTeam(string userId);
 
         /// <summary>
