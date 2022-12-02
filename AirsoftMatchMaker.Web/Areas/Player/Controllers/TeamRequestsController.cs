@@ -26,7 +26,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
                 ViewBag.AcceptedLeaveRequests = model.Where(tr => tr.TeamRequestType == TeamRequestType.Leave && tr.TeamRequestStatus == TeamRequestStatus.Accepted).ToList();
                 ViewBag.DeclinedJoinRequests = model.Where(tr => tr.TeamRequestType == TeamRequestType.Join && tr.TeamRequestStatus == TeamRequestStatus.Declined).ToList();
                 ViewBag.ViewType = "Index";
-                return View(model);
+                return View();
             }
             catch (Exception ex)
             {
@@ -38,20 +38,20 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
 
         public async Task<IActionResult> Create(int teamId, string requestType)
         {
+            if (!Enum.TryParse(requestType, out TeamRequestType teamRequestType))
+            {
+                TempData.Add("error", "Invalid team request creation attempt!");
+                return RedirectToAction(nameof(Index));
+            }
             if (await teamRequestService.DoesTeamRequestAlreadyExistAsync(User.Id(), teamId))
             {
                 TempData.Add("error", "This request already exists!");
                 return RedirectToAction("Index", "Teams");
             }
-            if (!await teamRequestService.IsPlayerEligibleToJoinTeamAsync(User.Id(), teamId))
+            if (!(await teamRequestService.IsTeamRequestValidAsync(User.Id(), teamId, teamRequestType)))
             {
-                TempData.Add("error", "Another team has already accepted your request!");
+                TempData.Add("error", "Invalid team request!");
                 return RedirectToAction("Index", "Teams");
-            }
-            if (!Enum.TryParse(requestType, out TeamRequestType teamRequestType))
-            {
-                TempData.Add("error", "Invalid team request creation attempt!");
-                return RedirectToAction(nameof(Index));
             }
             try
             {
@@ -66,16 +66,26 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             return RedirectToAction("Details", "Teams", new { id = teamId });
         }
 
-        public async Task<IActionResult> Accept(int Id)
+        public async Task<IActionResult> Accept(int id)
         {
-            await teamRequestService.AcceptTeamRequestAsync(Id);
+            if (!(await teamRequestService.CanUserAcceptOrDeclineTeamRequestAsync(User.Id(), id)))
+            {
+                TempData.Add("error", "Invalid operation!");
+                return RedirectToAction(nameof(Index));
+            }
+            await teamRequestService.AcceptTeamRequestAsync(id);
             TempData.Add("success", "Join request accepted! Player will join your team as soon as possible!");
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Decline(int Id)
+        public async Task<IActionResult> Decline(int id)
         {
-            await teamRequestService.DeclineTeamRequestAsync(Id);
+            if (!(await teamRequestService.CanUserAcceptOrDeclineTeamRequestAsync(User.Id(), id)))
+            {
+                TempData.Add("error", "Invalid operation!");
+                return RedirectToAction(nameof(Index));
+            }
+            await teamRequestService.DeclineTeamRequestAsync(id);
             TempData.Add("success", "Join request declined!");
             return RedirectToAction(nameof(Index));
         }

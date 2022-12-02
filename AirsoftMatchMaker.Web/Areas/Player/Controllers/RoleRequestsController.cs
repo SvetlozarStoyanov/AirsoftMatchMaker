@@ -56,11 +56,12 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
 
         public async Task<IActionResult> LeaveRole([FromQuery] RoleRequestRouteModel model)
         {
+            
             var user = await userManager.GetUserAsync(User);
             await userManager.RemoveFromRoleAsync(user, model.RoleName);
             TempData.Add("success", $"You are no longer a {model.RoleName}!");
 
-            return RedirectToAction("LogoutAndLogin", "Users",new { area = ""});
+            return RedirectToAction("LogoutAndLogin", "Users", new { area = "" });
         }
 
         public async Task<IActionResult> DeleteRoleRequest(int id)
