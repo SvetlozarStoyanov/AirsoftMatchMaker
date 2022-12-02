@@ -16,7 +16,7 @@ namespace AirsoftMatchMaker.Core.Models.Teams
         public int Wins { get; set; }
         public int Losses { get; set; }
         public int AverageSkillPoints { get; set; }
-        public  ICollection<PlayerMinModel> Players { get; set; } = null!;
+        public ICollection<PlayerMinModel> Players { get; set; } = null!;
 
         public ICollection<GameMinModel> Games { get; set; }
     }

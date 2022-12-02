@@ -19,7 +19,11 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="TeamViewModel"/></returns>
         Task<TeamViewModel> GetTeamByIdAsync(int id);
 
-
+        /// <summary>
+        /// Returns Player's team with given userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<TeamViewModel> GetPlayersTeamAsync(string userId);
     }
 }

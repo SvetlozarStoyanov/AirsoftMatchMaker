@@ -41,7 +41,6 @@ namespace AirsoftMatchMaker.Core.Services
             return teams;
         }
 
-
         public async Task<TeamViewModel> GetTeamByIdAsync(int id)
         {
             var team = await repository.AllReadOnly<Team>()
@@ -85,7 +84,7 @@ namespace AirsoftMatchMaker.Core.Services
             var player = await repository.AllReadOnly<Player>()
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
-
+ 
             var team = await repository.AllReadOnly<Team>()
                 .Where(t => t.Players.Contains(player))
                 .Include(t => t.Players)
