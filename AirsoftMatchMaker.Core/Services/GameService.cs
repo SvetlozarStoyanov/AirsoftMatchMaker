@@ -7,8 +7,6 @@ using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Runtime.CompilerServices;
 
 namespace AirsoftMatchMaker.Core.Services
 {
@@ -106,7 +104,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<GameSelectDateModel> GetNextSevenAvailableDatesAsync()
         {
-            DateTime dateTime = DateTime.Today.AddHours(12);
+            DateTime dateTime = DateTime.Today.AddHours(36);
             HashSet<DateTime> availableDates = new HashSet<DateTime>();
 
             var maps = await repository.AllReadOnly<Map>()
@@ -115,16 +113,20 @@ namespace AirsoftMatchMaker.Core.Services
                  .ToListAsync();
 
             var teams = await repository.AllReadOnly<Team>()
-                .Where(t => t.Players.Count > 0)
+                .Where(t => t.Players.Count > 0 && t.Players.Any(p => p.Weapons.Count > 0) && t.GamesAsTeamRed.All(g => g.GameStatus != GameStatus.Upcoming) && t.GamesAsTeamBlue.All(g => g.GameStatus != GameStatus.Upcoming))
                 .Include(t => t.Players)
                 .Include(t => t.GamesAsTeamRed)
                 .Include(t => t.GamesAsTeamBlue)
                 .ToListAsync();
+            int teamsCount = teams.Count;
+            if (teams.Count < 2)
+            {
+                return null;
+            }
             int i = 0;
             while (availableDates.Count < 7 && i < 30)
             {
                 int mapCount = maps.Count;
-                int teamsCount = teams.Count;
                 foreach (var map in maps)
                 {
                     if (map.Games.Any(g => g.Date.Date == dateTime.Date))
@@ -133,16 +135,14 @@ namespace AirsoftMatchMaker.Core.Services
                     }
                     //mapCount -= map.Games.Count(g => g.Date.Day == dateTime.Date.Day);
                 }
-                foreach (var team in teams)
-                {
-                    if (team.GamesAsTeamRed.Any(g => g.GameStatus == GameStatus.Upcoming) || team.GamesAsTeamBlue.Any(g => g.GameStatus == GameStatus.Upcoming))
-                    {
-                        teamsCount--;
-                    }
-                    //teamsCount -= team.GamesAsTeamRed.Count(g => g.Date.Day == dateTime.Date.Day);
-                    //teamsCount -= team.GamesAsTeamBlue.Count(g => g.Date.Day == dateTime.Date.Day);
-                }
-                if (teamsCount > 1 && mapCount > 0)
+                //foreach (var team in teams)
+                //{
+                //    if (team.GamesAsTeamRed.Any(g => g.GameStatus == GameStatus.Upcoming) || team.GamesAsTeamBlue.Any(g => g.GameStatus == GameStatus.Upcoming))
+                //    {
+                //        teamsCount--;
+                //    }
+                //}
+                if (/*teamsCount > 1 &&*/ mapCount > 0)
                 {
                     availableDates.Add(dateTime);
                 }
@@ -177,17 +177,17 @@ namespace AirsoftMatchMaker.Core.Services
             maps = maps.Where(m => m.Games.Count == 0).ToList();
 
             var teams = await repository.AllReadOnly<Team>()
-                .Where(t => t.Players.Count > 0)
+                .Where(t => t.Players.Count > 0 && t.Players.Any(p => p.Weapons.Count > 0) && t.GamesAsTeamRed.All(g => g.GameStatus != GameStatus.Upcoming) && t.GamesAsTeamBlue.All(g => g.GameStatus != GameStatus.Upcoming))
                 .Include(t => t.Players)
                 .Include(t => t.GamesAsTeamRed)
                 .Include(t => t.GamesAsTeamBlue)
                 .ToListAsync();
-            foreach (var team in teams)
-            {
-                team.GamesAsTeamRed = team.GamesAsTeamRed.Where(g => g.GameStatus == GameStatus.Upcoming).ToList();
-                team.GamesAsTeamBlue = team.GamesAsTeamBlue.Where(g => g.GameStatus == GameStatus.Upcoming).ToList();
-            }
-            teams = teams.Where(t => t.GamesAsTeamRed.Count == 0 && t.GamesAsTeamBlue.Count == 0).ToList();
+            //foreach (var team in teams)
+            //{
+            //    team.GamesAsTeamRed = team.GamesAsTeamRed.Where(g => g.GameStatus == GameStatus.Upcoming).ToList();
+            //    team.GamesAsTeamBlue = team.GamesAsTeamBlue.Where(g => g.GameStatus == GameStatus.Upcoming).ToList();
+            //}
+            //teams = teams.Where(t => t.GamesAsTeamRed.Count == 0 && t.GamesAsTeamBlue.Count == 0).ToList();
             GameCreateModel model = new GameCreateModel()
             {
                 DateString = dateTimeString,
@@ -214,7 +214,7 @@ namespace AirsoftMatchMaker.Core.Services
 
             var teamRed = await repository.All<Team>()
                 .Where(t => t.Id == model.TeamRedId)
-                .Include(t => t.Players.Where(p => p.IsActive))
+                .Include(t => t.Players.Where(p => p.IsActive && p.Weapons.Any()))
                 .ThenInclude(t => t.Weapons)
                 .Include(t => t.GamesAsTeamRed)
                 .Include(t => t.GamesAsTeamBlue)
@@ -222,7 +222,7 @@ namespace AirsoftMatchMaker.Core.Services
 
             var teamBlue = await repository.All<Team>()
               .Where(t => t.Id == model.TeamBlueId)
-              .Include(t => t.Players.Where(p => p.IsActive))
+              .Include(t => t.Players.Where(p => p.IsActive && p.Weapons.Any()))
               .ThenInclude(t => t.Weapons)
               .Include(t => t.GamesAsTeamRed)
               .Include(t => t.GamesAsTeamBlue)
@@ -268,7 +268,6 @@ namespace AirsoftMatchMaker.Core.Services
                 TeamBlueOdds = odds.teamBlueOdds
             };
             matchmaker.OrganisedGames.Add(game);
-            //await repository.AddAsync<Game>(game);
             await repository.SaveChangesAsync();
         }
 
