@@ -42,5 +42,11 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns></returns>
         Task CreateGameAsync(string matchmakerUserId, GameCreateModel model);
 
+
+        /// <summary>
+        /// Returns games that will take place today.
+        /// </summary>
+        /// <returns><see cref="IEnumerable<<see cref="GamePartialModel"/>>"/></returns>
+        Task<IEnumerable<GamePartialModel>> GetUpcomingGamesByDateAsync(DateTime dateTime);
     }
 }
