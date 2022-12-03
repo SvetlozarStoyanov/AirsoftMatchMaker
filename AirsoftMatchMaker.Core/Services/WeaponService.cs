@@ -99,35 +99,6 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
-        public WeaponCreateModel CreateWeaponCreateModelByWeaponType(WeaponType weaponType)
-        {
-            WeaponCreateModel model = new WeaponCreateModel();
-            switch (weaponType)
-            {
-                case WeaponType.Pistol:
-                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
-                    break;
-
-                case WeaponType.Shotgun:
-                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
-                    break;
-                case WeaponType.SubmachineGun:
-                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
-                    break;
-                case WeaponType.AssaultRifle:
-                    model.PreferedEngagementDistance = PreferedEngagementDistance.Medium;
-                    break;
-                case WeaponType.SniperRifle:
-                    model.PreferedEngagementDistance = PreferedEngagementDistance.Long;
-                    break;
-                default:
-                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
-                    model.PreferedEngagementDistances = Enum.GetValues<PreferedEngagementDistance>();
-                    break;
-            }
-            return model;
-        }
-
         public async Task CreateWeaponAsync(string vendorUserId, WeaponCreateModel model)
         {
             var vendor = await repository.All<Vendor>()
@@ -156,7 +127,34 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
-       
+        public WeaponCreateModel CreateWeaponCreateModelByWeaponType(WeaponType weaponType)
+        {
+            WeaponCreateModel model = new WeaponCreateModel();
+            switch (weaponType)
+            {
+                case WeaponType.Pistol:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    break;
+
+                case WeaponType.Shotgun:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    break;
+                case WeaponType.SubmachineGun:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    break;
+                case WeaponType.AssaultRifle:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Medium;
+                    break;
+                case WeaponType.SniperRifle:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Long;
+                    break;
+                default:
+                    model.PreferedEngagementDistance = PreferedEngagementDistance.Short;
+                    model.PreferedEngagementDistances = Enum.GetValues<PreferedEngagementDistance>();
+                    break;
+            }
+            return model;
+        }
 
         public IEnumerable<string> ValidateWeaponParameters(WeaponCreateModel model)
         {

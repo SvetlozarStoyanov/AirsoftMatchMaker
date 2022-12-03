@@ -1,5 +1,4 @@
-﻿using AirsoftMatchMaker.Core.Contracts;
-using AirsoftMatchMaker.Web.Models;
+﻿using AirsoftMatchMaker.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,17 +7,15 @@ namespace AirsoftMatchMaker.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IGameService gameService;
-        public HomeController(ILogger<HomeController> logger, IGameService gameService)
+
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            this.gameService = gameService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var model = await gameService.GetUpcomingGamesByDateAsync(DateTime.Now);
-            return View(model);
+            return View();
         }
 
         public IActionResult Privacy()
