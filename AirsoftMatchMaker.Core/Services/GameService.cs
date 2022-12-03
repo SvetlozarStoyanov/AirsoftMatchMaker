@@ -326,36 +326,6 @@ namespace AirsoftMatchMaker.Core.Services
             return odds;
         }
 
-        public async Task<IEnumerable<GamePartialModel>> GetUpcomingGamesByDateAsync(DateTime dateTime)
-        {
-            var games = await repository.AllReadOnly<Game>()
-               //.Where(g => g.Date.Day == dateTime.Day /*&& g.GameStatus != GameStatus.Finished*/)
-               .Include(g => g.TeamRed)
-               .Include(g => g.TeamBlue)
-               .Include(g => g.Matchmaker)
-               .ThenInclude(mm => mm.User)
-               .Include(g => g.Map)
-               .Select(g => new GamePartialModel()
-               {
-                   Id = g.Id,
-                   Name = g.Name,
-                   GameStatus = g.GameStatus,
-                   Date = g.Date,
-                   GameModeName = g.GameMode.Name,
-                   MapId = g.MapId,
-                   MapName = g.Map.Name,
-                   MapImageUrl = g.Map.ImageUrl,
-                   TerrainType = g.Map.Terrain,
-                   TeamRedId = g.TeamRedId,
-                   TeamRedName = g.TeamRed.Name,
-                   TeamRedOdds = g.TeamRedOdds,
-                   TeamBlueId = g.TeamBlueId,
-                   TeamBlueName = g.TeamBlue.Name,
-                   TeamBlueOdds = g.TeamBlueOdds
-               })
-               .ToListAsync();
-            return games;
 
-        }
     }
 }
