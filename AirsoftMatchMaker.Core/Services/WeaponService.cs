@@ -99,34 +99,6 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
-        public async Task CreateWeaponAsync(string vendorUserId, WeaponCreateModel model)
-        {
-            var vendor = await repository.All<Vendor>()
-                .Where(v => v.UserId == vendorUserId && v.IsActive)
-                .Include(v => v.User)
-                .Include(v => v.Weapons)
-                .FirstOrDefaultAsync();
-            if (vendor == null)
-            {
-                return;
-            }
-            var weapon = new Weapon()
-            {
-                Name = model.Name,
-                Description = model.Description,
-                ImageUrl = model.ImageUrl,
-                FeetPerSecond = model.FeetPerSecond,
-                FireRate = model.FireRate,
-                Price = model.Price,
-                WeaponType = model.WeaponType,
-                PreferedEngagementDistance = model.PreferedEngagementDistance,
-                AverageAmmoExpendedPerGame = model.AverageAmmoExpendedPerGame,
-            };
-            vendor.User.Credits -= model.FinalImportPrice;
-            vendor.Weapons.Add(weapon);
-            await repository.SaveChangesAsync();
-        }
-
         public WeaponCreateModel CreateWeaponCreateModelByWeaponType(WeaponType weaponType)
         {
             WeaponCreateModel model = new WeaponCreateModel();
@@ -155,6 +127,36 @@ namespace AirsoftMatchMaker.Core.Services
             }
             return model;
         }
+
+        public async Task CreateWeaponAsync(string vendorUserId, WeaponCreateModel model)
+        {
+            var vendor = await repository.All<Vendor>()
+                .Where(v => v.UserId == vendorUserId && v.IsActive)
+                .Include(v => v.User)
+                .Include(v => v.Weapons)
+                .FirstOrDefaultAsync();
+            if (vendor == null)
+            {
+                return;
+            }
+            var weapon = new Weapon()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                ImageUrl = model.ImageUrl,
+                FeetPerSecond = model.FeetPerSecond,
+                FireRate = model.FireRate,
+                Price = model.Price,
+                WeaponType = model.WeaponType,
+                PreferedEngagementDistance = model.PreferedEngagementDistance,
+                AverageAmmoExpendedPerGame = model.AverageAmmoExpendedPerGame,
+            };
+            vendor.User.Credits -= model.FinalImportPrice;
+            vendor.Weapons.Add(weapon);
+            await repository.SaveChangesAsync();
+        }
+
+       
 
         public IEnumerable<string> ValidateWeaponParameters(WeaponCreateModel model)
         {
