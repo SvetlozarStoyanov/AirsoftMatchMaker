@@ -156,7 +156,7 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
-       
+
 
         public IEnumerable<string> ValidateWeaponParameters(WeaponCreateModel model)
         {
