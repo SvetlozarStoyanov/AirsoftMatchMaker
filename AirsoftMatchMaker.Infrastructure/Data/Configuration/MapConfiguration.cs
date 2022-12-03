@@ -2,11 +2,6 @@
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
 {
@@ -23,9 +18,9 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 new Map
                 {
                     Id = 1,
-                    Name = "Bjorn Forest",
+                    Name = "Forest",
                     Description = "Large forest map in Norway",
-                    ImageUrl = null,
+                    ImageUrl = "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
                     Terrain = TerrainType.Forest,
                     AverageEngagementDistance = AverageEngagementDistance.Medium,
                     Mapsize = Mapsize.Large,
@@ -36,7 +31,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     Id = 2,
                     Name = "Clear Field",
                     Description = "Small Field in California",
-                    ImageUrl = null,
+                    ImageUrl = "https://www.arboursabroad.com/westflanders_be_110318-56/",
                     Terrain = TerrainType.Field,
                     AverageEngagementDistance = AverageEngagementDistance.Short,
                     Mapsize = Mapsize.Small,
@@ -47,14 +42,13 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     Id = 3,
                     Name = "Snow Villa",
                     Description = "Extra Large snowy map in Russia",
-                    ImageUrl = null,
+                    ImageUrl = "https://www.rukavillas.com/wp-content/uploads/2020/01/snowpalace-outside-800.jpg",
                     Terrain = TerrainType.Snowy,
                     AverageEngagementDistance = AverageEngagementDistance.Long,
                     Mapsize = Mapsize.ExtraLarge,
                     GameModeId = 2
                 }
             };
-
             return maps;
         }
     }
