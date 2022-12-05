@@ -1,0 +1,44 @@
+﻿@model InventoryPlayerIndexModel
+<div class="text-center mb-3">
+    <a class="btn btn-primary" asp-area="Vendor" asp-controller="Inventory" asp-action="Index">My vendor items</a>
+</div>
+<h2 class="text-center">Items</h2>
+<div class="container">
+    <h3>
+        @Model.Ammo ammo left.
+    </h3>
+    <hr style="height:8px;border:16px thick;color:white" />
+    <div>
+        @if (Model.Clothes.Count() > 0)
+        {
+            <h3 class="text-center">Clothes</h3>
+            <div class="row">
+                @foreach (var clothing in Model.Clothes)
+                {
+                    <partial name="_ClothingPlayerPartial" model="clothing" />
+                }
+            </div>
+        }
+        else
+        {
+            <h3 class="text-center">No clothes!</h3>
+        }
+    </div>
+      <hr style="height:8px;border:16px thick;color:white" />
+    <div>
+        @if (Model.Weapons.Count() > 0)
+        {
+            <h3 class="text-center">Weapons</h3>
+            <div class="row">
+                @foreach (var weapon in Model.Weapons)
+                {
+                    <partial name="_WeaponPlayerPartial" model="weapon" />
+                }
+            </div>
+        }
+        else
+        {
+            <h3 class="text-center">No weapons!</h3>
+        }
+    </div>
+</div>

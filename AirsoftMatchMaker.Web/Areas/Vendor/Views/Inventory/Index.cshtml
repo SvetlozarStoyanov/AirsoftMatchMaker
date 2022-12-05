@@ -1,0 +1,48 @@
+﻿@model InventoryVendorIndexModel
+<div class="text-center">
+    <a class="btn btn-primary" asp-area="Vendor" asp-controller="Inventory" asp-action="PlayerItems">My player items</a>
+</div>
+
+<h2 class="text-center">Items</h2>
+<hr style="height:8px;border:16px thick;color:white" />
+<div class="container">
+    <div>
+        @if (Model.AmmoBoxes.Count() > 0)
+        {
+            <h3 class="text-center">Ammo boxes</h3>
+            <div class="row">
+                @foreach (var ammoBox in Model.AmmoBoxes)
+                {
+                    <partial name="_AmmoBoxPartial" model="ammoBox" />
+                }
+            </div>
+        }
+    </div>
+    <hr style="height:8px;border:16px thick;color:white" />
+    <div>
+        @if (Model.Clothes.Count() > 0)
+        {
+            <h3 class="text-center">Clothes</h3>
+
+            <div class="row">
+                @foreach (var clothing in Model.Clothes)
+                {
+                    <partial name="_ClothingPartial" model="clothing" />
+                }
+            </div>
+        }
+    </div>
+    <hr style="height:8px;border:16px thick;color:white" />
+    <div>
+        @if (Model.Weapons.Count() > 0)
+        {
+            <h3 class="text-center">Weapons</h3>
+            <div class="row">
+                @foreach (var weapon in Model.Weapons)
+                {
+                    <partial name="_WeaponPartial" model="weapon" />
+                }
+            </div>
+        }
+    </div>
+</div>
