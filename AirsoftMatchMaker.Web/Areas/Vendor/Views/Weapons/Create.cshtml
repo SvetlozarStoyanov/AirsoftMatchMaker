@@ -24,22 +24,25 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="FeetPerSecond">FPS (Feet per second)</label>
-                    <input asp-for="FeetPerSecond" class="form-control">
+                    <label>Range [@Model.MinFeetPerSecond : @Model.MaxFeetPerSecond}]</label>
+                    <input class="form-control" type="text" data-val="true" data-val-number="Fps must be a number." data-val-range="Feet per second must be within given range!" data-val-range-max="@Model.MaxFeetPerSecond" data-val-range-min="@Model.MinFeetPerSecond" data-val-required="FPS is required." id="FeetPerSecond" name="FeetPerSecond" value="@Model.FeetPerSecond">
                     <span asp-validation-for="FeetPerSecond" class="small text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="FireRate">Fire Rate</label>
-                    <input asp-for="FireRate" class="form-control">
+                    <label>Range [@Model.MinFireRate : @Model.MaxFireRate}]</label>
+                    <input class="form-control input-validation-error" type="text" data-val="true" data-val-number="Fire rate must be a number." data-val-range="Fire rate must be within given range!" data-val-range-max="@Model.MaxFireRate" data-val-range-min="@Model.MinFireRate" data-val-required="The FireRate field is required." id="FireRate" name="FireRate" value="@Model.FireRate" aria-describedby="FireRate-error">
                     <span asp-validation-for="FireRate" class="small text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="AverageAmmoExpendedPerGame">Average ammo used per game</label>
-                    <input asp-for="AverageAmmoExpendedPerGame" class="form-control">
+                    <label>Range [@Model.MinAverageAmmoExpended : @Model.MaxAverageAmmoExpended}]</label>
+                    <input class="form-control input-validation-error" type="number" data-val="true" data-val-range="Average ammo expended must be within given range!" data-val-range-max="@Model.MaxAverageAmmoExpended" data-val-range-min="@Model.MinAverageAmmoExpended" data-val-required="The AverageAmmoExpendedPerGame field is required." id="AverageAmmoExpendedPerGame" name="AverageAmmoExpendedPerGame" value="@Model.AverageAmmoExpendedPerGame" aria-describedby="AverageAmmoExpendedPerGame-error">
                     <span asp-validation-for="AverageAmmoExpendedPerGame" class="small text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="WeaponType">Weapon Type</label>
-                    <input asp-for="WeaponType" class="form-control" disabled>
+                    <input value="@string.Join(" ", Regex.Matches(Model.WeaponType.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())" class="form-control" disabled>
                     <input asp-for="WeaponType" class="form-control" hidden>
                     <span asp-validation-for="WeaponType" class="small text-danger"></span>
                 </div>
