@@ -42,32 +42,34 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Player()
                 {
-                    Id = i ++,
+                    Id = i++,
                     Ammo = 200,
                     UserId = "b2451308-1197-4362-be78-f7ea7ca35fe9",
                     TeamId = 2,
                     PlayerClassId = 7
                 },
+                //Seeded for team request demo
                 new Player()
                 {
-                    Id = i ++,
+                    Id = i++,
                     Ammo = 450,
                     UserId = "f3534aed-259b-4ff7-b816-15e8207e084a",
-                    TeamId = 1,
+                    TeamId = null,
                     PlayerClassId = 1
                 },
+                //Seeded for team request demo
                 new Player()
                 {
-                    Id = i ++,
+                    Id = i++,
                     Ammo = 450,
                     UserId = "f580c1f9-d41f-455e-b4ec-705b834e4b19",
-                    TeamId = 2,
+                    TeamId = null,
                     PlayerClassId = 4
                 },
 
                 new Player()
                 {
-                    Id = i ++,
+                    Id = i++,
                     Ammo = 450,
                     UserId = "14677dd9-7de7-41c0-9418-e43ddcf64859",
                     TeamId = 3,
@@ -137,7 +139,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     TeamId = 4,
                     PlayerClassId = 1
                 },
-               
+
 
             };
             return players;
