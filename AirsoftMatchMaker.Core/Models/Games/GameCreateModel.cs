@@ -17,7 +17,7 @@ namespace AirsoftMatchMaker.Core.Models.Games
         public int MapId { get; set; }
         public ICollection<MapSelectModel> Maps { get; set; } = null!;
         public int TeamRedId { get; set; }
-        //[Compare(nameof(TeamRedId), ErrorMessage = "Cannot put the same team twice")]
+        [NotEqual(nameof(TeamRedId), ErrorMessage = "Teams cannot be the same team")]
         public int TeamBlueId { get; set; }
         public ICollection<TeamSelectModel> Teams { get; set; } = null!;
     }
