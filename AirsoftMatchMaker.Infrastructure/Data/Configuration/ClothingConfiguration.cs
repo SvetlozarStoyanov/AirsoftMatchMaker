@@ -14,36 +14,36 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
         }
         private List<Clothing> CreateClothes()
         {
-            for (int i = 1; i <= 6; i++)
+            for (int i = 1; i <= 15; i++)
             {
                 playerIds.Add(i);
             }
 
+            int index = 1;
             List<Clothing> clothes = new List<Clothing>() {
                 new Clothing()
                 {
-                    Id = 1,
+                    Id = index++,
                     Name = "Green outfit",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
                     ClothingColor = ClothingColor.Green,
                     Price = 50,
                     PlayerId = AddPlayerIdToWeapon()
-
                 },
                 new Clothing()
                 {
-                    Id = 2,
+                    Id = index++,
                     Name = "Green outfit",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
                     ClothingColor = ClothingColor.Green,
                     Price = 50,
-                    VendorId = 1
+                    PlayerId = AddPlayerIdToWeapon(),
                 },
                 new Clothing()
                 {
-                    Id = 3,
+                    Id = index++,
                     Name = "Green outfit",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
@@ -54,7 +54,50 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 4,
+                    Id = index++,
+                    Name = "Green outfit",
+                    Description = "Hard to spot in forest.",
+                    ImageUrl = null,
+                    ClothingColor = ClothingColor.Green,
+                    Price = 50,
+                    PlayerId = AddPlayerIdToWeapon(),
+                },
+                new Clothing()
+                {
+                    Id = index++,
+                    Name = "Green outfit",
+                    Description = "Hard to spot in forest.",
+                    ImageUrl = null,
+                    ClothingColor = ClothingColor.Green,
+                    Price = 50,
+                    PlayerId = AddPlayerIdToWeapon(),
+
+                },
+                new Clothing()
+                {
+                    Id = index++,
+                    Name = "Green outfit",
+                    Description = "Hard to spot in forest.",
+                    ImageUrl = null,
+                    ClothingColor = ClothingColor.Green,
+                    Price = 50,
+                    PlayerId = AddPlayerIdToWeapon(),
+
+                },
+                new Clothing()
+                {
+                    Id = index++,
+                    Name = "Green outfit",
+                    Description = "Hard to spot in forest.",
+                    ImageUrl = null,
+                    ClothingColor = ClothingColor.Green,
+                    Price = 50,
+                    PlayerId = AddPlayerIdToWeapon(),
+
+                },
+                new Clothing()
+                {
+                    Id = index++,
                     Name = "Green Ghillie Suit",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
@@ -64,47 +107,47 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 5,
+                    Id = index++,
                     Name = "Green Ghillie Suit",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
                     ClothingColor = ClothingColor.Green,
                     Price = 80,
-                    VendorId = 1
+                    PlayerId = AddPlayerIdToWeapon(),
                 },
                 new Clothing()
                 {
-                    Id = 6,
+                    Id = index++,
                     Name = "Green Army camouflage",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
                     ClothingColor = ClothingColor.Green,
                     Price = 60,
-                    VendorId = 1,
+                    PlayerId = AddPlayerIdToWeapon(),
                 },
                 new Clothing()
                 {
-                    Id = 7,
+                    Id = index++,
                     Name = "Green Army camouflage",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
                     ClothingColor = ClothingColor.Green,
                     Price = 60,
-                    VendorId = 1
+                    PlayerId = AddPlayerIdToWeapon(),
                 },
                 new Clothing()
                 {
-                    Id = 8,
+                    Id = index++,
                     Name = "Urban outfit",
                     Description = "Hard to spot in urban enviroment.",
                     ImageUrl = null,
                     ClothingColor = ClothingColor.Gray,
                     Price = 40,
-                    VendorId = 1
+                    PlayerId = AddPlayerIdToWeapon(),
                 },
                 new Clothing()
                 {
-                    Id = 9,
+                    Id = index++,
                     Name = "Urban outfit",
                     Description = "Hard to spot in urban enviroment.",
                     ImageUrl = null,
@@ -114,27 +157,27 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 10,
+                    Id = index++,
                     Name = "Urban outfit",
                     Description = "Hard to spot in urban enviroment.",
                     ImageUrl = null,
                     ClothingColor = ClothingColor.Gray,
                     Price = 40,
-                    VendorId = 1
+                    PlayerId = AddPlayerIdToWeapon(),
                 },
                  new Clothing()
                 {
-                    Id = 11,
+                    Id = index++,
                     Name = "Urban outfit",
                     Description = "Hard to spot in urban enviroment.",
                     ImageUrl = null,
                     ClothingColor = ClothingColor.Gray,
                     Price = 40,
-                    VendorId = 1
+                    PlayerId = AddPlayerIdToWeapon(),
                 },
                 new Clothing()
                 {
-                    Id = 12,
+                    Id = index++,
                     Name = "Gray tracksuit",
                     Description = "Hard to spot in urban enviroment.",
                     ImageUrl = null,
@@ -144,17 +187,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 13,
-                    Name = "Brown Army outfit ",
-                    Description = "Hard to spot in field.",
-                    ImageUrl = null,
-                    ClothingColor = ClothingColor.Brown,
-                    Price = 30,
-                    PlayerId = AddPlayerIdToWeapon()
-                },
-                new Clothing()
-                {
-                    Id = 14,
+                    Id = index++,
                     Name = "Brown Army outfit ",
                     Description = "Hard to spot in field.",
                     ImageUrl = null,
@@ -164,7 +197,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 15,
+                    Id = index++,
                     Name = "Brown Army outfit ",
                     Description = "Hard to spot in field.",
                     ImageUrl = null,
@@ -174,7 +207,17 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 16,
+                    Id = index++,
+                    Name = "Brown Army outfit ",
+                    Description = "Hard to spot in field.",
+                    ImageUrl = null,
+                    ClothingColor = ClothingColor.Brown,
+                    Price = 30,
+                    VendorId = 1
+                },
+                new Clothing()
+                {
+                    Id = index++,
                     Name = "Brown Ghillie suit",
                     Description = "Hard to spot in field.",
                     ImageUrl = null,
@@ -184,7 +227,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 17,
+                    Id = index++,
                     Name = "Brown Ghillie suit",
                     Description = "Hard to spot in field.",
                     ImageUrl = null,
@@ -194,17 +237,17 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 18,
+                    Id = index++,
                     Name = "Brown Ghillie suit",
                     Description = "Hard to spot in field.",
                     ImageUrl = null,
                     ClothingColor = ClothingColor.Brown,
                     Price = 45,
-                    PlayerId = AddPlayerIdToWeapon()
+                    VendorId = 1
                 },
                 new Clothing()
                 {
-                    Id = 19,
+                    Id = index++,
                     Name = "White outfit",
                     Description = "Hard to spot in snow.",
                     ImageUrl = null,
@@ -214,7 +257,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 20,
+                    Id = index++,
                     Name = "White outfit",
                     Description = "Hard to spot in snow.",
                     ImageUrl = null,
@@ -224,7 +267,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 21,
+                    Id = index++,
                     Name = "White Ghillie suit",
                     Description = "Hard to spot in snow.",
                     ImageUrl = null,
@@ -234,7 +277,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 22,
+                    Id = index++,
                     Name = "White Ghillie suit",
                     Description = "Hard to spot in snow.",
                     ImageUrl = null,
@@ -244,12 +287,22 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 },
                 new Clothing()
                 {
-                    Id = 23,
+                    Id = index++,
                     Name = "White Ghillie suit",
                     Description = "Hard to spot in snow.",
                     ImageUrl = null,
                     ClothingColor = ClothingColor.White,
                     Price = 55,
+                    VendorId = 1
+                },
+                new Clothing()
+                {
+                    Id = index++,
+                    Name = "Green Ghillie Suit",
+                    Description = "Hard to spot in forest.",
+                    ImageUrl = null,
+                    ClothingColor = ClothingColor.Green,
+                    Price = 80,
                     VendorId = 1
                 },
             };
