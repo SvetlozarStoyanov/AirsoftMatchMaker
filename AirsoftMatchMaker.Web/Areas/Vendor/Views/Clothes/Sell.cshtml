@@ -1,0 +1,51 @@
+﻿@model ClothingSellModel
+
+<h2 class="text-center">Sell Clothing</h2>
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form asp-area="Vendor" asp-controller="Clothes" asp-action="Sell" method="post">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageUrl">Image Url*</label>
+                <input asp-for="ImageUrl" class="form-control">
+                <span asp-validation-for="ImageUrl" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price"></label>
+                @*<input asp-for="Price" class="form-control">*@
+                <input class="form-control" type="text" data-val="true" data-val-number="The field Price must be a number." data-val-range="Price cannot be greater than  the original price!" data-val-range-max="@Model.OldPrice" data-val-range-min="1" data-val-required="The Price field is required." id="Price" name="Price">
+                <span asp-validation-for="Price" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClothingColor">Color</label>
+                <input asp-for="ClothingColor" class="form-control" disabled />
+                <input asp-for="ClothingColor" class="form-control" hidden />
+                <span asp-validation-for="ClothingColor" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OldPrice">Import Price</label>
+                <input asp-for="OldPrice" class="form-control" disabled>
+                <input asp-for="OldPrice" class="form-control" hidden>
+                <span asp-validation-for="OldPrice" class="small text-danger"></span>
+            </div>
+            <div class="text-center">
+                <input class="btn btn-success mb-3 mt-3" type="submit" value="Sell" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

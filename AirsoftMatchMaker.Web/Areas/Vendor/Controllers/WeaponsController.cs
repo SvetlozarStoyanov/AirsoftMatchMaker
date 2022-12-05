@@ -38,22 +38,33 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Buy(int id)
+        public async Task<IActionResult> Sell(int id)
         {
-            var model = await weaponService.GetWeaponByIdAsync(id);
-            if (model == null)
+            if (!(await weaponService.WeaponExistsAsync(id)))
             {
-                TempData.Add("error", "There is no weapon with that id!");
-                return RedirectToAction(nameof(Index));
+                TempData["error"] = $"Weapon with {id} does not exist!";
+                return RedirectToAction("PlayerItems", "Inventory");
             }
+            if (!(await weaponService.UserCanSellWeaponAsync(User.Id(), id)))
+            {
+                TempData["error"] = $"You cannot sell that weapon!";
+                return RedirectToAction("PlayerItems", "Inventory");
+            }
+            var model = await weaponService.CreateWeaponSellModelAsync(id);
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Buy(int weaponid, int vendorId)
+        public async Task<IActionResult> Sell(WeaponSellModel model)
         {
-            await weaponService.BuyWeaponAsync(User.Id(), vendorId, weaponid);
-            return RedirectToAction(nameof(Index));
+            if (!ModelState.IsValid)
+            {
+                model = await weaponService.CreateWeaponSellModelAsync(model.Id);
+                return View(model);
+            }
+            await weaponService.SellWeaponAsync(User.Id(), model);
+            return RedirectToAction("PlayerItems", "Inventory");
+
         }
 
         [HttpGet]
@@ -79,18 +90,14 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(WeaponCreateModel model)
         {
-            if (!ModelState.IsValid || !await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice))
+            if (!ModelState.IsValid)
             {
                 model = weaponService.CreateWeaponCreateModelByWeaponType(model.WeaponType);
                 return View(model);
             }
-            var errors = weaponService.ValidateWeaponParameters(model);
-            if (errors.Count() > 0)
+            if (!(await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice)))
             {
-                foreach (var error in errors)
-                {
-                    ModelState.AddModelError(string.Empty, error);
-                }
+                TempData["error"] = "You do not have enough credits to import this weapon!";
                 model = weaponService.CreateWeaponCreateModelByWeaponType(model.WeaponType);
                 return View(model);
             }
