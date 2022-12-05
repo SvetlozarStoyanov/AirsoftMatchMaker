@@ -23,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IRoleRequestService, RoleRequestService>();
             services.AddScoped<ITeamRequestService, TeamRequestService>();
+            services.AddScoped<IInventoryService, InventoryService>();
             services.AddScoped<IGameSimulationService, GameSimulationService>();
             services.AddScoped<IBackgroundTeamService, BackgroundTeamService>();
             services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
