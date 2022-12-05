@@ -75,8 +75,7 @@ namespace AirsoftMatchMaker.Core.Services
                     UserName = p.User.UserName,
                     SkillLevel = p.SkillLevel,
                     TeamName = p.TeamId != null ? p.Team.Name : "none",
-                    WeaponsCount = p.Weapons.Count(),
-                    PlayerStatus = p.PlayerStatus
+                    WeaponsCount = p.Weapons.Count()
                 })
                 .OrderByDescending(p => p.SkillLevel)
                 .ThenBy(p => p.UserName)
@@ -99,7 +98,6 @@ namespace AirsoftMatchMaker.Core.Services
                     SkillLevel = p.SkillLevel,
                     TeamId = p.TeamId.Value,
                     TeamName = p.TeamId != null ? p.Team.Name : "none",
-                    PlayerStatus = p.PlayerStatus,
                     PlayerClassName = p.PlayerClass.Name,
                     Clothes = p.Clothes.Select(c => new ClothingMinModel()
                     {

@@ -18,8 +18,6 @@ namespace AirsoftMatchMaker.Core.Models.Players
         [DisplayName("Team Name")]
         public string? TeamName { get; set; }
         public SkillLevel SkillLevel { get; set; }
-
-        public PlayerStatus PlayerStatus { get; set; }
         [DisplayName("Class")]
         public string PlayerClassName { get; set; } = null!;
         public virtual ICollection<ClothingMinModel> Clothes { get; set; }

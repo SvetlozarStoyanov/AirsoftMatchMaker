@@ -23,7 +23,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Entities
         public int? TeamId { get; set; }
         public virtual Team? Team { get; set; }
         public SkillLevel SkillLevel { get; set; } = SkillLevel.Beginner;
-        public PlayerStatus PlayerStatus { get; set; } = PlayerStatus.Idle;
+
         public int SkillPoints { get; set; } = 100;
         [ForeignKey(nameof(Entities.PlayerClass.Id))]
         public int PlayerClassId { get; set; } = 1;

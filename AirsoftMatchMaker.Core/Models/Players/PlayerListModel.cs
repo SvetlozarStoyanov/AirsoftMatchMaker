@@ -13,6 +13,5 @@ namespace AirsoftMatchMaker.Core.Models.Players
         public int WeaponsCount { get; set; }
         [DisplayName("Team")]
         public string TeamName { get; set; } = null!;
-        public PlayerStatus PlayerStatus { get; set; }
     }
 }

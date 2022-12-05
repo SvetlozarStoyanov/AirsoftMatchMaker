@@ -9,9 +9,7 @@
             <th>
                 Skill Level
             </th>
-            <th>
-                Status
-            </th>
+
             <th>
                 Team Name
             </th>
@@ -32,9 +30,6 @@
                 </td>
                 <td width="30%">
                     @user.SkillLevel.ToString()
-                </td>
-                <td width="30%">
-                    @string.Join(" ", Regex.Matches(user.PlayerStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())
                 </td>
                 <td width="30%">
                     @user.TeamName

@@ -36,12 +36,6 @@
                     </b>
                 </p>
             }
-            <p>
-                Status:
-                <b>
-                    @string.Join(" ", Regex.Matches(Model.PlayerStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())
-                </b>
-            </p>
             @*          <div class="form-inline">
             @if (this.User.Identity.IsAuthenticated)
             {
