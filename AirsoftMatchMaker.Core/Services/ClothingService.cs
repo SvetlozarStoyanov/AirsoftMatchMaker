@@ -14,6 +14,38 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
+        public async Task<bool> ClothingExistsAsync(int id)
+        {
+            if (await repository.GetByIdAsync<Clothing>(id) == null)
+                return false;
+            return true;
+        }
+        public async Task<bool> UserCanBuyClothingAsync(string userId, int clothingId)
+        {
+            var player = await repository.AllReadOnly<Player>()
+                .Where(p => p.UserId == userId)
+                .FirstOrDefaultAsync();
+
+            var clothing = await repository.GetByIdAsync<Clothing>(clothingId);
+            if (clothing.Vendor.UserId == player.UserId)
+                return false;
+            return true;
+        }
+
+
+        public async Task<bool> UserCanSellClothingAsync(string userId, int clothingId)
+        {
+            var player = await repository.AllReadOnly<Player>()
+                .Where(p => p.UserId == userId)
+                .FirstOrDefaultAsync();
+
+            var clothing = await repository.GetByIdAsync<Clothing>(clothingId);
+            if (clothing.PlayerId != player.Id)
+                return false;
+
+            return true;
+        }
+
         public async Task<IEnumerable<ClothingListModel>> GetAllClothesAsync()
         {
             var clothes = await repository.AllReadOnly<Clothing>()
@@ -24,8 +56,9 @@ namespace AirsoftMatchMaker.Core.Services
                 {
                     Id = c.Id,
                     Name = c.Name,
-                    ClothingColor = c.ClothingColor,
                     Price = c.Price,
+                    ImageUrl = c.ImageUrl,
+                    ClothingColor = c.ClothingColor,
                 })
                 .ToListAsync();
             return clothes;
@@ -113,5 +146,43 @@ namespace AirsoftMatchMaker.Core.Services
             vendor.Clothes.Add(clothing);
             await repository.SaveChangesAsync();
         }
+
+
+        public async Task<ClothingSellModel> CreateClothingSellModelAsync(int id)
+        {
+            var clothing = await repository.AllReadOnly<Clothing>()
+                .Where(c => c.Id == id)
+                .Select(c => new ClothingSellModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    ImageUrl = c.ImageUrl,
+                    ClothingColor = c.ClothingColor,
+                    Price = c.Price,
+                    OldPrice = c.Price
+                })
+                .FirstOrDefaultAsync();
+
+            return clothing;
+        }
+
+        public async Task SellClothingAsync(string vendorUserId, ClothingSellModel model)
+        {
+            var vendor = await repository.AllReadOnly<Vendor>()
+                .Where(v => v.UserId == vendorUserId)
+                .FirstOrDefaultAsync();
+            var clothing = await repository.GetByIdAsync<Clothing>(model.Id);
+
+            clothing.Name = model.Name;
+            clothing.Price = model.Price;
+            clothing.Description = model.Description;
+            clothing.ImageUrl = model.ImageUrl;
+            clothing.PlayerId = null;
+            clothing.VendorId = vendor.Id;
+            await repository.SaveChangesAsync();
+        }
+
+
     }
 }

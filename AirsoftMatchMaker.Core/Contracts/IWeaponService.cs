@@ -7,6 +7,31 @@ namespace AirsoftMatchMaker.Core.Contracts
     public interface IWeaponService
     {
         /// <summary>
+        /// Returns true if <see cref="Weapon"/> exists, false otherwise
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> WeaponExistsAsync(int id);
+
+        /// <summary>
+        /// Returns true if the user selling the <see cref="Weapon"/> is not the same
+        /// as the user trying to buy it.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="weaponId"></param>
+        /// <returns></returns>
+        Task<bool> UserCanBuyWeaponAsync(string userId, int weaponId);
+
+        /// <summary>
+        /// Returns true if the user trying to buy the <see cref="Weapon"/> is not the same
+        /// as the user selling it.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="weaponId"></param>
+        /// <returns></returns>
+        Task<bool> UserCanSellWeaponAsync(string userId, int weaponId);
+
+        /// <summary>
         /// Gets all weapons from the dbContext
         /// </summary>
         /// <returns><see cref="IEnumerable{T}" /></returns>
@@ -36,13 +61,6 @@ namespace AirsoftMatchMaker.Core.Contracts
         WeaponCreateModel CreateWeaponCreateModelByWeaponType(WeaponType weaponType);
 
         /// <summary>
-        /// Checks if the feet per second and fire rate requirements are met. If they are not it returns error messages in form of strings.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns><see cref="IEnumerable{T}"/></returns>
-        IEnumerable<string> ValidateWeaponParameters(WeaponCreateModel model);
-
-        /// <summary>
         /// Creates a <see cref="Weapon weapon"/> from <see cref="WeaponCreateModel model"/>
         /// </summary>
         /// <param name="vendorUserId"></param>
@@ -50,5 +68,19 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns></returns>
         Task CreateWeaponAsync(string vendorUserId, WeaponCreateModel model);
 
+        /// <summary>
+        /// Creates a <see cref="WeaponSellModel"/> in order to sell a weapon.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="WeaponSellModel"/></returns>
+        Task<WeaponSellModel> CreateWeaponSellModelAsync(int id);
+
+        /// <summary>
+        /// Removes <see cref="Weapon"/> from <see cref="Player"/> inventory and lists it for sale with given price.
+        /// </summary>
+        /// <param name="vendorUserId"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task SellWeaponAsync(string vendorUserId, WeaponSellModel model);
     }
 }
