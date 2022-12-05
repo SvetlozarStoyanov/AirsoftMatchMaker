@@ -1,0 +1,25 @@
+﻿@model WeaponListModel
+
+@{
+    string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Weapons/{Model.WeaponType}.jpg";
+    string altImg = $"/img/Default/Weapons/{Model.WeaponType}.jpg";
+}
+<div class="col-md-4 mt-3">
+    <div class="card mb-3 ">
+        <div class="text-center">
+            <img style="height:250px;" class="card-img-top" src="@img" alt="Weapon Image">
+        </div>
+        <div class="card-body text-center">
+            <h4 class="text-center">@Model.Name</h4>
+            <h6>Type: <b>@string.Join(" ", Regex.Matches(Model.WeaponType.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b></h6>
+            <h6>Price: <b>@Model.Price credits</b></h6>
+            <h6>Range : <b>@Model.PreferedEngagementDistance.ToString()</b> </h6>
+            <br />
+            <a asp-area="Player" asp-controller="Weapons" asp-action="Details" asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                <i class="bi bi-info"></i>
+                Details
+            </a>
+        </div>
+    </div>
+</div>
