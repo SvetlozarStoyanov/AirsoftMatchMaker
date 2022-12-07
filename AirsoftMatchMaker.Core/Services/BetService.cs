@@ -16,22 +16,11 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
-        public async Task<IEnumerable<BetListModel>> GetUserBetsAsync(string userId)
+
+        public async Task<bool> BetExistsAsync(int id)
         {
-            var bets = await repository.AllReadOnly<Bet>()
-                .Where(b => b.UserId == userId)
-                .Include(b => b.Game)
-                .Select(b => new BetListModel()
-                {
-                    Id = b.Id,
-                    GameName = b.Game.Name,
-                    CreditsBet = b.CreditsBet,
-                    ChosenTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
-                    Odds = b.Odds,
-                    BetStatus = b.BetStatus,
-                })
-                .ToListAsync();
-            return bets;
+            var bet = await repository.GetByIdAsync<Bet>(id);
+            return bet != null;
         }
 
         public async Task<bool> HasUserAlreadyBetOnGameAsync(string userId, int gameId)
@@ -52,6 +41,31 @@ namespace AirsoftMatchMaker.Core.Services
             var IsUserInTeam = game.TeamRed.Players.Any(p => p.UserId == userId) || game.TeamBlue.Players.Any(p => p.UserId == userId);
             return IsUserInTeam;
         }
+
+        public async Task<bool> IsGameFinishedAsync(int gameId)
+        {
+            var game = await repository.GetByIdAsync<Game>(gameId);
+            return game.GameStatus == GameStatus.Finished;
+        }
+        public async Task<IEnumerable<BetListModel>> GetUserBetsAsync(string userId)
+        {
+            var bets = await repository.AllReadOnly<Bet>()
+                .Where(b => b.UserId == userId)
+                .Include(b => b.Game)
+                .Select(b => new BetListModel()
+                {
+                    Id = b.Id,
+                    GameName = b.Game.Name,
+                    CreditsBet = b.CreditsBet,
+                    ChosenTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
+                    Odds = b.Odds,
+                    BetStatus = b.BetStatus,
+                })
+                .ToListAsync();
+            return bets;
+        }
+
+
 
         public async Task<BetCreateModel> CreateBetCreateModelAsync(string userId, int gameId)
         {
@@ -278,7 +292,7 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
-       
+
 
         private static decimal CalculateProfit(int odds, decimal creditsBet)
         {
