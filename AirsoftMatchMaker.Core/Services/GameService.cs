@@ -29,17 +29,21 @@ namespace AirsoftMatchMaker.Core.Services
                 .Select(g => new GameListModel()
                 {
                     Id = g.Id,
-                    Name = $"{g.TeamRed.Name} VS {g.TeamBlue.Name}",
+                    Name = g.Name,
                     GameStatus = g.GameStatus,
-                    Date = g.Date.ToShortDateString(),
-                    EntryFee = g.EntryFee,
-                    GameModeId = g.GameModeId,
+                    Date = g.Date,
                     GameModeName = g.GameMode.Name,
                     MapId = g.MapId,
                     MapName = g.Map.Name,
-                    MatchmakerId = g.MatchmakerId,
-                    MatchmakerName = g.Matchmaker.User.UserName,
-                    Result = g.Result != null ? g.Result : $"{g.TeamRedPoints}:{g.TeamBluePoints}",
+                    MapImageUrl = g.Map.ImageUrl,
+                    TerrainType = g.Map.Terrain,
+                    TeamRedId = g.TeamRedId,
+                    TeamRedName = g.TeamRed.Name,
+                    TeamRedOdds = g.TeamRedOdds,
+                    TeamBlueId = g.TeamBlueId,
+                    TeamBlueName = g.TeamBlue.Name,
+                    TeamBlueOdds = g.TeamBlueOdds,
+                    Result = g.Result != null ? g.Result : "Not played yet",
                 })
                 .ToListAsync();
             return games;
@@ -133,16 +137,8 @@ namespace AirsoftMatchMaker.Core.Services
                     {
                         mapCount--;
                     }
-                    //mapCount -= map.Games.Count(g => g.Date.Day == dateTime.Date.Day);
                 }
-                //foreach (var team in teams)
-                //{
-                //    if (team.GamesAsTeamRed.Any(g => g.GameStatus == GameStatus.Upcoming) || team.GamesAsTeamBlue.Any(g => g.GameStatus == GameStatus.Upcoming))
-                //    {
-                //        teamsCount--;
-                //    }
-                //}
-                if (/*teamsCount > 1 &&*/ mapCount > 0)
+                if (mapCount > 0)
                 {
                     availableDates.Add(dateTime);
                 }
@@ -182,12 +178,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(t => t.GamesAsTeamRed)
                 .Include(t => t.GamesAsTeamBlue)
                 .ToListAsync();
-            //foreach (var team in teams)
-            //{
-            //    team.GamesAsTeamRed = team.GamesAsTeamRed.Where(g => g.GameStatus == GameStatus.Upcoming).ToList();
-            //    team.GamesAsTeamBlue = team.GamesAsTeamBlue.Where(g => g.GameStatus == GameStatus.Upcoming).ToList();
-            //}
-            //teams = teams.Where(t => t.GamesAsTeamRed.Count == 0 && t.GamesAsTeamBlue.Count == 0).ToList();
+
             GameCreateModel model = new GameCreateModel()
             {
                 DateString = dateTimeString,
@@ -254,7 +245,7 @@ namespace AirsoftMatchMaker.Core.Services
 
             Game game = new Game()
             {
-                Name = $"{teamRed.Name} VS {teamBlue.Name} {map.Name} {dateTime.Date}",
+                Name = $"{teamRed.Name} VS {teamBlue.Name}",
                 EntryFee = model.EntryFee,
                 GameStatus = GameStatus.Upcoming,
                 Date = dateTime,
@@ -326,16 +317,16 @@ namespace AirsoftMatchMaker.Core.Services
             return odds;
         }
 
-        public async Task<IEnumerable<GamePartialModel>> GetUpcomingGamesByDateAsync(DateTime dateTime)
+        public async Task<IEnumerable<GameListModel>> GetUpcomingGamesByDateAsync()
         {
             var games = await repository.AllReadOnly<Game>()
-               //.Where(g => g.Date.Day == dateTime.Day /*&& g.GameStatus != GameStatus.Finished*/)
+               .Where(g => g.GameStatus != GameStatus.Finished)
                .Include(g => g.TeamRed)
                .Include(g => g.TeamBlue)
                .Include(g => g.Matchmaker)
                .ThenInclude(mm => mm.User)
                .Include(g => g.Map)
-               .Select(g => new GamePartialModel()
+               .Select(g => new GameListModel()
                {
                    Id = g.Id,
                    Name = g.Name,
