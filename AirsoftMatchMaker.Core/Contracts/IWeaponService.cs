@@ -19,7 +19,7 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="weaponId"></param>
-        /// <returns></returns>
+        /// <returns><see cref="bool"/></returns>
         Task<bool> UserCanBuyWeaponAsync(string userId, int weaponId);
 
         /// <summary>
@@ -28,8 +28,18 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="weaponId"></param>
-        /// <returns></returns>
+        /// <returns><see cref="bool"/></returns>
         Task<bool> UserCanSellWeaponAsync(string userId, int weaponId);
+
+        /// <summary>
+        /// If  user does not have enough credits returns false 
+        /// (if user is player his upcoming games entry fee is also calculated)
+        /// ,otherwise returns true.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="weaponId"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> UserHasEnoughCreditsAsync(string userId, int weaponId);
 
         /// <summary>
         /// Gets all weapons from the dbContext

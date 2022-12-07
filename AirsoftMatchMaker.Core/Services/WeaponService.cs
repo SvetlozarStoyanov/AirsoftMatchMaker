@@ -30,7 +30,10 @@ namespace AirsoftMatchMaker.Core.Services
                    .Where(p => p.UserId == userId)
                    .FirstOrDefaultAsync();
 
-            var weapon = await repository.GetByIdAsync<Weapon>(weaponId);
+            var weapon = await repository.AllReadOnly<Weapon>()
+                .Where(w => w.Id == weaponId)
+                .Include(w => w.Vendor)
+                .FirstOrDefaultAsync();
             if (weapon.Vendor.UserId == player.UserId)
                 return false;
             return true;
@@ -42,9 +45,44 @@ namespace AirsoftMatchMaker.Core.Services
                  .Where(p => p.UserId == userId)
                  .FirstOrDefaultAsync();
 
-            var weapon = await repository.GetByIdAsync<Weapon>(weaponId);
+            var weapon = await repository.AllReadOnly<Weapon>()
+                         .Where(w => w.Id == weaponId)
+                         .Include(w => w.Vendor)
+                         .FirstOrDefaultAsync();
             if (weapon.PlayerId != player.Id)
                 return false;
+            return true;
+        }
+
+        public async Task<bool> UserHasEnoughCreditsAsync(string userId, int weaponId)
+        {
+            var player = await repository.AllReadOnly<Player>()
+                .Where(p => p.UserId == userId)
+                .Include(p => p.User)
+                .Include(p => p.Team)
+                .ThenInclude(p => p.GamesAsTeamRed)
+                .Include(p => p.Team)
+                .ThenInclude(p => p.GamesAsTeamBlue)
+                .FirstOrDefaultAsync();
+            var weapon = await repository.GetByIdAsync<Weapon>(weaponId);
+            if (player == null)
+            {
+                var user = await repository.GetByIdAsync<User>(userId);
+                if (weapon.Price > user.Credits)
+                {
+                    return false;
+                }
+                return true;
+            }
+
+            var gamesEntryFeeSum = player.Team.GamesAsTeamRed
+                .Union(player.Team.GamesAsTeamBlue)
+                .Where(g => g.GameStatus == GameStatus.Upcoming)
+                .Sum(g => g.EntryFee);
+
+            if (gamesEntryFeeSum + weapon.Price > player.User.Credits)
+                return false;
+
             return true;
         }
 
@@ -131,7 +169,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public WeaponCreateModel CreateWeaponCreateModelByWeaponType(WeaponType weaponType)
         {
-            WeaponCreateModel model = new WeaponCreateModel() 
+            WeaponCreateModel model = new WeaponCreateModel()
             {
                 WeaponType = weaponType
             };
