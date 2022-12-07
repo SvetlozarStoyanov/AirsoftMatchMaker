@@ -1,0 +1,35 @@
+﻿@model WeaponListModel
+
+@{
+    string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Weapons/{Model.WeaponType}.jpg";
+    string altImg = $"/img/Default/Weapons/{Model.WeaponType}.jpg";
+    //string temp = "style="width: 200px; height: 200px; "";
+}
+<div class="col-md-4 mt-3">
+    <div class="card mb-3 bg-dark bg-opacity-10">
+        <div class="text-center">
+            <img style="height:250px;" class="card-img-top" src="@img" alt="Weapon Image">
+        </div>
+        <div class="card-body text-center bg-white bg-opacity-50">
+            <h4 class="text-center">@Model.Name</h4>
+            <h6>Type: <b>@string.Join(" ", Regex.Matches(Model.WeaponType.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b></h6>
+            <h6>Price: <b>@Model.Price credits</b></h6>
+            <h6>Range : <b>@Model.PreferedEngagementDistance.ToString()</b> </h6>
+            <br />
+            <a asp-controller="Weapons" asp-action="Details" asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                <i class="bi bi-info"></i>
+                Details
+            </a>
+            <a asp-controller="Weapons" asp-action="Buy" asp-route-id="@Model.Id"
+               class="btn btn-warning">
+                <i class="bi bi-cart"></i>
+                Buy
+            </a>
+            @*    <a asp-controller="Houses" asp-action="Delete" asp-route-id="@Model.Id"
+            class="btn btn-danger">
+            Delete
+            </a>*@
+        </div>
+    </div>
+</div>

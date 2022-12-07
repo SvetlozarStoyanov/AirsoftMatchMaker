@@ -1,9 +1,9 @@
-﻿@model GameListModel
+﻿@using AirsoftMatchMaker.Infrastructure.Data.Enums;
+@model GameListModel
 
 @{
     string img = @Model.MapImageUrl != null ? @Model.MapImageUrl : $"/img/Default/Maps/{Model.TerrainType}.jpg";
     string altImg = $"/img/Default/Maps/{Model.TerrainType}.jpg";
-    //string temp = "style="width: 200px; height: 200px; "";
 }
 <div class="col-md-4 mt-3">
     <div class="card mb-3 bg-dark bg-opacity-10">
@@ -12,23 +12,22 @@
         </div>
         <div class="card-body text-center bg-white bg-opacity-50">
             <h4 class="text-center">@Model.Name</h4>
-            <h6>Team Red: <b>@Model.TeamRedName</b></h6>
-            <h6>Team Blue: <b>@Model.TeamBlueName</b></h6>
-            <h6>Gamemode:<b>@Model.GameModeName</b> </h6>
-            <h6>Map:<b>@Model.MapName</b></h6>
+            <h6><b>@Model.TeamRedOdds:</b> <b>@Model.TeamBlueOdds</b></h6>
+            <h6><b>@Model.Date.ToShortDateString()</b></h6>
+            <h6>Gamemode: <b>@Model.GameModeName</b> </h6>
+            <h6>Map: <b>@Model.MapName</b></h6>
             <br />
             <a asp-controller="Games" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-primary">
                 Details
             </a>
-            <a asp-controller="Bets" asp-action="Create" asp-route-id="@Model.Id"
+            @if (Model.GameStatus != GameStatus.Finished)
+            {
+                <a asp-controller="Bets" asp-action="Create" asp-route-id="@Model.Id"
                class="btn btn-warning">
-                Bet
-            </a>
-            @*    <a asp-controller="Houses" asp-action="Delete" asp-route-id="@Model.Id"
-            class="btn btn-danger">
-            Delete
-            </a>*@
+                    Bet
+                </a>
+            }
         </div>
     </div>
 </div>
