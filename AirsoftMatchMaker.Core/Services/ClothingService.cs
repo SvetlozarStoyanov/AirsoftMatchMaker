@@ -2,6 +2,7 @@
 using AirsoftMatchMaker.Core.Models.Clothes;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirsoftMatchMaker.Core.Services
@@ -45,7 +46,38 @@ namespace AirsoftMatchMaker.Core.Services
 
             return true;
         }
+        public async Task<bool> UserHasEnoughCreditsAsync(string userId, int clothingId)
+        {
+            var player = await repository.AllReadOnly<Player>()
+              .Where(p => p.UserId == userId)
+              .Include(p => p.User)
+              .Include(p => p.Team)
+              .ThenInclude(p => p.GamesAsTeamRed)
+              .Include(p => p.Team)
+              .ThenInclude(p => p.GamesAsTeamBlue)
+              .FirstOrDefaultAsync();
 
+            var clothing = await repository.GetByIdAsync<Clothing>(clothingId);
+            if (player == null)
+            {
+                var user = await repository.GetByIdAsync<User>(userId);
+                if (clothing.Price > user.Credits)
+                {
+                    return false;
+                }
+                return true;
+            }
+            var gamesEntryFeeSum = player.Team.GamesAsTeamRed
+                .Union(player.Team.GamesAsTeamBlue)
+                .Where(g => g.GameStatus == GameStatus.Upcoming)
+                .Sum(g => g.EntryFee);
+
+            if (gamesEntryFeeSum + clothing.Price > player.User.Credits)
+                return false;
+
+            return true;
+
+        }
         public async Task<IEnumerable<ClothingListModel>> GetAllClothesAsync()
         {
             var clothes = await repository.AllReadOnly<Clothing>()
@@ -182,7 +214,5 @@ namespace AirsoftMatchMaker.Core.Services
             clothing.VendorId = vendor.Id;
             await repository.SaveChangesAsync();
         }
-
-
     }
 }

@@ -9,7 +9,7 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// Checks if <see cref="Clothing clothing"/> with given id exists
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns><see cref="bool"/></returns>
         Task<bool> ClothingExistsAsync(int id);
 
         /// <summary>
@@ -18,7 +18,7 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="clothingId"></param>
-        /// <returns><see cref="bool"/></returns>
+        /// <returns><see cref="bool"/><see cref="bool"/></returns>
         Task<bool> UserCanBuyClothingAsync(string userId, int clothingId);
 
         /// <summary>
@@ -27,8 +27,20 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="clothingId"></param>
-        /// <returns></returns>
+        /// <returns><see cref="bool"/></returns>
         Task<bool> UserCanSellClothingAsync(string userId, int clothingId);
+
+        /// <summary>
+        /// If the user does not have enough credits returns false 
+        /// (if user is a player his upcoming games entry fee is also calculated)
+        /// ,otherwise returns true.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="clothingId"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> UserHasEnoughCreditsAsync(string userId, int clothingId);
+
+
         /// <summary>
         /// Returns all clothes
         /// </summary>
