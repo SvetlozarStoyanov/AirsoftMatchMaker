@@ -1,0 +1,15 @@
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\bin\Debug\net6.0\AirsoftMatchMaker.Core.deps.json
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\bin\Debug\net6.0\AirsoftMatchMaker.Core.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\bin\Debug\net6.0\AirsoftMatchMaker.Core.pdb
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\bin\Debug\net6.0\AirsoftMatchMaker.Infrastructure.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\bin\Debug\net6.0\AirsoftMatchMaker.Infrastructure.pdb
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\AirsoftMatchMaker.Core.csproj.AssemblyReference.cache
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\AirsoftMatchMaker.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\AirsoftMatchMaker.Core.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\AirsoftMatchMaker.Core.AssemblyInfo.cs
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\AirsoftMatchMaker.Core.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\AirsoftMatchMaker.Core.csproj.CopyComplete
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\AirsoftMatchMaker.Core.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\refint\AirsoftMatchMaker.Core.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\AirsoftMatchMaker.Core.pdb
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\ref\AirsoftMatchMaker.Core.dll

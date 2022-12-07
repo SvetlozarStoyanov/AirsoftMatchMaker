@@ -24,25 +24,20 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
 
         public async Task<IActionResult> Create(int gameId)
         {
-            if (await betService.IsGameFinishedAsync(gameId))
-            {
-                TempData["error"] = "Game has already concluded!";
-                return RedirectToAction("Index", "Games");
-            }
             if (await betService.HasUserAlreadyBetOnGameAsync(User.Id(), gameId))
             {
-                TempData["error"] = "Cannot bet twice on the same game!";
+                TempData.Add("error", "Cannot bet twice on the same game!");
                 return RedirectToAction("Index", "Games");
             }
             if (await betService.IsUserInOneOfTheTeamsInTheGameAsync(User.Id(), gameId))
             {
-                TempData["error"] = "You cannot bet on games your team participates in!";
+                TempData.Add("error", "You cannot bet on games your team participates in!");
                 return RedirectToAction("Index", "Games");
             }
             var model = await betService.CreateBetCreateModelAsync(User.Id(), gameId);
             if (model == null)
             {
-                TempData["error"] = "Cannot create bet!";
+                TempData.Add("error", "Cannot create bet!");
                 return RedirectToAction("Index", "Games");
             }
             return View(model);
@@ -56,7 +51,7 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
                 return View(model);
             }
             await betService.CreateBetAsync(User.Id(), model);
-            TempData["success"] = "Bet placed successfully!";
+            TempData.Add("success", "Bet placed successfully!");
             return RedirectToAction("Index", "Games");
         }
 
@@ -74,15 +69,10 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await betService.BetExistsAsync(id))
-            {
-                TempData["error"] = "Bet does not exist";
-                return RedirectToAction(nameof(Mine));
-            }
             var model = await betService.GetBetToDeleteByIdAsync(id);
-            if (model.UserId != User.Id())
+            if (model == null || model.UserId != User.Id())
             {
-                TempData["error"] = "Cannot access that bet!";
+                TempData.Add("error", "Cannot access that bet!");
                 return RedirectToAction(nameof(Mine));
             }
             return View(model);

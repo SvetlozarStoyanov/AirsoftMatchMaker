@@ -1,14 +1,57 @@
-﻿@model IEnumerable<MapListModel>
-@if (Model.Count() == 0)
-{
-    <h2>No maps meet the current criteria!</h2>
-}
-else
-{
-    <div class="row">
+﻿@using System.Text.RegularExpressions;
+@model IEnumerable<MapListModel>
+<table class=" table table-bordered  table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Image
+            </th>
+            <th>
+                Game Mode
+            </th>
+            <th>
+                Terrain
+            </th>
+            <th>
+                Size
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
         @foreach (var map in Model)
         {
-            <partial name="_MapPartial" model="@map" />
+            <tr>
+                <td width="50%">
+                    @map.Name
+                </td>
+                <td width="30%">
+                    @map.ImageUrl
+                </td>
+                <td width="30%">
+                    @map.GameModeName
+                </td>
+                <td width="30%">
+                    @string.Join(" ", Regex.Matches(map.Terrain.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())
+                </td>
+                <td width="30%">
+                    @string.Join(" ", Regex.Matches(map.Mapsize.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())
+                </td>
+                <td>
+                    <div class="w-75 btn-group" role="group">
+                        <a asp-controller="Maps" asp-action="Details" asp-route-id="@map.Id" class="btn btn-primary mx-2">
+                            <i class="bi bi-info-square-fill"></i>
+                            Details
+                        </a>
+                    </div>
+                </td>
+            </tr>
         }
-    </div>
-}
+    </tbody>
+
+</table>

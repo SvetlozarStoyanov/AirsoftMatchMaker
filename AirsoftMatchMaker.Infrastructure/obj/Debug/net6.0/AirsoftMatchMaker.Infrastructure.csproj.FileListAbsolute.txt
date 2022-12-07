@@ -1,0 +1,14 @@
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\bin\Debug\net6.0\AirsoftMatchMaker.Infrastructure.deps.json
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\bin\Debug\net6.0\AirsoftMatchMaker.Infrastructure.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\bin\Debug\net6.0\AirsoftMatchMaker.Infrastructure.pdb
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\obj\Debug\net6.0\AirsoftMatchMaker.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\obj\Debug\net6.0\AirsoftMatchMaker.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\obj\Debug\net6.0\AirsoftMatchMaker.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\obj\Debug\net6.0\AirsoftMatchMaker.Infrastructure.AssemblyInfo.cs
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\obj\Debug\net6.0\AirsoftMatchMaker.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\obj\Debug\net6.0\AirsoftMatchMaker.Infrastructure.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\obj\Debug\net6.0\refint\AirsoftMatchMaker.Infrastructure.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\obj\Debug\net6.0\AirsoftMatchMaker.Infrastructure.pdb
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\obj\Debug\net6.0\ref\AirsoftMatchMaker.Infrastructure.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\bin\Debug\net6.0\AirsoftMatchMaker.Infrastructure.runtimeconfig.json
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Infrastructure\obj\Debug\net6.0\AirsoftMatchMaker.Infrastructure.genruntimeconfig.cache

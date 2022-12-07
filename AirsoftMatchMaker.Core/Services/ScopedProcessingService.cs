@@ -30,7 +30,7 @@ namespace AirsoftMatchMaker.Core.Services
                 {
                     await backgroundTeamService.AssignOrRemovePlayerFromTeamByTeamRequestIdsAsync(teamRequestIds);
                 }
-                timer = new PeriodicTimer(TimeSpan.FromMinutes(15));
+                timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
             } while (await timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested);
 
         }

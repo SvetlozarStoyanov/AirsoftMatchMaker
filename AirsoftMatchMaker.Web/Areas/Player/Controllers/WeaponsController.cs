@@ -36,16 +36,6 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         [HttpGet]
         public async Task<IActionResult> Buy(int id)
         {
-            if (!(await weaponService.UserCanBuyWeaponAsync(User.Id(), id)))
-            {
-                TempData["error"] = "You cannot buy weapons you imported!";
-                return RedirectToAction(nameof(Index));
-            }
-            if (!(await weaponService.UserHasEnoughCreditsAsync(User.Id(), id)))
-            {
-                TempData["error"] = "You do not have enough credits!";
-                return RedirectToAction(nameof(Index));
-            }
             var model = await weaponService.GetWeaponByIdAsync(id);
             if (model == null)
             {
