@@ -4,7 +4,6 @@ using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Maps;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
-using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirsoftMatchMaker.Core.Services
@@ -24,7 +23,6 @@ namespace AirsoftMatchMaker.Core.Services
                 {
                     Id = gm.Id,
                     Name = gm.Name,
-                    Description = gm.Description,
                     MapsCount = gm.Maps.Count(),
                     PointsToWin = gm.PointsToWin
                 })
@@ -48,16 +46,13 @@ namespace AirsoftMatchMaker.Core.Services
                     {
                         Id = m.Id,
                         Name = m.Name,
-                        ImageUrl = m.ImageUrl,
-                        Terrain = m.Terrain
+                        ImageUrl = m.ImageUrl
                     })
                     .ToList(),
-                    Games = gm.Games.Where(g => g.GameStatus == GameStatus.Finished).Select(g => new GameMinModel()
+                    Games = gm.Games.Select( g => new GameMinModel()
                     {
                         Id = g.Id,
-                        Name = g.Name,
-                        Date = g.Date.ToShortDateString(),
-                        Result = g.Result
+                        Name = g.Name
                     })
                     .ToList()
                 })

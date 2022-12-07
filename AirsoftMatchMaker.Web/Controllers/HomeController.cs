@@ -17,7 +17,7 @@ namespace AirsoftMatchMaker.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var model = await gameService.GetUpcomingGamesByDateAsync();
+            var model = await gameService.GetUpcomingGamesByDateAsync(DateTime.Now);
             return View(model);
         }
 
