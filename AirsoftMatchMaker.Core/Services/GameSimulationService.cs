@@ -32,13 +32,13 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(g => g.Map)
                 .ThenInclude(m => m.GameMode)
                 .Include(g => g.TeamRed)
-            .Include(g => g.TeamBlue)
+                .Include(g => g.TeamBlue)
                 .FirstOrDefaultAsync();
 
             var teamRed = game.TeamRed;
 
             var teamRedPlayers = await repository.All<Player>()
-                .Where(p => p.TeamId.HasValue && p.TeamId == teamRed.Id && p.IsActive && p.Weapons.Any())
+                .Where(p => p.TeamId.HasValue && p.TeamId == teamRed.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
                 .Include(p => p.User)
                 .Include(p => p.Clothes)
                 .Include(p => p.Weapons)
@@ -48,7 +48,7 @@ namespace AirsoftMatchMaker.Core.Services
             var teamBlue = game.TeamBlue;
 
             var teamBluePlayers = await repository.All<Player>()
-            .Where(p => p.TeamId.HasValue && p.TeamId == teamBlue.Id && p.IsActive && p.Weapons.Any())
+            .Where(p => p.TeamId.HasValue && p.TeamId == teamBlue.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
             .Include(p => p.User)
             .Include(p => p.Clothes)
             .Include(p => p.Weapons)
@@ -319,10 +319,18 @@ namespace AirsoftMatchMaker.Core.Services
             foreach (var player in teamRedPlayers)
             {
                 player.User.Credits -= entryFee;
+                if (player.User.Credits < 0)
+                {
+                    player.User.Credits = 0;
+                }
             }
             foreach (var player in teamBluePlayers)
             {
                 player.User.Credits -= entryFee;
+                if (player.User.Credits < 0)
+                {
+                    player.User.Credits = 0;
+                }
             }
         }
 
