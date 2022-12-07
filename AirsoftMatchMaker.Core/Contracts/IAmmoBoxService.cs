@@ -6,6 +6,33 @@ namespace AirsoftMatchMaker.Core.Contracts
     public interface IAmmoBoxService
     {
         /// <summary>
+        /// Checks if <see cref="AmmoBox"/> with given id exists
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> AmmoBoxExistsAsync(int id);
+
+        /// <summary>
+        /// Returns true if the user is selling the <see cref="AmmoBox"/>is not the same as the one 
+        /// who is trying to  buy it
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ammoBoxId"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> UserCanBuyAmmoBoxAsync(string userId, int ammoBoxId);
+
+        /// <summary>
+        /// If the user does not have enough credits returns false 
+        /// (if user is a player his upcoming games entry fee is also calculated)
+        /// ,otherwise returns true.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ammoBoxId"></param>
+        /// <param name="quantity"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> UserHasEnoughCreditsAsync(string userId, int ammoBoxId, int quantity);
+
+        /// <summary>
         /// Returns all ammo boxes with quantity>0
         /// </summary>
         /// <returns><see cref="IEnumerable{T}"/></returns>
@@ -34,7 +61,7 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task BuyAmmoBoxAsync(string playerUserId, AmmoBoxBuyModel model);
 
 
-        
+
         /// <summary>
         /// Creates <see cref="AmmoBox"/> from given model.
         /// </summary>

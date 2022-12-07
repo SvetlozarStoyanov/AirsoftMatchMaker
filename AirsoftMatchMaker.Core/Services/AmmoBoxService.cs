@@ -2,6 +2,7 @@
 using AirsoftMatchMaker.Core.Models.AmmoBoxes;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirsoftMatchMaker.Core.Services
@@ -14,7 +15,59 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
+        public async Task<bool> AmmoBoxExistsAsync(int id)
+        {
+            if (await repository.GetByIdAsync<AmmoBox>(id) == null)
+                return false;
+            return true;
+        }
 
+        public async Task<bool> UserCanBuyAmmoBoxAsync(string userId, int ammoBoxId)
+        {
+            var player = await repository.AllReadOnly<Player>()
+                .Where(p => p.UserId == userId)
+                .FirstOrDefaultAsync();
+
+            var weapon = await repository.AllReadOnly<AmmoBox>()
+                .Where(w => w.Id == ammoBoxId)
+                .Include(w => w.Vendor)
+                .FirstOrDefaultAsync();
+            if (weapon.Vendor.UserId == player.UserId)
+                return false;
+            return true;
+        }
+
+
+        public async Task<bool> UserHasEnoughCreditsAsync(string userId, int ammoBoxId, int quantity)
+        {
+            var player = await repository.AllReadOnly<Player>()
+              .Where(p => p.UserId == userId)
+              .Include(p => p.User)
+              .Include(p => p.Team)
+              .ThenInclude(p => p.GamesAsTeamRed)
+              .Include(p => p.Team)
+              .ThenInclude(p => p.GamesAsTeamBlue)
+              .FirstOrDefaultAsync();
+            var ammoBox = await repository.GetByIdAsync<AmmoBox>(ammoBoxId);
+            if (player == null)
+            {
+                var user = await repository.GetByIdAsync<User>(userId);
+                if (ammoBox.Price * quantity > user.Credits)
+                {
+                    return false;
+                }
+                return true;
+            }
+            var gamesEntryFeeSum = player.Team.GamesAsTeamRed
+                .Union(player.Team.GamesAsTeamBlue)
+                .Where(g => g.GameStatus == GameStatus.Upcoming)
+                .Sum(g => g.EntryFee);
+
+            if (gamesEntryFeeSum + ammoBox.Price * quantity > player.User.Credits)
+                return false;
+
+            return true;
+        }
 
         public async Task<IEnumerable<AmmoBoxListModel>> GetAllAmmoBoxesAsync()
         {
@@ -104,7 +157,7 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
-       
+
 
         public async Task CreateAmmoBoxAsync(string vendorUserId, AmmoBoxCreateModel model)
         {
@@ -167,7 +220,5 @@ namespace AirsoftMatchMaker.Core.Services
             ammoBox.Quantity += model.QuantityAdded;
             await repository.SaveChangesAsync();
         }
-
-
     }
 }
