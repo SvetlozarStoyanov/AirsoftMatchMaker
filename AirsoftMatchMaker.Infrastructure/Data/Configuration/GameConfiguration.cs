@@ -22,7 +22,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 new Game()
                 {
                     Id = 1,
-                    Name = "First Game",
+                    Name = "Alpha vs Bravo",
                     Date = DateTime.Now.AddDays(-1),                    
                     //Date = DateTime.Now.AddHours(1),
                     EntryFee = 40,
@@ -37,7 +37,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 new Game()
                 {
                     Id = 2,
-                    Name = "Rematch Game",
+                    Name = "Bravo vs Alpha",
                     Date = DateTime.Now.AddDays(1),
                     EntryFee = 40,
                     MatchmakerId = 1,
@@ -51,14 +51,14 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 new Game()
                 {
                     Id = 3,
-                    Name = "Third Game",
-                    Date = DateTime.Now.AddDays(2),
+                    Name = "Charlie vs Delta",
+                    Date = DateTime.Now.AddDays(1),
                     EntryFee = 40,
                     MatchmakerId = 1,
                     GameModeId = 1,
                     MapId = 2,
-                    TeamRedId = 2,
-                    TeamBlueId = 1,
+                    TeamRedId = 3,
+                    TeamBlueId = 4,
                     TeamRedOdds = -160,
                     TeamBlueOdds = +150
                 },
