@@ -22,31 +22,6 @@
                     @Model.PointsToWin points
                 </b>
             </p>
-
-            @*          <div class="form-inline">
-            @if (this.User.Identity.IsAuthenticated)
-            {
-            <a class="btn btn-warning" asp-controller="Houses" asp-action="Edit"
-            asp-route-id="@Model.Id">Edit</a>
-            <a class="ml-2 btn btn-danger" asp-controller="Houses" asp-action="Delete"
-            asp-route-id="@Model.Id">Delete</a>
-            @if (!Model.IsRented)
-            {
-            <form class="ml-2" asp-controller="Houses"
-            asp-action="Rent" asp-route-id="@Model.Id" method="post">
-            <input class="btn btn-primary" type="submit" value="Rent" />
-            </form>
-            }
-            else
-            {
-            <form class="ml-2" asp-controller="Houses" asp-action="Leave"
-            asp-route-id="@Model.Id" method="post">
-            <input class="btn btn-primary" type="submit" value="Leave" />
-            </form>
-            }
-            }
-            </div>*@
-
             <div class="container">
                 <h2>Maps which feature this game mode: </h2>
                 @foreach (var map in Model.Maps)
@@ -55,28 +30,28 @@
                 }
             </div>
         </div>
-    </section>
-    <hr />
-    <section class="text-center mt-6 mb-6">
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGames" aria-expanded="false" aria-controls="collapseGames">
-            <h5>Games with this gamemode: @Model.Games.Count </h5>
-        </button>
-        <div class="collapse" id="collapseGames">
-            <div class="row">
-                @foreach (var game in Model.Games)
-                {
-                    <a class="btn" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
+        </section>
+        <hr />
+        <section class="text-center mt-6 mb-6">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGames" aria-expanded="false" aria-controls="collapseGames">
+                <h5>Games with this gamemode: @Model.Games.Count </h5>
+            </button>
+            <div class="collapse" id="collapseGames">
+                <div class="row">
+                    @foreach (var game in Model.Games)
+                    {
+                        <a class="btn" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
 
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">@game.Name</h5>
-                                <p class="card-text"></p>
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">@game.Name</h5>
+                                    <p class="card-text"></p>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                }
+                        </a>
+                    }
+                </div>
             </div>
-        </div>
     </div>
 </div>
 </div>
