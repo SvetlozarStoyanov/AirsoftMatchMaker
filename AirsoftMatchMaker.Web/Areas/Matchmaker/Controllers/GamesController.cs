@@ -38,7 +38,7 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
             var selectDateModel = await gameService.GetNextSevenAvailableDatesAsync();
             if (selectDateModel == null)
             {
-                TempData.Add("error", "No games can be made right now!");
+                TempData["error"] = "No games can be made right now!";
                 return RedirectToAction(nameof(Index));
             }
             return View(selectDateModel);
@@ -56,8 +56,14 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
         {
             if (!ModelState.IsValid || model.TeamRedId == model.TeamBlueId)
             {
-                var createModel = await gameService.CreateGameModelAsync(model.DateString);
-                return View(createModel);
+                model = await gameService.CreateGameModelAsync(model.DateString);
+                return View(model);
+            }
+            if (!(await gameService.AreTeamPlayerCountsSimilarAsync(model.TeamRedId, model.TeamBlueId)))
+            {
+                TempData["error"] = "Player count difference cannot be greater than 2 players!";
+                model = await gameService.CreateGameModelAsync(model.DateString);
+                return View(model);
             }
             await gameService.CreateGameAsync(User.Id(), model);
             return RedirectToAction(nameof(Index));
