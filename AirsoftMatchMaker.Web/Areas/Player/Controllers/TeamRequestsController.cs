@@ -30,7 +30,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             }
             catch (Exception ex)
             {
-                TempData.Add("error", "You cannot access this page!");
+                TempData["error"] = "You cannot access this page!";
             }
             return RedirectToAction("Index", "Teams");
         }
@@ -40,17 +40,17 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         {
             if (!Enum.TryParse(requestType, out TeamRequestType teamRequestType))
             {
-                TempData.Add("error", "Invalid team request creation attempt!");
+                TempData["error"] = "Invalid data!";
                 return RedirectToAction(nameof(Index));
             }
             if (await teamRequestService.DoesTeamRequestAlreadyExistAsync(User.Id(), teamId))
             {
-                TempData.Add("error", "This request already exists!");
+                TempData["error"] = "This request already exists!";
                 return RedirectToAction("Index", "Teams");
             }
             if (!(await teamRequestService.IsTeamRequestValidAsync(User.Id(), teamId, teamRequestType)))
             {
-                TempData.Add("error", "Invalid team request!");
+                TempData["error"] = "Invalid team request!";
                 return RedirectToAction("Index", "Teams");
             }
             try
@@ -59,10 +59,10 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             }
             catch (Exception ex)
             {
-                TempData.Add("error", "Invalid operation!");
+                TempData["error"] = "Invalid operation!";
                 return RedirectToAction(nameof(Index));
             }
-            TempData.Add("success", $"{requestType} team requested!");
+            TempData["success"] = $"{requestType} team requested!";
             return RedirectToAction("Details", "Teams", new { id = teamId });
         }
 
@@ -70,11 +70,11 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         {
             if (!(await teamRequestService.CanUserAcceptOrDeclineTeamRequestAsync(User.Id(), id)))
             {
-                TempData.Add("error", "Invalid operation!");
+                TempData["error"] = "Invalid operation!";
                 return RedirectToAction(nameof(Index));
             }
             await teamRequestService.AcceptTeamRequestAsync(id);
-            TempData.Add("success", "Join request accepted! Player will join your team as soon as possible!");
+            TempData["success"] = "Join request accepted! Player will join your team as soon as possible!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -82,11 +82,11 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         {
             if (!(await teamRequestService.CanUserAcceptOrDeclineTeamRequestAsync(User.Id(), id)))
             {
-                TempData.Add("error", "Invalid operation!");
+                TempData["error"] = "Invalid operation!";
                 return RedirectToAction(nameof(Index));
             }
             await teamRequestService.DeclineTeamRequestAsync(id);
-            TempData.Add("success", "Join request declined!");
+            TempData["success"] = "Join request declined!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -106,12 +106,11 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         {
             if (!await teamRequestService.IsTeamRequestCreatedByUserAsync(User.Id(), id))
             {
-                TempData.Add("error", "Invalid operation!");
+                TempData["error"] = "Invalid operation!";
                 return RedirectToAction(nameof(Index));
-
             }
             await teamRequestService.DeleteTeamRequestAsync(id);
-            TempData.Add("success", "Request deleted!");
+            TempData["success"] = "Request deleted!";
             return RedirectToAction(nameof(Mine));
         }
     }
