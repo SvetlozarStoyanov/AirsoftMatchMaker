@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "YpwCvP4VcAn623hc242+CzBzzcnVP3oPREUiY9ed7Lw=",
+  "Hash": "3f8NFST1oixOkACoI5C+JuQXY9RcP7pz3ivfsaRjvOM=",
   "Source": "AirsoftMatchMaker.Web",
   "BasePath": "_content/AirsoftMatchMaker.Web",
   "Mode": "Default",
@@ -1375,6 +1375,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Areas\\Vendor\\Views\\Weapons\\calculateFinalImportPrice.js"
+    },
+    {
+      "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Common\\collapseArrow.js",
+      "SourceId": "AirsoftMatchMaker.Web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\",
+      "BasePath": "_content/AirsoftMatchMaker.Web",
+      "RelativePath": "js/Common/collapseArrow.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Common\\collapseArrow.js"
     },
     {
       "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\site.js",
