@@ -1,0 +1,27 @@
+﻿@model GameMinModel
+
+<div class="col-md-4 mt-3">
+    <div class="card mb-3 bg-dark bg-opacity-10">
+
+        <div class="card-body text-center bg-dark bg-opacity-25">
+            <div class="text-white">
+                <h4 class="text-center">@Model.Name</h4>
+                <h6><b>@Model.Odds</b></h6>
+                <h6><b>@Model.Date</b></h6>
+                <h6><b>@Model.Result</b></h6>
+            </div>
+            <br />
+            <a asp-controller="Games" asp-action="Details" asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                Details
+            </a>
+            @if (Model.GameStatus == GameStatus.Upcoming)
+            {
+                <a asp-controller="Bets" asp-action="Create" asp-route-id="@Model.Id"
+               class="btn btn-warning">
+                    Bet
+                </a>
+            }
+        </div>
+    </div>
+</div>

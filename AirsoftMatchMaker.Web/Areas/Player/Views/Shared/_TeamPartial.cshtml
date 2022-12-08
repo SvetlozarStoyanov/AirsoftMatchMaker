@@ -1,0 +1,31 @@
+﻿@model TeamListModel
+
+<div class="col-md-4 mt-3">
+    <div class="card mb-3 bg-dark bg-opacity-10">
+
+        <div class="card-body text-center bg-white bg-opacity-25">
+            <div class="text-white">
+
+                <h4 class="text-center">@Model.Name</h4>
+                <h6><b>@Model.Wins wins</b></h6>
+                <h6><b>@Model.PlayersCount players</b></h6>
+            </div>
+            <br />
+            <a asp-controller="Teams" asp-action="Details" asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                Details
+            </a>
+            @if (!ViewBag.UserHasTeam)
+            {
+                <a asp-controller="TeamRequests" asp-action="Create" asp-route-teamId="@Model.Id" asp-route-requestType="@TeamRequestType.Join"
+               class="btn btn-success">
+                    Join
+                </a>
+            }
+            @*            <a asp-controller="Team" asp-action="Join" asp-route-id="@Model.Id"
+            class="btn btn-warning">
+            Bet
+            </a>*@
+        </div>
+    </div>
+</div>

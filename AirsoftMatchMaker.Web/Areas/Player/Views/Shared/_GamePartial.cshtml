@@ -1,0 +1,36 @@
+﻿@using AirsoftMatchMaker.Infrastructure.Data.Enums;
+@model GameListModel
+
+@{
+    string img = @Model.MapImageUrl != null ? @Model.MapImageUrl : $"/img/Default/Maps/{Model.TerrainType}.jpg";
+    string altImg = $"/img/Default/Maps/{Model.TerrainType}.jpg";
+}
+<div class="col-md-4 mt-3">
+    <div class="card mb-3 bg-white bg-opacity-25">
+        <div class="text-center">
+            <img style="height: 250px;" class=" card-img-top" src="@img" alt="Map Image">
+        </div>
+        <div class="card-body text-center bg-dark bg-opacity-25">
+            <div class="text-white">
+                <h4 class="text-center">@Model.Name</h4>
+                <h6><b>@Model.TeamRedOdds:</b> <b>@Model.TeamBlueOdds</b></h6>
+                <h6><b>@Model.Date.ToShortDateString()</b></h6>
+                <h6><b>@Model.Result</b></h6>
+                <h6>Gamemode: <b>@Model.GameModeName</b> </h6>
+                <h6>Map: <b>@Model.MapName</b></h6>
+            </div>
+            <br />
+            <a asp-controller="Games" asp-action="Details" asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                Details
+            </a>
+            @if (Model.GameStatus != GameStatus.Finished)
+            {
+                <a asp-controller="Bets" asp-action="Create" asp-route-gameId="@Model.Id"
+               class="btn btn-warning">
+                    Bet
+                </a>
+            }
+        </div>
+    </div>
+</div>
