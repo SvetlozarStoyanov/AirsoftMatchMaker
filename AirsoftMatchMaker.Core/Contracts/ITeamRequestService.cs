@@ -1,6 +1,7 @@
 ﻿using AirsoftMatchMaker.Core.Models.TeamRequests;
 using AirsoftMatchMaker.Core.Models.Teams;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
+using AirsoftMatchMaker.Infrastructure.Data.Entities;
 
 namespace AirsoftMatchMaker.Core.Contracts
 {
@@ -30,8 +31,17 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="bool"/></returns>
         Task<bool> DoesTeamRequestAlreadyExistAsync(string userId, int teamId);
 
-
+        /// <summary>
+        /// Checks if the <see cref="User"/> trying to accept or decline the request is a part
+        /// of the team
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="teamRequestId"></param>
+        /// <returns></returns>
         Task<bool> CanUserAcceptOrDeclineTeamRequestAsync(string userId, int teamRequestId);
+
+        Task<bool> DoesTheUserHaveAcceptedOrPendingTeamRequestsAsync(string userId);
+
         /// <summary>
         /// Returns the Team Requests for a given team. Only a member of the team can see them.
         /// </summary>

@@ -5,6 +5,7 @@ using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 
 namespace AirsoftMatchMaker.Core.Services
 {
@@ -67,6 +68,17 @@ namespace AirsoftMatchMaker.Core.Services
                 .FirstOrDefaultAsync();
 
             return teamRequest.Team.Players.Any(p => p.User.Id == userId);
+        }
+
+        public async Task<bool> DoesTheUserHaveAcceptedOrPendingTeamRequestsAsync(string userId)
+        {
+            var player = await repository.AllReadOnly<Player>()
+                .Where(p => p.UserId == userId)
+                .Include(p => p.TeamRequests)
+                .FirstOrDefaultAsync();
+            return player.TeamRequests.Any(tr => tr.TeamRequestType == TeamRequestType.Join
+                        && (tr.TeamRequestStatus == TeamRequestStatus.Accepted
+                        || tr.TeamRequestStatus == TeamRequestStatus.Pending));
         }
 
         public async Task<IEnumerable<TeamRequestListModel>> GetTeamRequestsForTeamByUserIdAsync(string userId)
@@ -168,7 +180,7 @@ namespace AirsoftMatchMaker.Core.Services
         public async Task AcceptTeamRequestAsync(int id)
         {
             var teamRequest = await repository.GetByIdAsync<TeamRequest>(id);
-            await DeleteOtherTeamRequests(teamRequest.Id, teamRequest.PlayerId);
+            await DeleteOtherTeamRequests(teamRequest.PlayerId,id);
             teamRequest.TeamRequestStatus = TeamRequestStatus.Accepted;
             await repository.SaveChangesAsync();
         }
