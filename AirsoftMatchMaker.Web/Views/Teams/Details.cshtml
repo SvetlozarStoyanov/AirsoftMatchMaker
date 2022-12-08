@@ -1,94 +1,67 @@
-﻿@using System.Text.RegularExpressions;
-@model TeamViewModel
+﻿@model TeamViewModel
 
 @{
     ViewBag.Title = "Team Details";
 }
-
-<h2 class="text-center">@ViewBag.Title</h2>
-
-
-<div class="container" style="display:inline">
-    <div class="row">
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.Name</p>
-
-            <p>
+<h1 class="text-center mt-6 mb-6">@Model.Name</h1>
+<article class="mt-6 mb-6 bg-white bg-opacity-25 border border-dark">
+    <div class="text-center">
+        <p>
+            <h4>
                 Wins:
-                <b>@Model.Wins</b>
-            </p>
+                <b>
+                    @Model.Wins
+                </b>
+            </h4>
+        </p>
+        <p>
+            <h4>
+                Losses:
+                <b>
+                    @Model.Losses
+                </b>
+            </h4>
+        </p>
+    </div>
+    <div class="container mt-6 mb-6">
+
+        <div class="text-center mt-6 mb-6">
             <p>
-                Wins:
-                <b>@Model.Losses</b>
+                <h4>
+                    Average skill level: <b> @Model.AverageSkillLevel</b>
+                </h4>
             </p>
-            <p>
-                Average Skill Points:
-                <b>@Model.AverageSkillPoints</b>
-            </p>
-
-
-            @*          <div class="form-inline">
-            @if (this.User.Identity.IsAuthenticated)
-            {
-            <a class="btn btn-warning" asp-controller="Houses" asp-action="Edit"
-            asp-route-id="@Model.Id">Edit</a>
-            <a class="ml-2 btn btn-danger" asp-controller="Houses" asp-action="Delete"
-            asp-route-id="@Model.Id">Delete</a>
-            @if (!Model.IsRented)
-            {
-            <form class="ml-2" asp-controller="Houses"
-            asp-action="Rent" asp-route-id="@Model.Id" method="post">
-            <input class="btn btn-primary" type="submit" value="Rent" />
-            </form>
-            }
-            else
-            {
-            <form class="ml-2" asp-controller="Houses" asp-action="Leave"
-            asp-route-id="@Model.Id" method="post">
-            <input class="btn btn-primary" type="submit" value="Leave" />
-            </form>
-            }
-            }
-            </div>*@
-
-            <div class="container">
-                <h2>Players</h2>
+        </div>
+    </div>
+    <section class="text-center mt-6 mb-6">
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePlayers" aria-expanded="true" aria-controls="collapsePlayers">
+            <h5>@Model.Players.Count players</h5>
+        </button>
+        <div class="show" id="collapsePlayers">
+            <div class="row">
                 @foreach (var player in Model.Players)
                 {
-                    <a class="btn" asp-controller="Players" asp-action="Details" asp-route-id="@player.Id">
-
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">@player.UserName</h5>
-                                @* @if (player.ImageUrl != null)
-                            {
-                            <img class="w-25" src="@player.ImageUrl" />
-                            }*@
-                                <p class="card-text">@player.SkillLevel</p>
-                                <p class="card-text">@player.PlayerClassName</p>
-
-                            </div>
-                        </div>
-                    </a>
-                }
-            </div>
-            <div class="container">
-                <h2>Games</h2>
-                @foreach (var game in Model.Games)
-                {
-                    <a class="btn" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">@game.Name</h5>
-                                <p class="card-text">@game.Result</p>
-                                <p class="card-text">@string.Join(" ", Regex.Matches(game.GameStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</p>
-                                <p class="card-text">@game.Date</p>
-                            </div>
-                        </div>
-                    </a>
+                    <partial name="_PlayerMinPartial" model="@player" />
                 }
             </div>
         </div>
-    </div>
-</div>
-</div>
+    </section>
+    <hr />
+    <section class="text-center mt-6 mb-6">
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGames" aria-expanded="true" aria-controls="collapseGames">
+            <h5>Games: @Model.Games.Count </h5>
+        </button>
+        <div class="show" id="collapseGames">
+            <div class="row">
+                @foreach (var game in Model.Games)
+                {
+                    <partial name="_GameMinPartial" model="@game" />
+                }
+            </div>
+        </div>
+    </section>
+</article>
+
+
+
+
