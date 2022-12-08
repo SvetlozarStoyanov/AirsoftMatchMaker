@@ -1,8 +1,35 @@
-﻿@{
+﻿@model IEnumerable<GameListModel>
+@{
     ViewData["Title"] = "Home Page";
 }
+@if (Model != null)
+{
+    @if (Model.Count() == 0)
+    {
+        <h2>There are no upcoming games on this day!</h2>
+    }
+    else
+    {
+        <h2 class="text-center mb-3">Upcoming games</h2>
+        <div class="row">
+            @foreach (var game in Model)
+            {
+                <partial name="_GamePartial" model="game" />
+            }
+        </div>
+    }
+}
+else
+{
+    @if (ViewBag.FinishedGame != null)
+    {
+        <h2 class="text-center">Last game</h2>
+        <partial name="_MyGamePartial" model="ViewBag.FinishedGame" />
+    }
+    if (ViewBag.UpcomingGame != null)
+    {
+        <h2 class="text-center">Next Game</h2>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+        <partial name="_MyGamePartial" model="ViewBag.UpcomingGame" />
+    }
+}
