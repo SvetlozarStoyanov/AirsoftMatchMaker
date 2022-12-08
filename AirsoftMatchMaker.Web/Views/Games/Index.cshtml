@@ -1,18 +1,26 @@
 ﻿@model IEnumerable<GameListModel>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewBag.Title = "Games";
 }
 @if (Model.Count() == 0)
 {
-    <h2>There are no upcoming games on this day!</h2>
+    <h2>No games found!</h2>
 }
 else
 {
-    <h2 class="text-center mb-3">Upcoming games</h2>
+    <h2 class="text-center mb-3">Finished games</h2>
     <div class="row">
-        @foreach (var game in Model)
+        @foreach (var game in ViewBag.FinishedGames)
         {
             <partial name="_GamePartial" model="game" />
         }
     </div>
+    <h2 class="text-center mb-3">Upcoming games</h2>
+    <div class="row">
+        @foreach (var game in ViewBag.UpcomingGames)
+        {
+            <partial name="_GamePartial" model="game" />
+        }
+    </div>
+
 }

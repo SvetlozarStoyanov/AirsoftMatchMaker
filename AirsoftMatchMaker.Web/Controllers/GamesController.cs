@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AirsoftMatchMaker.Web.Controllers
@@ -14,6 +15,8 @@ namespace AirsoftMatchMaker.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var model = await gameService.GetAllGamesAsync();
+            ViewBag.FinishedGames = model.Where(g => g.GameStatus == GameStatus.Finished);
+            ViewBag.UpcomingGames = model.Where(g => g.GameStatus == GameStatus.Upcoming);
             return View(model);
         }
         public async Task<IActionResult> Details(int id)
