@@ -74,14 +74,16 @@ namespace AirsoftMatchMaker.Core.Services
                 }
                 return true;
             }
+            if (player.TeamId != null)
+            {
+                var gamesEntryFeeSum = player.Team.GamesAsTeamRed
+                    .Union(player.Team.GamesAsTeamBlue)
+                    .Where(g => g.GameStatus == GameStatus.Upcoming)
+                    .Sum(g => g.EntryFee);
 
-            var gamesEntryFeeSum = player.Team.GamesAsTeamRed
-                .Union(player.Team.GamesAsTeamBlue)
-                .Where(g => g.GameStatus == GameStatus.Upcoming)
-                .Sum(g => g.EntryFee);
-
-            if (gamesEntryFeeSum + weapon.Price > player.User.Credits)
-                return false;
+                if (gamesEntryFeeSum + weapon.Price > player.User.Credits)
+                    return false;
+            }
 
             return true;
         }
