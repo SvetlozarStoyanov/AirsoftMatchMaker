@@ -6,8 +6,9 @@ namespace AirsoftMatchMaker.Core.Models.Games
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
-        public GameStatus GameStatus { get; set; }
+        public string Odds { get; set; }
         public string Result { get; set; }
         public string Date { get; set; }
+        public GameStatus GameStatus { get; set; }
     }
 }
