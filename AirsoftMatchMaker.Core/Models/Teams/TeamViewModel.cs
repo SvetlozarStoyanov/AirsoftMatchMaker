@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Players;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 
 namespace AirsoftMatchMaker.Core.Models.Teams
 {
@@ -15,7 +16,7 @@ namespace AirsoftMatchMaker.Core.Models.Teams
         public string Name { get; set; } = null!;
         public int Wins { get; set; }
         public int Losses { get; set; }
-        public int AverageSkillPoints { get; set; }
+        public SkillLevel AverageSkillLevel { get; set; }
         public ICollection<PlayerMinModel> Players { get; set; } = null!;
 
         public ICollection<GameMinModel> Games { get; set; }
