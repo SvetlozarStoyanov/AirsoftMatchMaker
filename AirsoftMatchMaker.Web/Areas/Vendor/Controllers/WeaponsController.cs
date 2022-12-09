@@ -13,16 +13,30 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
     {
         private readonly IWeaponService weaponService;
         private readonly IVendorService vendorService;
+        private readonly IHtmlSanitizingService htmlSanitizingService;
 
-        public WeaponsController(IWeaponService weaponService, IVendorService vendorService)
+        public WeaponsController(IWeaponService weaponService, IVendorService vendorService, IHtmlSanitizingService htmlSanitizingService)
         {
             this.weaponService = weaponService;
             this.vendorService = vendorService;
+            this.htmlSanitizingService = htmlSanitizingService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] WeaponsQueryModel model)
         {
-            var model = await weaponService.GetAllWeaponsAsync();
+            model.SearchTerm = htmlSanitizingService.SanitizeObject(model.SearchTerm);
+            var queryResult = await weaponService.GetAllWeaponsAsync(
+                                 model.WeaponType,
+                                 model.PreferedEngagementDistance,
+                                 model.Sorting,
+                                 model.SearchTerm,
+                                 model.WeaponsPerPage,
+                                 model.CurrentPage);
+            model.WeaponTypes = queryResult.WeaponTypes;
+            model.PreferedEngagementDistances = queryResult.PreferedEngagementDistances;
+            model.SortingOptions = queryResult.SortingOptions;
+            model.WeaponsCount = queryResult.WeaponsCount;
+            model.Weapons = queryResult.Weapons;
             return View(model);
         }
 
@@ -62,6 +76,14 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
                 model = await weaponService.CreateWeaponSellModelAsync(model.Id);
                 return View(model);
             }
+            model = htmlSanitizingService.SanitizeObject<WeaponSellModel>(model);
+            ModelState.Clear();
+            TryValidateModel(model);
+            if (!ModelState.IsValid)
+            {
+                model = await weaponService.CreateWeaponSellModelAsync(model.Id);
+                return View(model);
+            }
             await weaponService.SellWeaponAsync(User.Id(), model);
             return RedirectToAction("PlayerItems", "Inventory");
 
@@ -90,6 +112,20 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(WeaponCreateModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                model = weaponService.CreateWeaponCreateModelByWeaponType(model.WeaponType);
+                return View(model);
+            }
+            if (!(await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice)))
+            {
+                TempData["error"] = "You do not have enough credits to import this weapon!";
+                model = weaponService.CreateWeaponCreateModelByWeaponType(model.WeaponType);
+                return View(model);
+            }
+            model = htmlSanitizingService.SanitizeObject<WeaponCreateModel>(model);
+            ModelState.Clear();
+            TryValidateModel(model);
             if (!ModelState.IsValid)
             {
                 model = weaponService.CreateWeaponCreateModelByWeaponType(model.WeaponType);

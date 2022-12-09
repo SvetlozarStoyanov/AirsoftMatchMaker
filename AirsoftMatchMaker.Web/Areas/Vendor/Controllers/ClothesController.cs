@@ -13,11 +13,12 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
     {
         private readonly IClothingService clothingService;
         private readonly IVendorService vendorService;
-
-        public ClothesController(IClothingService clothingService, IVendorService vendorService)
+        private readonly IHtmlSanitizingService htmlSanitizingService;
+        public ClothesController(IClothingService clothingService, IVendorService vendorService, IHtmlSanitizingService htmlSanitizingService)
         {
             this.clothingService = clothingService;
             this.vendorService = vendorService;
+            this.htmlSanitizingService = htmlSanitizingService;
         }
 
         public async Task<IActionResult> Index()
@@ -62,6 +63,14 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
                 model = await clothingService.CreateClothingSellModelAsync(model.Id);
                 return View(model);
             }
+            model = htmlSanitizingService.SanitizeObject<ClothingSellModel>(model);
+            ModelState.Clear();
+            TryValidateModel(model);
+            if (!ModelState.IsValid)
+            {
+                model = await clothingService.CreateClothingSellModelAsync(model.Id);
+                return View(model);
+            }
             await clothingService.SellClothingAsync(User.Id(), model);
             TempData["success"] = $"{model.Name} is now for sale!";
             return RedirectToAction("PlayerItems", "Inventory");
@@ -80,8 +89,28 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ClothingCreateModel model)
         {
-            if (!ModelState.IsValid || !await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice))
+            if (!ModelState.IsValid)
             {
+                model.Colors = Enum.GetValues<ClothingColor>();
+                return View(model);
+            }
+            if (!await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice))
+            {
+                TempData["error"] = "You don't have enough credits to import this item!";
+                model.Colors = Enum.GetValues<ClothingColor>();
+                return View(model);
+            }
+            model = htmlSanitizingService.SanitizeObject<ClothingCreateModel>(model);
+            ModelState.Clear();
+            TryValidateModel(model);
+            if (!ModelState.IsValid)
+            {
+                model.Colors = Enum.GetValues<ClothingColor>();
+                return View(model);
+            }
+            if (!await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice))
+            {
+                TempData["error"] = "You don't have enough credits to import this item!";
                 model.Colors = Enum.GetValues<ClothingColor>();
                 return View(model);
             }

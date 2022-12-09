@@ -12,11 +12,13 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
     {
         private readonly IAmmoBoxService ammoBoxService;
         private readonly IVendorService vendorService;
+        private readonly IHtmlSanitizingService htmlSanitizingService;
 
-        public AmmoBoxesController(IAmmoBoxService ammoBoxService, IVendorService vendorService)
+        public AmmoBoxesController(IAmmoBoxService ammoBoxService, IVendorService vendorService, IHtmlSanitizingService htmlSanitizingService)
         {
             this.ammoBoxService = ammoBoxService;
             this.vendorService = vendorService;
+            this.htmlSanitizingService = htmlSanitizingService;
         }
 
         public async Task<IActionResult> Index()
@@ -58,11 +60,23 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AmmoBoxCreateModel model)
         {
-            if (!ModelState.IsValid || !await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice))
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
-          
+            model = htmlSanitizingService.SanitizeObject<AmmoBoxCreateModel>(model);
+            ModelState.Clear();
+            TryValidateModel(model);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            if (!await vendorService.CheckIfVendorHasEnoughCreditsAsync(User.Id(), model.FinalImportPrice))
+            {
+                TempData["error"] = "You do no have enough credits to import this item!";
+                return View(model);
+            }
+
             await ammoBoxService.CreateAmmoBoxAsync(User.Id(),model);
             return RedirectToAction(nameof(Index));
         }

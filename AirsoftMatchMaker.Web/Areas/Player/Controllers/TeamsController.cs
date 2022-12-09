@@ -4,6 +4,7 @@ using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
 {
     [Area("Player")]
@@ -12,10 +13,12 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
     {
         private readonly ITeamService teamService;
         private readonly ITeamRequestService teamRequestService;
-        public TeamsController(ITeamService teamService, ITeamRequestService teamRequestService)
+        private readonly IHtmlSanitizingService htmlSanitizingService;
+        public TeamsController(ITeamService teamService, ITeamRequestService teamRequestService, IHtmlSanitizingService htmlSanitizingService)
         {
             this.teamService = teamService;
             this.teamRequestService = teamRequestService;
+            this.htmlSanitizingService = htmlSanitizingService;
         }
 
         public async Task<IActionResult> Index()
@@ -68,13 +71,25 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(TeamCreateModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             if (await teamService.DoesTeamWithSameNameExistAsync(model.Name))
             {
                 TempData["error"] = "Team with that name already exists!";
                 return View(model);
             }
+            model = htmlSanitizingService.SanitizeObject<TeamCreateModel>(model);
+            ModelState.Clear();
+            TryValidateModel(model);
             if (!ModelState.IsValid)
             {
+                return View(model);
+            }
+            if (await teamService.DoesTeamWithSameNameExistAsync(model.Name))
+            {
+                TempData["error"] = "Team with that name already exists!";
                 return View(model);
             }
             await teamService.CreateTeamAsync(User.Id(), model);
