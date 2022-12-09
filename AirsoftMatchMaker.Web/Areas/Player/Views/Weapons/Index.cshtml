@@ -1,57 +1,120 @@
-﻿@using System.Text.RegularExpressions;
-@model IEnumerable<WeaponListModel>
-<table class=" table table-bordered  table-striped" style="width:100%">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Range
-            </th>
-            <th>
-                Price
-            </th>
-            <th>
+﻿@model WeaponsQueryModel
+@{
+    ViewBag.Title = "Weapons";
 
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var weapon in Model)
+    var previousPage = Model.CurrentPage - 1;
+    if (previousPage < 1)
+    {
+        previousPage = 1;
+    }
+
+    var maxPage = Math.Ceiling((double)Model.WeaponsCount /
+    Model.WeaponsPerPage);
+    var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
+          !Model.Weapons.Any();
+}
+<form method="get">
+    <div class="row mt-6 mb-6">
+        <div class="d-flex justify-content-between">
+            <div class="form-group">
+                <label asp-for="WeaponType">Type</label>
+                <select asp-for="WeaponType" class="form-select">
+                    @foreach (var weaponType in Model.WeaponTypes)
+                    {
+                        if (weaponType != "All")
+                        {
+                            <option value="@(Enum.Parse<WeaponType>(weaponType))">@string.Join(" ", Regex.Matches(weaponType.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</option>
+                        }
+                        else
+                        {
+                            <option value="@null">All</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="PreferedEngagementDistance"></label>
+                <select asp-for="PreferedEngagementDistance" class="form-select">
+                    @foreach (var preferedEngagementDistance in Model.PreferedEngagementDistances)
+                    {
+                        if (preferedEngagementDistance != "All")
+                        {
+                            <option value="@(Enum.Parse<PreferedEngagementDistance>(preferedEngagementDistance))">@string.Join(" ", Regex.Matches(preferedEngagementDistance.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</option>
+                        }
+                        else
+                        {
+                            <option value="@null">All</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sorting"></label>
+                <select asp-for="Sorting" class="form-select">
+                    @foreach (var sorting in Model.SortingOptions)
+                    {
+                        <option value="@sorting">@string.Join(" ", Regex.Matches(sorting.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SearchTerm">Search</label>
+                <input asp-for="SearchTerm" class="form-control" placeholder="...">
+            </div>
+            <div class="form-group ">
+                <label asp-for="WeaponsPerPage">Items per page</label>
+                <select asp-for="WeaponsPerPage" class="form-select">
+                    @for (int i = 1; i < 13; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <br />
+
+
+    <div class="row mb-5">
+
+        <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
+            <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
+               asp-controller="Weapons"
+               asp-action="Index"
+               asp-route-currentPage="@previousPage"
+               asp-route-weaponType="@Model.WeaponType"
+               asp-route-preferedEngagementDistance="@Model.PreferedEngagementDistance"
+               asp-route-searchTerm="@Model.SearchTerm"
+               asp-route-weaponsPerPage="@Model.WeaponsPerPage"
+               asp-route-sorting="@((int)Model.Sorting)"><<</a>
+        </div>
+
+        <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
+            <a class="btn btn-primary @(shouldButtonBeDisabled ? "disabled" : string.Empty)"
+               asp-controller="Weapons"
+               asp-action="Index"
+               asp-route-currentPage="@(Model.CurrentPage + 1)"
+               asp-route-weaponType="@Model.WeaponType"
+               asp-route-preferedEngagementDistance="@Model.PreferedEngagementDistance"
+               asp-route-searchTerm="@Model.SearchTerm"
+               asp-route-weaponsPerPage="@Model.WeaponsPerPage"
+               asp-route-sorting="@((int)Model.Sorting)">>></a>
+        </div>
+        <div class="text-center btn-lg">
+            <button type="submit" class="btn btn-primary btn-lg">Filter</button>
+        </div>
+    </div>
+</form>
+@if (Model.Weapons.Count() == 0)
+{
+    <h2 class="text-center">No weapons meet the current criteria!</h2>
+}
+else
+{
+    <div class="row">
+        @foreach (var weapon in Model.Weapons)
         {
-            <tr>
-                <td width="50%">
-                    @weapon.Name
-                </td>
-                <td width="30%">
-                    @string.Join(" ", Regex.Matches(weapon.WeaponType.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())
-                </td>
-                <td width="30%">
-                    @weapon.PreferedEngagementDistance.ToString()
-                </td>
-                <td width="30%">
-                    @weapon.Price
-                </td>
-                <td>
-                    <div class="w-75 btn-group" role="group">
-                        <a asp-area="Player" asp-controller="Weapons" asp-action="Details" asp-route-id="@weapon.Id" class="btn btn-primary mx-2">
-                            <i class="bi bi-info-square-fill"></i>
-                            Details
-                        </a>
-                    </div>
-                    <div class="w-75 btn-group" role="group">
-                            <a asp-area="Player" asp-controller="Weapons" asp-action="Buy" asp-route-id="@weapon.Id" class="btn btn-success mx-2">
-                            <i class="bi bi-info-square-fill"></i>
-                            Buy
-                        </a>
-                    </div>
-                </td>
-            </tr>
+            <partial name="_WeaponPartial" model="@weapon" />
         }
-    </tbody>
-
-</table>
+    </div>
+}

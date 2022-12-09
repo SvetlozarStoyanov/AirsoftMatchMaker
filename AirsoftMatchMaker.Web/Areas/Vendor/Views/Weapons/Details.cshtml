@@ -1,72 +1,96 @@
-﻿@using System.Text.RegularExpressions;
-@model WeaponViewModel
+﻿@model WeaponViewModel
 
 @{
+    string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Weapons/{Model.WeaponType}.jpg";
     ViewBag.Title = "Weapon Details";
 }
-
-<h2 class="text-center">@ViewBag.Title</h2>
-
-
-<div class="container" style="display:inline">
-    <div class="row">
-        @*   <div class="col-4">
-        <img class="card-img-top" style="width: 20rem;"
-        src="@Model.ImageUrl" alt="House Image">
-        </div>*@
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.Name</p>
-            @*<p>Located in: <b>@Model.Address</b></p>*@
-            <p>
-                Type:
+<h1 class="text-center mt-6 mb-6">@Model.Name</h1>
+<article class="mt-6 mb-6 bg-dark bg-opacity-25 border border-white">
+    <div class="text-center">
+        <p>
+            <h4>
+                Type :
                 <b>@string.Join(" ", Regex.Matches(Model.WeaponType.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
-            </p>
+            </h4>
+        </p>
 
-            <p>
-                Description: @Model.Description
-            </p>
-            <p>
+        <p>
+            <h4>
                 Feet per second:
                 <b>
                     @Model.FeetPerSecond fps
                 </b>
-            </p>
-            <p>
+            </h4>
+        </p>
+        <p>
+            <h4>
                 Firerate:
                 <b>
                     @Model.FireRate rpm
                 </b>
-            </p>
-            <p>
+            </h4>
+        </p>
+        <p>
+            <h4>
                 Average ammo spent for one game:
                 <b>
                     @Model.AverageAmmoExpendedPerGame
                 </b>
-            </p>
-  @*          @if (Model.VendorName != null)
-            {
-                <p>
-                    Vendor:
-                    <b>
-                        <a class="btn btn-primary btn-info" asp-controller="Vendors" asp-action="Details" asp-route-id="@Model.VendorId.Value"> @Model.VendorName</a>
-                    </b>
-                </p>
-            }
-            @if (Model.PlayerName != null)
-            {
-                <p>
-                    Player:
-                    <b>
-                        <a class="btn btn-primary btn-info" asp-controller="Players" asp-action="Details" asp-route-id="@Model.PlayerId.Value"> @Model.PlayerName</a>
-                    </b>
-                </p>
-            }*@
-            <p>
+            </h4>
+        </p>
+        <p>
+            <h4>
                 Range:
                 <b>
                     @Model.PreferedEngagementDistance
                 </b>
-            </p>
+            </h4>
+        </p>
+    </div>
+    <div class="container mt-6 mb-6">
+        <div class="text-center mt-6 mb-6">
+            <img class="" style="width: 20rem;"
+                 src="@img" alt="Weapon Image">
+
+            <div class="text-center mt-6 mb-6">
+                <p style="font-size:40px;">
+                    @Model.Description
+                </p>
+            </div>
+            <div class="mt-6 mb-6 text-center">
+                <p>
+                    <h4>
+                        Price:
+                        <b>
+                            @Model.Price credits
+                        </b>
+                    </h4>
+                </p>
+            </div>
         </div>
     </div>
-</div>
+    <div class="text-center">
+        @if (Model.VendorName != null)
+        {
+            <p>
+                <h4>
+                    Vendor:
+                    <b>
+                        <a class="btn btn-primary btn-info" asp-controller="Vendors" asp-action="Details" asp-route-id="@Model.VendorId.Value"> @Model.VendorName</a>
+                    </b>
+                </h4>
+            </p>
+        }
+        @if (Model.PlayerName != null)
+        {
+            <p>
+                <h4>
+                    Player:
+                    <b>
+                        <a class="btn btn-primary btn-info" asp-controller="Players" asp-action="Details" asp-route-id="@Model.PlayerId.Value"> @Model.PlayerName</a>
+                    </b>
+                </h4>
+            </p>
+        }
+    </div>
+</article>
