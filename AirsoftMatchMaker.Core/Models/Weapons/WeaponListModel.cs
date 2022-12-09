@@ -1,5 +1,4 @@
-﻿using AirsoftMatchMaker.Infrastructure.Data.Entities;
-using AirsoftMatchMaker.Infrastructure.Data.Enums;
+﻿using AirsoftMatchMaker.Infrastructure.Data.Enums;
 
 namespace AirsoftMatchMaker.Core.Models.Weapons
 {
@@ -12,9 +11,5 @@ namespace AirsoftMatchMaker.Core.Models.Weapons
         public string? ImageUrl { get; set; }
         public WeaponType WeaponType { get; set; }
         public PreferedEngagementDistance PreferedEngagementDistance { get; set; }
-        //public int? VendorId { get; set; }
-        //public virtual Vendor? Vendor { get; set; }
-        //public int? PlayerId { get; set; }
-        //public virtual Player? Player { get; set; }
     }
 }
