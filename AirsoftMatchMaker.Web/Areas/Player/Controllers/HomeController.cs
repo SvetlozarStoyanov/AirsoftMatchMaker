@@ -27,13 +27,21 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             if (await teamService.DoesUserHaveTeamAsync(User.Id()))
             {
                 var playerGamesmodel = await gameService.GetPlayersLastFinishedAndFirstUpcomingGameAsync(User.Id());
-                if (playerGamesmodel == null)
+                if (playerGamesmodel == null || playerGamesmodel.Count() == 0)
                 {
                     var defaultModel = await gameService.GetUpcomingGamesByDateAsync();
                     return View(defaultModel);
                 }
-                ViewBag.FinishedGame = playerGamesmodel.FirstOrDefault(g => g.GameStatus == GameStatus.Finished);
-                ViewBag.UpcomingGame = playerGamesmodel.FirstOrDefault(g => g.GameStatus == GameStatus.Upcoming);
+
+                if (playerGamesmodel.Any(g => g.GameStatus == GameStatus.Finished))
+                {
+                    ViewBag.FinishedGame = playerGamesmodel.FirstOrDefault(g => g.GameStatus == GameStatus.Finished);
+                }
+
+                if (playerGamesmodel.Any(g => g.GameStatus == GameStatus.Upcoming))
+                {
+                    ViewBag.UpcomingGame = playerGamesmodel.FirstOrDefault(g => g.GameStatus == GameStatus.Upcoming);
+                }
                 return View();
             }
             var model = await gameService.GetUpcomingGamesByDateAsync();

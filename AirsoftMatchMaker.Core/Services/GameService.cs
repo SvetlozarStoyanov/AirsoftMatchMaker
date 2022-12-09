@@ -370,94 +370,63 @@ namespace AirsoftMatchMaker.Core.Services
             return odds;
         }
 
-        public async Task<IEnumerable<GameListModel?>> GetPlayersLastFinishedAndFirstUpcomingGameAsync(string userId)
+        public async Task<IEnumerable<GameListModel>> GetPlayersLastFinishedAndFirstUpcomingGameAsync(string userId)
         {
             var player = await repository.AllReadOnly<Player>()
                 .Where(p => p.UserId == userId)
-                .Include(p => p.Team)
-                .ThenInclude(t => t.GamesAsTeamRed)
-                .Include(p => p.Team)
-                .ThenInclude(t => t.GamesAsTeamBlue)
                 .FirstOrDefaultAsync();
             if (player.TeamId == null)
             {
                 return null;
             }
-            var games = player.Team.GamesAsTeamRed.Union(player.Team.GamesAsTeamBlue).ToList();
-            if (games.Count == 0)
+
+            var team = await repository.AllReadOnly<Team>()
+                .Where(t => t.Id == player.TeamId)
+                .FirstOrDefaultAsync();
+            var games = await repository.AllReadOnly<Game>()
+                .Where(g => g.TeamRedId == team.Id || g.TeamBlueId == team.Id)
+                .Include(g => g.Map)
+                .Include(g => g.GameMode)
+                .Include(g => g.TeamRed)
+                .Include(t => t.TeamBlue)
+                .Select(g => new GameListModel()
+                {
+                    Id = g.Id,
+                    Name = g.Name,
+                    GameStatus = g.GameStatus,
+                    Date = g.Date,
+                    GameModeName = g.GameMode.Name,
+                    MapId = g.MapId,
+                    MapName = g.Map.Name,
+                    MapImageUrl = g.Map.ImageUrl,
+                    TerrainType = g.Map.Terrain,
+                    TeamRedId = g.TeamRedId,
+                    TeamRedName = g.TeamRed.Name,
+                    TeamRedOdds = g.TeamRedOdds,
+                    TeamBlueId = g.TeamBlueId,
+                    TeamBlueName = g.TeamBlue.Name,
+                    TeamBlueOdds = g.TeamBlueOdds,
+                    Result = g.Result != null ? g.Result : "Not played yet",
+                })
+                .ToListAsync();
+            var playerGames = new List<GameListModel>();
+
+            var lastGame = games
+                .Where(g => g.GameStatus == GameStatus.Finished)
+                .OrderByDescending(g => g.Date)
+                .FirstOrDefault();
+            if (lastGame != null)
             {
-                return null;
+                playerGames.Add(lastGame);
             }
-            var lastGameId = games.OrderByDescending(g => g.Date)
-                .FirstOrDefault(g => g.GameStatus == GameStatus.Finished).Id;
-            var lastGame = new GameListModel();
-            if (lastGameId != null)
+            var nextGame = games
+                .Where(g => g.GameStatus == GameStatus.Upcoming)
+                .OrderBy(g => g.Date)
+                .FirstOrDefault();
+            if (nextGame != null)
             {
-                lastGame = await repository.AllReadOnly<Game>()
-                    .Where(g => g.Id == lastGameId)
-                    .Select(g => new GameListModel()
-                    {
-                        Id = g.Id,
-                        Name = g.Name,
-                        GameStatus = g.GameStatus,
-                        Date = g.Date,
-                        GameModeName = g.GameMode.Name,
-                        MapId = g.MapId,
-                        MapName = g.Map.Name,
-                        MapImageUrl = g.Map.ImageUrl,
-                        TerrainType = g.Map.Terrain,
-                        TeamRedId = g.TeamRedId,
-                        TeamRedName = g.TeamRed.Name,
-                        TeamRedOdds = g.TeamRedOdds,
-                        TeamBlueId = g.TeamBlueId,
-                        TeamBlueName = g.TeamBlue.Name,
-                        TeamBlueOdds = g.TeamBlueOdds,
-                        Result = g.Result != null ? g.Result : "Not played yet",
-                    })
-                    .FirstOrDefaultAsync();
+                playerGames.Add(nextGame);
             }
-            else
-            {
-                lastGame = null;
-            }
-            var nextGameId = games.OrderBy(g => g.Date)
-                .FirstOrDefault(g => g.GameStatus == GameStatus.Upcoming).Id;
-            var nextGame = new GameListModel();
-            if (lastGameId != null)
-            {
-                nextGame = await repository.AllReadOnly<Game>()
-                    .Where(g => g.Id == nextGameId)
-                    .Include(g => g.Map)
-                    .Include(g => g.GameMode)
-                    .Select(g => new GameListModel()
-                    {
-                        Id = g.Id,
-                        Name = g.Name,
-                        GameStatus = g.GameStatus,
-                        Date = g.Date,
-                        GameModeName = g.GameMode.Name,
-                        MapId = g.MapId,
-                        MapName = g.Map.Name,
-                        MapImageUrl = g.Map.ImageUrl,
-                        TerrainType = g.Map.Terrain,
-                        TeamRedId = g.TeamRedId,
-                        TeamRedName = g.TeamRed.Name,
-                        TeamRedOdds = g.TeamRedOdds,
-                        TeamBlueId = g.TeamBlueId,
-                        TeamBlueName = g.TeamBlue.Name,
-                        TeamBlueOdds = g.TeamBlueOdds,
-                        Result = g.Result != null ? g.Result : "Not played yet",
-                    })
-                   .FirstOrDefaultAsync();
-            }
-            else
-            {
-                nextGame = null;
-            }
-            var playerGames = new List<GameListModel?>()
-            {
-                lastGame,nextGame
-            };
             return playerGames;
         }
     }
