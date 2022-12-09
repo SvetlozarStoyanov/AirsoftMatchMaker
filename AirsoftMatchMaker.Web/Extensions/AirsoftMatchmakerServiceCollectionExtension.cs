@@ -27,6 +27,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IGameSimulationService, GameSimulationService>();
             services.AddScoped<IBackgroundTeamService, BackgroundTeamService>();
             services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
+            services.AddScoped<IHtmlSanitizingService, HtmlSanitizingService>();
+            
             services.AddHostedService<RepeatingService>();
             return services;
         }
