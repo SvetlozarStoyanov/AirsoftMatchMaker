@@ -1,6 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Common.Constants;
 using AirsoftMatchMaker.Core.Contracts;
-using AirsoftMatchMaker.Core.Models.Weapons;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.Weapons;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
@@ -84,14 +84,62 @@ namespace AirsoftMatchMaker.Core.Services
                 if (gamesEntryFeeSum + weapon.Price > player.User.Credits)
                     return false;
             }
-
             return true;
         }
 
-        public async Task<IEnumerable<WeaponListModel>> GetAllWeaponsAsync()
+
+
+        public async Task<WeaponsQueryModel> GetAllWeaponsAsync(
+            WeaponType? weaponType = null,
+            PreferedEngagementDistance? preferedEngagementDistance = null,
+            WeaponSorting weaponSorting = WeaponSorting.PriceAscending,
+            string? searchTerm = null,
+            int weaponsPerPage = 6,
+            int currentPage = 1)
         {
             var weapons = await repository.AllReadOnly<Weapon>()
                 .Where(w => w.PlayerId == null && w.VendorId != null)
+                .ToListAsync();
+            if (weaponType != null)
+            {
+                weapons = weapons.Where(w => w.WeaponType == weaponType).ToList();
+            }
+            if (preferedEngagementDistance != null)
+            {
+                weapons = weapons.Where(w => w.PreferedEngagementDistance == preferedEngagementDistance).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                weapons = weapons.Where(w => w.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
+            }
+            switch (weaponSorting)
+            {
+                case WeaponSorting.PriceAscending:
+                    weapons = weapons.OrderBy(w => w.Price).ToList();
+                    break;
+                case WeaponSorting.PriceDescending:
+                    weapons = weapons.OrderByDescending(w => w.Price).ToList();
+                    break;
+                case WeaponSorting.RangeAscending:
+                    weapons = weapons.OrderBy(w => w.PreferedEngagementDistance).ToList();
+                    break;
+                case WeaponSorting.RangeDescending:
+                    weapons = weapons.OrderByDescending(w => w.PreferedEngagementDistance).ToList();
+                    break;
+                case WeaponSorting.FeetPerSecond:
+                    weapons = weapons.OrderByDescending(w => w.FeetPerSecond).ToList();
+
+                    break;
+                case WeaponSorting.FireRate:
+                    weapons = weapons.OrderByDescending(w => w.FireRate).ToList();
+                    break;
+                case WeaponSorting.AverageAmmoSpent:
+                    weapons = weapons.OrderBy(w => w.AverageAmmoExpendedPerGame).ToList();
+                    break;
+            }
+            var filteredWeapons = weapons
+                .Skip((currentPage - 1) * weaponsPerPage)
+                .Take(weaponsPerPage)
                 .Select(w => new WeaponListModel()
                 {
                     Id = w.Id,
@@ -101,9 +149,12 @@ namespace AirsoftMatchMaker.Core.Services
                     Price = w.Price,
                     PreferedEngagementDistance = w.PreferedEngagementDistance,
                     WeaponType = w.WeaponType
-                })
-                .ToListAsync();
-            return weapons;
+                }).ToList();
+            var queryModel = CreateWeaponsQueryModel();
+
+            queryModel.WeaponsCount = weapons.Count();
+            queryModel.Weapons = filteredWeapons;
+            return queryModel;
         }
 
         public async Task<WeaponViewModel> GetWeaponByIdAsync(int id)
@@ -296,5 +347,29 @@ namespace AirsoftMatchMaker.Core.Services
             weapon.VendorId = vendor.Id;
             await repository.SaveChangesAsync();
         }
+
+        private WeaponsQueryModel CreateWeaponsQueryModel()
+        {
+            var model = new WeaponsQueryModel();
+            var weaponTypes = Enum.GetNames(typeof(WeaponType)).Cast<string>().ToList();
+
+            List<string> weaponTypesForModel = new List<string>()
+            {
+                "All"
+            };
+            weaponTypesForModel.AddRange(weaponTypes);
+            model.WeaponTypes = weaponTypesForModel;
+            var preferedEngagementDistances = Enum.GetNames(typeof(PreferedEngagementDistance)).Cast<string>().ToList();
+
+            List<string> preferedEngagementDistancesForModel = new List<string>()
+            {
+                "All"
+            };
+            preferedEngagementDistancesForModel.AddRange(preferedEngagementDistances);
+            model.PreferedEngagementDistances = preferedEngagementDistancesForModel;
+            model.SortingOptions = Enum.GetValues<WeaponSorting>().Cast<WeaponSorting>().ToList();
+            return model;
+        }
+
     }
 }

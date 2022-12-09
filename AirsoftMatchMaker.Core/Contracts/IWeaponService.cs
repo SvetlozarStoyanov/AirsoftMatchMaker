@@ -1,4 +1,5 @@
-﻿using AirsoftMatchMaker.Core.Models.Weapons;
+﻿using AirsoftMatchMaker.Core.Models.Enums;
+using AirsoftMatchMaker.Core.Models.Weapons;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 
@@ -41,11 +42,14 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="bool"/></returns>
         Task<bool> UserHasEnoughCreditsAsync(string userId, int weaponId);
 
-        /// <summary>
-        /// Gets all weapons from the dbContext
-        /// </summary>
-        /// <returns><see cref="IEnumerable{T}" /></returns>
-        Task<IEnumerable<WeaponListModel>> GetAllWeaponsAsync();
+        Task<WeaponsQueryModel> GetAllWeaponsAsync(
+            WeaponType? weaponType = null,
+            PreferedEngagementDistance? range = null,
+            WeaponSorting weaponSorting = WeaponSorting.PriceAscending,
+            string? searchTerm = null,
+            int weaponsPerPage = 6,
+            int currentPage = 1
+            );
 
         /// <summary>
         /// Returns Weapon with given Id or null if it does not exist
