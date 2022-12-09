@@ -27,7 +27,10 @@ namespace AirsoftMatchMaker.Core.Services
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
 
-            var clothing = await repository.GetByIdAsync<Clothing>(clothingId);
+            var clothing = await repository.AllReadOnly<Clothing>()
+                .Where(c => c.Id == clothingId)
+                .Include(c => c.Vendor)
+                .FirstOrDefaultAsync();
             if (clothing.Vendor.UserId == player.UserId)
                 return false;
             return true;
