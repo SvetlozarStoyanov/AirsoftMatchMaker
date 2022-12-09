@@ -15,13 +15,13 @@ namespace AirsoftMatchMaker.Core.Models.Weapons
         [Required]
         [MinLength(3), MaxLength(200)]
         public string Description { get; set; } = null!;
-        [Range(1, 100, ErrorMessage = "Feet per second must be within given range!")]
+        [Range(1, 10000, ErrorMessage = "Feet per second must be within given range!")]
         public double FeetPerSecond { get; set; }
-        [Range(1, 100, ErrorMessage = "Fire rate must be within given range!")]
+        [Range(1, 10000, ErrorMessage = "Fire rate must be within given range!")]
         public double FireRate { get; set; }
         public decimal Price { get; set; }
         public string? ImageUrl { get; set; }
-        [Range(1, 100, ErrorMessage = "Average ammo expended must be within given range!")]
+        [Range(1, 10000, ErrorMessage = "Average ammo expended must be within given range!")]
         public int AverageAmmoExpendedPerGame { get; set; }
         public WeaponType WeaponType { get; init; }
         public PreferedEngagementDistance PreferedEngagementDistance { get; set; }
