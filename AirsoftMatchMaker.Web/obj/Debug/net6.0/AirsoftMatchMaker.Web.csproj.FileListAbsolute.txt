@@ -284,3 +284,6 @@ C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\obj\Debug\net
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\obj\Debug\net6.0\scopedcss\Areas\Vendor\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\obj\Debug\net6.0\scopedcss\Areas\Player\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\obj\Debug\net6.0\scopedcss\Areas\Matchmaker\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net6.0\AngleSharp.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net6.0\AngleSharp.Css.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net6.0\HtmlSanitizer.dll
