@@ -15,7 +15,7 @@
         <div class="row">
             @foreach (var clothing in Model.Clothes)
             {
-                <partial name="_ClothingPartial" model="clothing" />
+                <partial name="_MyClothingPartial" model="clothing" />
             }
         </div>
     }
@@ -33,7 +33,7 @@
         <div class="row">
             @foreach (var weapon in Model.Weapons)
             {
-                <partial name="_WeaponPartial" model="weapon" />
+                <partial name="_MyWeaponPartial" model="weapon" />
             }
         </div>
     }

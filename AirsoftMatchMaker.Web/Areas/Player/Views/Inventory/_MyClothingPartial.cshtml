@@ -1,0 +1,24 @@
+﻿@model ClothingListModel
+
+@{
+    string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Weapons/{Model.ClothingColor}.jpg";
+    string altImg = $"/img/Default/Weapons/{Model.ClothingColor}.jpg";
+}
+<div class="col-md-4 mt-3">
+    <div class="card mb-3">
+        <div class="text-center">
+            <img style="height:250px;" class="card-img-top" src="@img" alt="Clothing Image">
+        </div>
+        <div class="card-body text-center">
+            <h4 class="text-center">@Model.Name</h4>
+            <h6>Color: <b>@string.Join(" ", Regex.Matches(Model.ClothingColor.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b></h6>
+            <h6>Price: <b>@Model.Price credits</b></h6>
+            <br />
+            <a asp-area="Player" asp-controller="Clothes" asp-action="Details" asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                <i class="bi bi-info"></i>
+                Details
+            </a>
+        </div>
+    </div>
+</div>
