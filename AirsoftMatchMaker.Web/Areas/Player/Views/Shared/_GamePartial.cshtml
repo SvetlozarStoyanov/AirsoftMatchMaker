@@ -1,5 +1,4 @@
-﻿@using AirsoftMatchMaker.Infrastructure.Data.Enums;
-@model GameListModel
+﻿@model GameListModel
 
 @{
     string img = @Model.MapImageUrl != null ? @Model.MapImageUrl : $"/img/Default/Maps/{Model.TerrainType}.jpg";
@@ -13,9 +12,12 @@
         <div class="card-body text-center bg-dark bg-opacity-25">
             <div class="text-white">
                 <h4 class="text-center">@Model.Name</h4>
+                @if (Model.GameStatus != GameStatus.Finished)
+                {
+                    <h6><b>@Model.Result</b></h6>
+                }
                 <h6><b>@Model.TeamRedOdds:</b> <b>@Model.TeamBlueOdds</b></h6>
                 <h6><b>@Model.Date.ToShortDateString()</b></h6>
-                <h6><b>@Model.Result</b></h6>
                 <h6>Gamemode: <b>@Model.GameModeName</b> </h6>
                 <h6>Map: <b>@Model.MapName</b></h6>
             </div>
