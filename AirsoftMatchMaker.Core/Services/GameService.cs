@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Maps;
 using AirsoftMatchMaker.Core.Models.Players;
@@ -43,13 +44,47 @@ namespace AirsoftMatchMaker.Core.Services
             return Math.Abs(teamRedPlayersCount - teamBluePlayersCount) <= 2;
         }
 
-        public async Task<IEnumerable<GameListModel>> GetAllGamesAsync()
+        public async Task<GamesQueryModel> GetAllGamesAsync(
+            string? teamName,
+            string? gameModeName,
+            GameStatus? gameStatus,
+            GameSorting sorting,
+            int gamesPerPage = 6,
+            int currentPage = 1)
         {
             var games = await repository.AllReadOnly<Game>()
                 .Include(g => g.TeamRed)
                 .Include(g => g.TeamBlue)
+                .Include(g => g.GameMode)
+                .Include(g => g.Map)
                 .Include(g => g.Matchmaker)
                 .ThenInclude(mm => mm.User)
+                .ToListAsync();
+            if (!string.IsNullOrEmpty(teamName))
+            {
+                games = games.Where(g => g.TeamRed.Name == teamName || g.TeamBlue.Name == teamName).ToList();
+            }
+            if (!string.IsNullOrEmpty(gameModeName))
+            {
+                games = games.Where(g => g.GameMode.Name == gameModeName).ToList();
+            }
+            if (gameStatus != null)
+            {
+                games = games.Where(g => g.GameStatus == gameStatus).ToList();
+            }
+            switch (sorting)
+            {
+                case GameSorting.Newest:
+                    games = games.OrderByDescending(g => g.Date).ToList();
+                    break;
+                case GameSorting.Oldest:
+                    games = games.OrderBy(g => g.Date).ToList();
+                    break;
+            }
+
+            var filteredGames = games
+                .Skip((currentPage - 1) * gamesPerPage)
+                .Take(gamesPerPage)
                 .Select(g => new GameListModel()
                 {
                     Id = g.Id,
@@ -69,9 +104,14 @@ namespace AirsoftMatchMaker.Core.Services
                     TeamBlueOdds = g.TeamBlueOdds,
                     Result = g.Result != null ? g.Result : "Not played yet",
                 })
-                .ToListAsync();
-            return games;
+                .ToList();
+            GamesQueryModel model = await CreateGamesQueryModel();
+            model.GamesCount = games.Count;
+            model.Games = filteredGames;
+            return model;
         }
+
+
 
         public async Task<GameViewModel> GetGameByIdAsync(int id)
         {
@@ -325,59 +365,6 @@ namespace AirsoftMatchMaker.Core.Services
 
         }
 
-        private int CalculateTeamImpactForBettingOdds(Team team, string averageEngagementDistance)
-        {
-            var averageSkillPoints = team.Players.Average(p => p.SkillPoints);
-            var appropriateEngagementRangePlayers = 0;
-            foreach (var player in team.Players)
-            {
-                if (player.Weapons.Any(w => w.PreferedEngagementDistance.ToString() == averageEngagementDistance))
-                    appropriateEngagementRangePlayers++;
-            }
-            var teamImpact = averageSkillPoints;
-            if (appropriateEngagementRangePlayers == 0)
-            {
-                teamImpact *= 0.90;
-            }
-            else
-            {
-                teamImpact *= 1 + ((double)appropriateEngagementRangePlayers) / 10;
-            }
-            if (team.Wins > team.Losses)
-            {
-                teamImpact += (team.Wins - team.Losses) * 2;
-            }
-            else if (team.Wins < team.Losses)
-            {
-                teamImpact += (team.Losses - team.Wins) * 2;
-            }
-
-            return (int)Math.Round(teamImpact, 0);
-        }
-
-        private ValueTuple<int, int> CalculateOdds(int teamRedImpact, int teamBlueImpact)
-        {
-            int impactDifference = Math.Abs(teamRedImpact - teamBlueImpact) + 100;
-
-            (int teamRedOdds, int teamBlueOdds) odds = new ValueTuple<int, int>();
-            if (teamRedImpact > teamBlueImpact)
-            {
-                odds.teamRedOdds = -impactDifference;
-                odds.teamBlueOdds = +impactDifference;
-            }
-            else if (teamRedImpact < teamBlueImpact)
-            {
-                odds.teamRedOdds = +impactDifference;
-                odds.teamBlueOdds = -impactDifference;
-            }
-            else
-            {
-                odds.teamRedOdds = -impactDifference;
-                odds.teamBlueOdds = -impactDifference;
-            }
-            return odds;
-        }
-
         public async Task<IEnumerable<GameListModel>> GetPlayersLastFinishedAndFirstUpcomingGameAsync(string userId)
         {
             var player = await repository.AllReadOnly<Player>()
@@ -436,6 +423,91 @@ namespace AirsoftMatchMaker.Core.Services
                 playerGames.Add(nextGame);
             }
             return playerGames;
+        }
+
+        private int CalculateTeamImpactForBettingOdds(Team team, string averageEngagementDistance)
+        {
+            var averageSkillPoints = team.Players.Average(p => p.SkillPoints);
+            var appropriateEngagementRangePlayers = 0;
+            foreach (var player in team.Players)
+            {
+                if (player.Weapons.Any(w => w.PreferedEngagementDistance.ToString() == averageEngagementDistance))
+                    appropriateEngagementRangePlayers++;
+            }
+            var teamImpact = averageSkillPoints;
+            if (appropriateEngagementRangePlayers == 0)
+            {
+                teamImpact *= 0.90;
+            }
+            else
+            {
+                teamImpact *= 1 + ((double)appropriateEngagementRangePlayers) / 10;
+            }
+            if (team.Wins > team.Losses)
+            {
+                teamImpact += (team.Wins - team.Losses) * 2;
+            }
+            else if (team.Wins < team.Losses)
+            {
+                teamImpact += (team.Losses - team.Wins) * 2;
+            }
+
+            return (int)Math.Round(teamImpact, 0);
+        }
+
+        private ValueTuple<int, int> CalculateOdds(int teamRedImpact, int teamBlueImpact)
+        {
+            int impactDifference = Math.Abs(teamRedImpact - teamBlueImpact) + 100;
+
+            (int teamRedOdds, int teamBlueOdds) odds = new ValueTuple<int, int>();
+            if (teamRedImpact > teamBlueImpact)
+            {
+                odds.teamRedOdds = -impactDifference;
+                odds.teamBlueOdds = +impactDifference;
+            }
+            else if (teamRedImpact < teamBlueImpact)
+            {
+                odds.teamRedOdds = +impactDifference;
+                odds.teamBlueOdds = -impactDifference;
+            }
+            else
+            {
+                odds.teamRedOdds = -impactDifference;
+                odds.teamBlueOdds = -impactDifference;
+            }
+            return odds;
+        }
+
+
+
+        private async Task<GamesQueryModel> CreateGamesQueryModel()
+        {
+            var model = new GamesQueryModel();
+            var gameStatuses = Enum.GetNames<GameStatus>().Cast<string>().ToList();
+            var modelGameStatuses = new List<string>()
+            {
+                "All"
+            };
+            modelGameStatuses.AddRange(gameStatuses);
+            model.GameStatuses = modelGameStatuses;
+            var modelTeamNames = new List<string>()
+            {
+                "All"
+            };
+            modelTeamNames.AddRange(await repository.AllReadOnly<Team>()
+                .Select(t => t.Name)
+                .ToListAsync());
+            model.TeamNames = modelTeamNames;
+            var modelGameModeNames = new List<string>()
+            {
+                "All"
+            };
+            modelGameModeNames.AddRange(await repository.AllReadOnly<GameMode>()
+                .Select(t => t.Name)
+                .ToListAsync());
+            model.GameModeNames = modelGameModeNames;
+            model.SortingOptions = Enum.GetValues<GameSorting>().ToList();
+            return model;
         }
     }
 }

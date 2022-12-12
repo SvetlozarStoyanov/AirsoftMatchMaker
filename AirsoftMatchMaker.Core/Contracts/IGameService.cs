@@ -1,5 +1,7 @@
-﻿using AirsoftMatchMaker.Core.Models.Games;
+﻿using AirsoftMatchMaker.Core.Models.Enums;
+using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 
 namespace AirsoftMatchMaker.Core.Contracts
 {
@@ -22,11 +24,14 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns></returns>
         Task<bool> AreTeamPlayerCountsSimilarAsync(int teamRedId, int teamBlueId);
 
-        /// <summary>
-        /// Returns all games
-        /// </summary>
-        /// <returns><see cref="IEnumerable{T}"/></returns>
-        Task<IEnumerable<GameListModel>> GetAllGamesAsync();
+
+        Task<GamesQueryModel> GetAllGamesAsync(
+            string? teamName,
+            string? gameModeName,
+            GameStatus? gameStatus,
+            GameSorting sorting,
+            int gamesPerPage = 6,
+            int currentPage = 1);
 
         /// <summary>
         /// Returns game with given id
