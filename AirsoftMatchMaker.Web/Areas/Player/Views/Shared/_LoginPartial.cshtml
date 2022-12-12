@@ -1,16 +1,37 @@
-﻿@using AirsoftMatchMaker.Infrastructure.Data.Entities
+﻿@using AirsoftMatchMaker.Core.Contracts;
+@using AirsoftMatchMaker.Infrastructure.Data.Entities
+@using AirsoftMatchMaker.Web.Extensions;
 @using Microsoft.AspNetCore.Identity
 @using System.Security.Claims;
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
+@inject ITeamService teamService
 
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
         var userDto = await UserManager.FindByIdAsync(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-        <li class="nav-item">
-            <a class="nav-link active" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link active dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item active" asp-area="Player" asp-controller="Users" asp-action="MyProfile">My profile info</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item active" asp-area="Player" asp-controller="RoleRequests" asp-action="Index">Roles</a>
+                <a class="dropdown-item active" asp-area="Player" asp-controller="Bets" asp-action="Mine">My bets</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item active" asp-area="Player" asp-controller="Inventory" asp-action="Index">My items</a>
+                <div class="dropdown-divider"></div>
+                @if (await teamService.DoesUserHaveTeamAsync(User.Id()))
+                {
+                    <a class="dropdown-item active" asp-area="Player" asp-controller="Teams" asp-action="MyTeam">My team</a>
+                    <a class="dropdown-item active" asp-area="Player" asp-controller="TeamRequests" asp-action="Index">My team's requests</a>
+                }
+                else
+                {
+                    <a class="dropdown-item active" asp-area="Player" asp-controller="TeamRequests" asp-action="Mine">My team requests</a>
+                }
+            </div>
         </li>
         <li class="nav-item">
             <a class="nav-link active" disabled>@userDto.Credits credits</a>

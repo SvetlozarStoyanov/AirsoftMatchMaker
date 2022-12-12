@@ -12,15 +12,22 @@
         var userDto = await UserManager.FindByIdAsync(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
 
-        <li class="nav-item">
-            <a class="nav-link active" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link active dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item active" asp-area="Vendor" asp-controller="Users" asp-action="MyProfile">My profile info</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item active" asp-area="Vendor" asp-controller="RoleRequests" asp-action="Index">Roles</a>
+                <a class="dropdown-item active" asp-area="Vendor" asp-controller="Bets" asp-action="Mine">My bets</a>
+                <div class="dropdown-divider"></div>
+            </div>
         </li>
         <li class="nav-item">
             <a class="nav-link active" disabled>@userDto.Credits credits</a>
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-area="" asp-controller="Users" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link active">Logout</button>
+                <button type="submit" class="nav-link active btn btn-link">Logout</button>
             </form>
         </li>
     }
