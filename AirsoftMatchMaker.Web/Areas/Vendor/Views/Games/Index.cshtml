@@ -1,65 +1,132 @@
-﻿@using System.Text.RegularExpressions;
-@model IEnumerable<GameListModel>
-<table class=" table table-bordered  table-striped" style="width:100%">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Map
-            </th>
-            <th>
-                Game Mode
-            </th>
-            <th>
-                Status
-            </th>
-            <th>
-                Result
-            </th>
-            <th>
+﻿@model GamesQueryModel
+@{
+    ViewBag.Title = "Games";
 
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var game in Model)
+    var previousPage = Model.CurrentPage - 1;
+    if (previousPage < 1)
+    {
+        previousPage = 1;
+    }
+
+    var maxPage = Math.Ceiling((double)Model.GamesCount /
+    Model.GamesPerPage);
+    var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
+          !Model.Games.Any();
+}
+<h2 class="text-center mt-6 mb-6">@ViewBag.Title</h2>
+<form method="get">
+    <div class="row mt-6 mb-6">
+        <div class="d-flex justify-content-between">
+            <div class="form-group">
+                <label asp-for="GameStatus">Status</label>
+                <select asp-for="GameStatus" class="form-select">
+                    @foreach (var gameStatus in Model.GameStatuses)
+                    {
+                        if (gameStatus != "All")
+                        {
+                            <option value="@(Enum.Parse<GameStatus>(gameStatus))">@string.Join(" ", Regex.Matches(gameStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</option>
+                        }
+                        else
+                        {
+                            <option value="@null">All</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="GameModeName">Gamemode</label>
+                <select asp-for="GameModeName" class="form-select">
+                    @foreach (var gameModeName in Model.GameModeNames)
+                    {
+                        if (gameModeName != "All")
+                        {
+                            <option value="@gameModeName">@gameModeName</option>
+                        }
+                        else
+                        {
+                            <option value="@null">All</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="TeamName">Team</label>
+                <select asp-for="TeamName" class="form-select">
+                    @foreach (var teamName in Model.TeamNames)
+                    {
+                        if (teamName != "All")
+                        {
+                            <option value="@teamName">@teamName</option>
+                        }
+                        else
+                        {
+                            <option value="@null">All</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sorting"></label>
+                <select asp-for="Sorting" class="form-select">
+                    @foreach (var sorting in Model.SortingOptions)
+                    {
+                        <option value="@sorting">@string.Join(" ", Regex.Matches(sorting.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group ">
+                <label asp-for="GamesPerPage">Items per page</label>
+                <select asp-for="GamesPerPage" class="form-select">
+                    @for (int i = 1; i < 13; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <br />
+
+
+    <div class="row mb-5">
+
+        <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
+            <a class="btn btn-primary btn-lg @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
+               asp-area="Vendor"
+               asp-controller="Games"
+               asp-action="Index"
+               asp-route-currentPage="@previousPage"
+               asp-route-gameStatus="@Model.GameStatus"
+               asp-route-gamesPerPage="@Model.GamesPerPage"
+               asp-route-sorting="@((int)Model.Sorting)"><i class="bi bi-arrow-left-square"></i></a>
+        </div>
+
+        <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
+            <a class="btn btn-primary btn-lg @(shouldButtonBeDisabled ? "disabled" : string.Empty)"
+               asp-area="Vendor"
+               asp-controller="Games"
+               asp-action="Index"
+               asp-route-currentPage="@(Model.CurrentPage + 1)"
+               asp-route-gameStatus="@Model.GameStatus"
+               asp-route-gamesPerPage="@Model.GamesPerPage"
+               asp-route-sorting="@((int)Model.Sorting)"><i class="bi bi-arrow-right-square"></i></a>
+        </div>
+        <div class="text-center btn-lg">
+            <button type="submit" class="btn btn-primary btn-lg">Filter</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.GamesCount == 0)
+{
+    <h2 class="text-center">No games found!</h2>
+}
+else
+{
+    <div class="row">
+        @foreach (var game in Model.Games)
         {
-            <tr>
-                <td width="50%">
-                    @game.Name
-                </td>
-                <td width="30%">
-                    @game.MapName
-                </td>
-                <td width="30%">
-                    @game.GameModeName
-                </td>
-                <td width="30%">
-                    @string.Join(" ", Regex.Matches(game.GameStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())
-                </td>
-                <td width="30%">
-                    @game.Result
-                </td>
-
-                <td>
-                    <div class="w-75 btn-group" role="group">
-                        <a asp-area="Vendor" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id" class="btn btn-primary mx-2">
-                            <i class="bi bi-info-square-fill"></i>
-                            Details
-                        </a>
-                    </div>
-                    <div class="w-75 btn-group" role="group">
-                        <a asp-area="Vendor" asp-controller="Bets" asp-action="Create" asp-route-gameId="@game.Id" class="btn btn-warning mx-2">
-                            <i class="bi bi-info-square-fill"></i>
-                            Bet
-                        </a>
-                    </div>
-
-                </td>
-            </tr>
+            <partial name="_GamePartial" model="game" />
         }
-    </tbody>
-
-</table>
+    </div>
+}
