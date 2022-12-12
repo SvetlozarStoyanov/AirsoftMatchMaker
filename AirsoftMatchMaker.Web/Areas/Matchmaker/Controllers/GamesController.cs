@@ -3,7 +3,6 @@ using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
 
 namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
 {
@@ -47,7 +46,7 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(GameSelectDateModel selectDateModel)
         {
-            var createModel = await gameService.CreateGameModelAsync(selectDateModel.DateTime);
+            var createModel = await gameService.CreateGameCreateModelAsync(selectDateModel.DateTime);
             return View(createModel);
         }
 
@@ -56,13 +55,13 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
         {
             if (!ModelState.IsValid || model.TeamRedId == model.TeamBlueId)
             {
-                model = await gameService.CreateGameModelAsync(model.DateString);
+                model = await gameService.CreateGameCreateModelAsync(model.DateString);
                 return View(model);
             }
             if (!(await gameService.AreTeamPlayerCountsSimilarAsync(model.TeamRedId, model.TeamBlueId)))
             {
                 TempData["error"] = "Player count difference cannot be greater than 2 players!";
-                model = await gameService.CreateGameModelAsync(model.DateString);
+                model = await gameService.CreateGameCreateModelAsync(model.DateString);
                 return View(model);
             }
             await gameService.CreateGameAsync(User.Id(), model);
