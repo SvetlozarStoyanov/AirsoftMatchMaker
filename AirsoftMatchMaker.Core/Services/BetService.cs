@@ -56,6 +56,7 @@ namespace AirsoftMatchMaker.Core.Services
                 {
                     Id = b.Id,
                     GameName = b.Game.Name,
+                    GameId = b.GameId,
                     CreditsBet = b.CreditsBet,
                     ChosenTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
                     Odds = b.Odds,
@@ -118,7 +119,7 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 UserId = userId,
                 GameId = model.GameId,
-                Odds = game.TeamRedId == model.TeamRedId ? game.TeamRedOdds : game.TeamBlueOdds,
+                Odds = model.WinningTeamId == game.TeamRedId ? game.TeamRedOdds : game.TeamBlueOdds,
                 CreditsBet = model.CreditsPlaced,
                 WinningTeamId = model.WinningTeamId,
                 BetStatus = BetStatus.Active
