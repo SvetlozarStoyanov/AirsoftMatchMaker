@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<TeamRequestListModel>
-<h1 class="text-center">Team Requests</h1>
+@{
+    ViewBag.Title = "Team Requests";
+}
+<h1 class="text-center">@ViewBag.Title</h1>
 @if (ViewBag.PendingRequests.Count > 0)
 {
     <partial name="_PendingRequests" model="ViewBag.PendingRequests" />

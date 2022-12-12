@@ -1,5 +1,7 @@
-﻿@using System.Text.RegularExpressions;
-@model IEnumerable<RoleListModel>
+﻿@model IEnumerable<RoleListModel>
+@{
+    ViewBag.Title = "Roles";
+}
 <partial name="_UserRoles" model="@ViewBag.UserRoles"></partial>
 @if (Model == null)
 {
