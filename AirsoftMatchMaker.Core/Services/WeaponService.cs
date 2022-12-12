@@ -126,9 +126,14 @@ namespace AirsoftMatchMaker.Core.Services
                 case WeaponSorting.RangeDescending:
                     weapons = weapons.OrderByDescending(w => w.PreferedEngagementDistance).ToList();
                     break;
+                case WeaponSorting.Newest:
+                    weapons = weapons.OrderByDescending(w => w.Id).ToList();
+                    break;
+                case WeaponSorting.Oldest:
+                    weapons = weapons.OrderBy(w => w.Id).ToList();
+                    break;
                 case WeaponSorting.FeetPerSecond:
                     weapons = weapons.OrderByDescending(w => w.FeetPerSecond).ToList();
-
                     break;
                 case WeaponSorting.FireRate:
                     weapons = weapons.OrderByDescending(w => w.FireRate).ToList();
