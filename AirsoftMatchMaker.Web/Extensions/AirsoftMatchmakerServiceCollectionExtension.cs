@@ -20,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ITeamService, TeamService>();
             services.AddScoped<IVendorService, VendorService>();
             services.AddScoped<IMatchmakerService, MatchmakerService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IRoleRequestService, RoleRequestService>();
             services.AddScoped<ITeamRequestService, TeamRequestService>();
