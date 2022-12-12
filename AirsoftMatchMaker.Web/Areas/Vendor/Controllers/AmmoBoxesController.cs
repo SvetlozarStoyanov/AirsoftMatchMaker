@@ -21,9 +21,18 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
             this.htmlSanitizingService = htmlSanitizingService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] AmmoBoxesQueryModel model)
         {
-            var model = await ammoBoxService.GetAllAmmoBoxesAsync();
+            model.SearchTerm = htmlSanitizingService.SanitizeStringProperty(model.SearchTerm);
+            var queryResult = await ammoBoxService.GetAllAmmoBoxesAsync(
+                model.SearchTerm,
+                model.Sorting,
+                model.AmmoBoxesPerPage,
+                model.CurrentPage
+                );
+            model.AmmoBoxes = queryResult.AmmoBoxes;
+            model.AmmoBoxesCount = queryResult.AmmoBoxesCount;
+            model.SortingOptions = queryResult.SortingOptions;
             return View(model);
         }
 

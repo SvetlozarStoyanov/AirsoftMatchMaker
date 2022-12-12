@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Models.AmmoBoxes;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 
 namespace AirsoftMatchMaker.Core.Contracts
@@ -32,11 +33,12 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="bool"/></returns>
         Task<bool> UserHasEnoughCreditsAsync(string userId, int ammoBoxId, int quantity);
 
-        /// <summary>
-        /// Returns all ammo boxes with quantity>0
-        /// </summary>
-        /// <returns><see cref="IEnumerable{T}"/></returns>
-        Task<IEnumerable<AmmoBoxListModel>> GetAllAmmoBoxesAsync();
+
+        Task<AmmoBoxesQueryModel> GetAllAmmoBoxesAsync(
+            string? searchTerm,
+            AmmoBoxSorting sorting,
+            int ammoBoxesPerPage = 6,
+            int currentPage = 1);
 
         /// <summary>
         /// Returns ammo box with given id

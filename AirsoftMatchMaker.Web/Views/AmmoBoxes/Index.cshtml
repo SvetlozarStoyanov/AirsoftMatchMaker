@@ -1,60 +1,85 @@
-﻿@using System.Text.RegularExpressions;
-@model IEnumerable<AmmoBoxListModel>
-<table class=" table table-bordered  table-striped" style="width:100%">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Ammo
-            </th>
-            <th>
-                Price
-            </th>
-            <th>
-                Quantity
-            </th>
-            <th>
+﻿@model AmmoBoxesQueryModel
+@{
+    ViewBag.Title = "Ammo Boxes";
 
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var ammoBox in Model)
-        {
-            <tr>
-                <td width="50%">
-                    @ammoBox.Name
-                </td>
-                <td width="30%">
-                    @ammoBox.Amount ammo
-                </td>
-                <td width="30%">
-                    @ammoBox.Price credits
-                </td>
-                <td width="30%">
-                    @ammoBox.Quantity left
-                </td>
-                <td>
-                    <div class="w-75 btn-group" role="group">
-                        <a asp-controller="AmmoBoxes" asp-action="Details" asp-route-id="@ammoBox.Id" class="btn btn-primary mx-2">
-                            <i class="bi bi-info-square-fill"></i>
-                            Details
-                        </a>
-                    </div>
-                    @if (User.IsInRole("Player"))
+    var previousPage = Model.CurrentPage - 1;
+    if (previousPage < 1)
+    {
+        previousPage = 1;
+    }
+
+    var maxPage = Math.Ceiling((double)Model.AmmoBoxesCount /
+    Model.AmmoBoxesPerPage);
+    var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
+          !Model.AmmoBoxes.Any();
+}
+<form method="get">
+    <div class="row mt-6 mb-6">
+        <div class="d-flex justify-content-between">
+
+            <div class="form-group">
+                <label asp-for="Sorting"></label>
+                <select asp-for="Sorting" class="form-select">
+                    @foreach (var sorting in Model.SortingOptions)
                     {
-                        <div class="w-75 btn-group" role="group">
-                            <a asp-controller="AmmoBoxes" asp-action="Buy" asp-route-id="@ammoBox.Id" class="btn btn-success mx-2">
-                                <i class="bi bi-info-square-fill"></i>
-                                Buy
-                            </a>
-                        </div>
+                        <option value="@sorting">@string.Join(" ", Regex.Matches(sorting.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</option>
                     }
-                </td>
-            </tr>
-        }
-    </tbody>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SearchTerm">Search</label>
+                <input asp-for="SearchTerm" class="form-control" placeholder="...">
+            </div>
+            <div class="form-group ">
+                <label asp-for="AmmoBoxesPerPage">Items per page</label>
+                <select asp-for="AmmoBoxesPerPage" class="form-select">
+                    @for (int i = 1; i < 13; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <br />
 
-</table>
+
+    <div class="row mb-5">
+
+        <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
+            <a class="btn btn-primary btn-lg @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
+               asp-controller="AmmoBoxes"
+               asp-action="Index"
+               asp-route-currentPage="@previousPage"
+               asp-route-searchTerm="@Model.SearchTerm"
+               asp-route-ammoBoxesPerPage="@Model.AmmoBoxesPerPage"
+               asp-route-sorting="@((int)Model.Sorting)"><i class="bi bi-arrow-left-square"></i></a>
+        </div>
+
+        <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
+            <a class="btn btn-primary btn-lg @(shouldButtonBeDisabled ? "disabled" : string.Empty)"
+               asp-controller="AmmoBoxes"
+               asp-action="Index"
+               asp-route-currentPage="@(Model.CurrentPage + 1)"
+               asp-route-searchTerm="@Model.SearchTerm"
+               asp-route-ammoBoxesPerPage="@Model.AmmoBoxesPerPage"
+               asp-route-sorting="@((int)Model.Sorting)"><i class="bi bi-arrow-right-square"></i></a>
+        </div>
+        <div class="text-center btn-lg">
+            <button type="submit" class="btn btn-primary btn-lg">Filter</button>
+        </div>
+    </div>
+</form>
+@if (Model.AmmoBoxes.Count() == 0)
+{
+    <h2 class="text-center">No ammo boxes meet the current criteria!</h2>
+}
+else
+{
+    <div class="row">
+        @foreach (var clothing in Model.AmmoBoxes)
+        {
+            <partial name="_AmmoBoxPartial" model="@clothing" />
+        }
+    </div>
+}

@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.AmmoBoxes;
+using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,14 +12,25 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
     public class AmmoBoxesController : Controller
     {
         private readonly IAmmoBoxService ammoBoxService;
-        public AmmoBoxesController(IAmmoBoxService ammoBoxService)
+        private readonly IHtmlSanitizingService htmlSanitizingService;
+        public AmmoBoxesController(IAmmoBoxService ammoBoxService, IHtmlSanitizingService htmlSanitizingService)
         {
             this.ammoBoxService = ammoBoxService;
+            this.htmlSanitizingService = htmlSanitizingService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] AmmoBoxesQueryModel model)
         {
-            var model = await ammoBoxService.GetAllAmmoBoxesAsync();
+            model.SearchTerm = htmlSanitizingService.SanitizeStringProperty(model.SearchTerm);
+            var queryResult = await ammoBoxService.GetAllAmmoBoxesAsync(
+                model.SearchTerm,
+                model.Sorting,
+                model.AmmoBoxesPerPage,
+                model.CurrentPage
+                );
+            model.AmmoBoxes = queryResult.AmmoBoxes;
+            model.AmmoBoxesCount = queryResult.AmmoBoxesCount;
+            model.SortingOptions = queryResult.SortingOptions;
             return View(model);
         }
 

@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.AmmoBoxes;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
@@ -70,10 +71,47 @@ namespace AirsoftMatchMaker.Core.Services
             return true;
         }
 
-        public async Task<IEnumerable<AmmoBoxListModel>> GetAllAmmoBoxesAsync()
+        public async Task<AmmoBoxesQueryModel> GetAllAmmoBoxesAsync(
+            string? searchTerm,
+            AmmoBoxSorting sorting,
+            int ammoBoxesPerPage = 6,
+            int currentPage = 1)
         {
             var ammoBoxes = await repository.AllReadOnly<AmmoBox>()
                 .Where(ab => ab.Quantity > 0)
+                .ToListAsync();
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                ammoBoxes = ammoBoxes.Where(ab => ab.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
+            }
+            switch (sorting)
+            {
+                case AmmoBoxSorting.PriceAscending:
+                    ammoBoxes = ammoBoxes.OrderBy(ab => ab.Price).ToList();
+                    break;
+                case AmmoBoxSorting.PriceDescending:
+                    ammoBoxes = ammoBoxes.OrderByDescending(ab => ab.Price).ToList();
+                    break;
+                case AmmoBoxSorting.Alphabetically:
+                    ammoBoxes = ammoBoxes.OrderBy(ab => ab.Name).ToList();
+
+                    break;
+                case AmmoBoxSorting.Newest:
+                    ammoBoxes = ammoBoxes.OrderByDescending(ab => ab.Id).ToList();
+                    break;
+                case AmmoBoxSorting.Oldest:
+                    ammoBoxes = ammoBoxes.OrderBy(ab => ab.Id).ToList();
+                    break;
+                case AmmoBoxSorting.AmmoAmount:
+                    ammoBoxes = ammoBoxes.OrderByDescending(ab => ab.Amount).ToList();
+                    break;
+                case AmmoBoxSorting.Quantity:
+                    ammoBoxes = ammoBoxes.OrderByDescending(ab => ab.Quantity).ToList();
+                    break;
+            }
+            var filteredAmmoBoxes = ammoBoxes
+                .Skip((currentPage - 1) * ammoBoxesPerPage)
+                .Take(ammoBoxesPerPage)
                 .Select(ab => new AmmoBoxListModel()
                 {
                     Id = ab.Id,
@@ -82,11 +120,13 @@ namespace AirsoftMatchMaker.Core.Services
                     Quantity = ab.Quantity,
                     Price = ab.Price,
                     VendorId = ab.VendorId,
-
-
-                }).ToListAsync();
-            return ammoBoxes;
+                }).ToList();
+            var model = CreateAmmoBoxesQueryModel();
+            model.AmmoBoxes = filteredAmmoBoxes;
+            model.AmmoBoxesCount = ammoBoxes.Count;
+            return model;
         }
+
 
         public async Task<AmmoBoxViewModel> GetAmmoBoxByIdAsync(int id)
         {
@@ -97,6 +137,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Select(ab => new AmmoBoxViewModel()
                 {
                     Id = ab.Id,
+                    Name = ab.Name,
                     Amount = ab.Amount,
                     Quantity = ab.Quantity,
                     Price = ab.Price,
@@ -181,7 +222,6 @@ namespace AirsoftMatchMaker.Core.Services
             };
             vendor.User.Credits -= model.FinalImportPrice;
             vendor.AmmoBoxes.Add(ammoBox);
-            //await repository.AddAsync<AmmoBox>(ammoBox);
             await repository.SaveChangesAsync();
         }
 
@@ -220,6 +260,13 @@ namespace AirsoftMatchMaker.Core.Services
             vendor.User.Credits -= model.FinalImportPrice;
             ammoBox.Quantity += model.QuantityAdded;
             await repository.SaveChangesAsync();
+        }
+
+        private AmmoBoxesQueryModel CreateAmmoBoxesQueryModel()
+        {
+            var model = new AmmoBoxesQueryModel();
+            model.SortingOptions = Enum.GetValues<AmmoBoxSorting>().Cast<AmmoBoxSorting>().ToList();
+            return model;
         }
     }
 }
