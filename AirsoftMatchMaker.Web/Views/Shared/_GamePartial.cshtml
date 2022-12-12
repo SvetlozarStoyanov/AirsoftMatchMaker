@@ -23,7 +23,7 @@
             </a>
             @if (Model.GameStatus != GameStatus.Finished)
             {
-                <a asp-controller="Bets" asp-action="Create" asp-route-id="@Model.Id"
+                <a asp-controller="Bets" asp-action="Create" asp-route-gameId="@Model.Id"
                class="btn btn-warning">
                     Bet
                 </a>

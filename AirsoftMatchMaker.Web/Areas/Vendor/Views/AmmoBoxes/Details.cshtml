@@ -1,34 +1,56 @@
-﻿@using System.Text.RegularExpressions;
-@model AmmoBoxViewModel
+﻿@model AmmoBoxViewModel
 
 @{
+    //string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Clothes/{Model.ClothingColor}.jpg";
     ViewBag.Title = "Ammo Box Details";
 }
 
-<h2 class="text-center">@ViewBag.Title</h2>
 
 
-<div class="container" style="display:inline">
-    <div class="row">
-        @*   <div class="col-4">
-        <img class="card-img-top" style="width: 20rem;"
-        src="@Model.ImageUrl" alt="House Image">
-        </div>*@
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.Name</p>
-            <p>
-                Ammo : @Model.Amount
-            </p>
-            <p>
-                Boxes left : @Model.Quantity
-            </p>
-            <p>
-                Price:
-                <b>
-                    @Model.Price credits
-                </b>
-            </p>
 
+<h1 class="text-center mt-6 mb-6">@Model.Name</h1>
+<article class="mt-6 mb-6 bg-dark bg-opacity-25 border border-white">
+    <div class="text-center">
+        <p>
+            <h4>
+                Amount :
+                <b>@Model.Amount</b>
+            </h4>
+        </p>
+        <p>
+            <h4>
+                Quantity:
+                <b>@Model.Quantity</b>
+            </h4>
+        </p>
+    </div>
+    <div class="container mt-6 mb-6">
+        <div class="text-center mt-6 mb-6">
+            @*            <img class="" style="width: 20rem;"
+            src="@img" alt="Weapon Image">*@
+            <div class="mt-6 mb-6 text-center">
+                <p>
+                    <h4>
+                        Price:
+                        <b>
+                            @Model.Price credits
+                        </b>
+                    </h4>
+                </p>
+            </div>
         </div>
     </div>
-</div>
+    <div class="text-center">
+        @if (Model.VendorName != null)
+        {
+            <p>
+                <h4>
+                    Vendor:
+                    <b>
+                        <a class="btn btn-primary btn-info" asp-controller="Vendors" asp-action="Details" asp-route-id="@Model.VendorId.Value"> @Model.VendorName</a>
+                    </b>
+                </h4>
+            </p>
+        }
+    </div>
+</article>

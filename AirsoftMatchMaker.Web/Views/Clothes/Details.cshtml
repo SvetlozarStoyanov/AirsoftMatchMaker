@@ -1,77 +1,67 @@
-﻿@using System.Text.RegularExpressions;
-@model ClothingViewModel
+﻿@model ClothingViewModel
 
 @{
+    string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Clothes/{Model.ClothingColor}.jpg";
     ViewBag.Title = "Clothing Details";
 }
 
-<h2 class="text-center">@ViewBag.Title</h2>
 
 
-<div class="container" style="display:inline">
-    <div class="row">
-        @*   <div class="col-4">
-        <img class="card-img-top" style="width: 20rem;"
-        src="@Model.ImageUrl" alt="House Image">
-        </div>*@
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.Name</p>
-            @*<p>Located in: <b>@Model.Address</b></p>*@
-            <p>
-                Description: @Model.Description
-            </p>
-            <p>
-                Color:
+
+<h1 class="text-center mt-6 mb-6">@Model.Name</h1>
+<article class="mt-6 mb-6 bg-white bg-opacity-25 border border-dark">
+    <div class="text-center">
+        <p>
+            <h4>
+                Color :
                 <b>@string.Join(" ", Regex.Matches(Model.ClothingColor.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
-            </p>
-            
-            @if (Model.VendorName != null)
-            {
+            </h4>
+        </p>
+    </div>
+    <div class="container mt-6 mb-6">
+        <div class="text-center mt-6 mb-6">
+            <img class="" style="width: 20rem;"
+                 src="@img" alt="Weapon Image">
+
+            <div class="text-center mt-6 mb-6">
+                <p style="font-size:40px;">
+                    @Model.Description
+                </p>
+            </div>
+            <div class="mt-6 mb-6 text-center">
                 <p>
+                    <h4>
+                        Price:
+                        <b>
+                            @Model.Price credits
+                        </b>
+                    </h4>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        @if (Model.VendorName != null)
+        {
+            <p>
+                <h4>
                     Vendor:
                     <b>
                         <a class="btn btn-primary btn-info" asp-controller="Vendors" asp-action="Details" asp-route-id="@Model.VendorId.Value"> @Model.VendorName</a>
                     </b>
-                </p>
-            }
-            @if (Model.PlayerName != null)
-            {
-                <p>
+                </h4>
+            </p>
+        }
+        @if (Model.PlayerName != null)
+        {
+            <p>
+                <h4>
                     Player:
                     <b>
                         <a class="btn btn-primary btn-info" asp-controller="Players" asp-action="Details" asp-route-id="@Model.PlayerId.Value"> @Model.PlayerName</a>
                     </b>
-                </p>
-            }
-            <p>
-                Price:
-                <b>
-                    @Model.Price credits
-                </b>
+                </h4>
             </p>
-            @*            <div class="form-inline">
-            @if (this.User.Identity.IsAuthenticated)
-            {
-            <a class="btn btn-warning" asp-controller="Houses" asp-action="Edit"
-            asp-route-id="@Model.Id">Edit</a>
-            <a class="ml-2 btn btn-danger" asp-controller="Houses" asp-action="Delete"
-            asp-route-id="@Model.Id">Delete</a>
-            @if (!Model.IsRented)
-            {
-            <form class="ml-2" asp-controller="Houses"
-            asp-action="Rent" asp-route-id="@Model.Id" method="post">
-            <input class="btn btn-primary" type="submit" value="Rent" />
-            </form>
-            }
-            else
-            {
-            <form class="ml-2" asp-controller="Houses" asp-action="Leave"
-            asp-route-id="@Model.Id" method="post">
-            <input class="btn btn-primary" type="submit" value="Leave" />
-            </form>
-            }
-            }
-            </div>*@
-        </div>
+        }
     </div>
-</div>
+</article>

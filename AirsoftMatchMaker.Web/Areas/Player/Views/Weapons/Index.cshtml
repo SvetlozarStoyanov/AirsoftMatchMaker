@@ -78,7 +78,7 @@
     <div class="row mb-5">
 
         <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
-            <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
+            <a class="btn btn-primary btn-lg @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
                asp-controller="Weapons"
                asp-action="Index"
                asp-route-currentPage="@previousPage"
@@ -86,11 +86,11 @@
                asp-route-preferedEngagementDistance="@Model.PreferedEngagementDistance"
                asp-route-searchTerm="@Model.SearchTerm"
                asp-route-weaponsPerPage="@Model.WeaponsPerPage"
-               asp-route-sorting="@((int)Model.Sorting)"><<</a>
+               asp-route-sorting="@((int)Model.Sorting)"><i class="bi bi-arrow-left-square"></i></a>
         </div>
 
         <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
-            <a class="btn btn-primary @(shouldButtonBeDisabled ? "disabled" : string.Empty)"
+            <a class="btn btn-primary btn-lg @(shouldButtonBeDisabled ? "disabled" : string.Empty)"
                asp-controller="Weapons"
                asp-action="Index"
                asp-route-currentPage="@(Model.CurrentPage + 1)"
@@ -98,7 +98,7 @@
                asp-route-preferedEngagementDistance="@Model.PreferedEngagementDistance"
                asp-route-searchTerm="@Model.SearchTerm"
                asp-route-weaponsPerPage="@Model.WeaponsPerPage"
-               asp-route-sorting="@((int)Model.Sorting)">>></a>
+               asp-route-sorting="@((int)Model.Sorting)"><i class="bi bi-arrow-right-square"></i></a>
         </div>
         <div class="text-center btn-lg">
             <button type="submit" class="btn btn-primary btn-lg">Filter</button>
