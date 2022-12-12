@@ -52,7 +52,10 @@ namespace AirsoftMatchMaker.Core.Services
                         Terrain = m.Terrain
                     })
                     .ToList(),
-                    Games = gm.Games.Where(g => g.GameStatus == GameStatus.Finished).Select(g => new GameMinModel()
+                    Games = gm.Games.OrderByDescending(g => g.Date)
+                    .Where(g => g.GameStatus == GameStatus.Finished)
+                    .Take(6)
+                    .Select(g => new GameMinModel()
                     {
                         Id = g.Id,
                         Name = g.Name,

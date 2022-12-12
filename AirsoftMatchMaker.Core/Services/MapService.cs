@@ -3,6 +3,7 @@ using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Maps;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirsoftMatchMaker.Core.Services
@@ -56,13 +57,16 @@ namespace AirsoftMatchMaker.Core.Services
                     Mapsize = m.Mapsize,
                     GameModeId = m.GameModeId,
                     GameModeName = m.GameMode.Name,
-                    Games = m.Games.Select(g => new GameMinModel()
+                    Games = m.Games
+                    .OrderByDescending(g => g.Date)
+                    .Where(g => g.GameStatus == GameStatus.Finished)
+                    .Take(6)
+                    .Select(g => new GameMinModel()
                     {
                         Id = g.Id,
-                        Name = $"{g.TeamRed.Name} vs {g.TeamBlue.Name}",
-                        //Date = $"{g.Date.Date}:{g.Date.Hour}",
+                        Name = g.Name,
                         Date = g.Date.ToShortDateString(),
-                        Result = g.Result != null ? g.Result : "not played yet",
+                        Result = g.Result != null ? g.Result : "Not played yet",
                     })
                     .ToList()
                 })
