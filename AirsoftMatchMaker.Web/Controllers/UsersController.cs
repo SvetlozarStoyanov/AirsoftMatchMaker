@@ -1,5 +1,7 @@
-﻿using AirsoftMatchMaker.Core.Models.Users;
+﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.Users;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +12,13 @@ namespace AirsoftMatchMaker.Web.Controllers
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
         private readonly RoleManager<Role> roleManager;
-        public UsersController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager)
+        private readonly IUserService userService;
+        public UsersController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, IUserService userService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
+            this.userService = userService;
         }
         [HttpGet]
         public IActionResult Register()
@@ -109,6 +113,12 @@ namespace AirsoftMatchMaker.Web.Controllers
             await signInManager.SignOutAsync();
             await signInManager.SignInAsync(user, isPersistent: false);
             return RedirectToAction("Index", "RoleRequests");
+        }
+
+        public async Task<IActionResult> MyProfile()
+        {
+            var model = await userService.GetCurrentUserProfileAsync(User.Id());
+            return View(model);
         }
     }
 }
