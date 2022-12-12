@@ -61,7 +61,7 @@ namespace AirsoftMatchMaker.Web.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            if (await betService.BetExistsAsync(id))
+            if (!(await betService.BetExistsAsync(id)))
             {
                 TempData["error"] = "Bet does not exist!";
                 return RedirectToAction(nameof(Mine));
@@ -78,9 +78,14 @@ namespace AirsoftMatchMaker.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await betService.BetExistsAsync(id))
+            if (!(await betService.BetExistsAsync(id)))
             {
                 TempData["error"] = "Bet does not exist";
+                return RedirectToAction(nameof(Mine));
+            }
+            if (await betService.IsGameFinishedAsync(id))
+            {
+                TempData["error"] = "Cannot cancel bet! Game is already finished.";
                 return RedirectToAction(nameof(Mine));
             }
             var model = await betService.GetBetToDeleteByIdAsync(id);
@@ -91,7 +96,6 @@ namespace AirsoftMatchMaker.Web.Controllers
             }
             return View(model);
 
-            return View(model);
         }
 
         [HttpPost]

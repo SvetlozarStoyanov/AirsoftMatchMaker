@@ -62,8 +62,13 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
+            if (!(await betService.BetExistsAsync(id)))
+            {
+                TempData["error"] = "Bet does not exist";
+                return RedirectToAction(nameof(Mine));
+            }
             var model = await betService.GetBetByIdAsync(id);
-            if (model == null || model.UserId != User.Id())
+            if (model.UserId != User.Id())
             {
                 TempData.Add("error", "Cannot access that bet!");
                 return RedirectToAction(nameof(Mine));
@@ -72,14 +77,19 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int betId, int gameId)
         {
-            if (await betService.BetExistsAsync(id))
+            if (!(await betService.BetExistsAsync(betId)))
             {
                 TempData["error"] = "Bet does not exist";
                 return RedirectToAction(nameof(Mine));
             }
-            var model = await betService.GetBetToDeleteByIdAsync(id);
+            if (await betService.IsGameFinishedAsync(betId))
+            {
+                TempData["error"] = "Cannot cancel bet! Game is already finished.";
+                return RedirectToAction(nameof(Mine));
+            }
+            var model = await betService.GetBetToDeleteByIdAsync(gameId);
             if (model.UserId != User.Id())
             {
                 TempData["error"] = "Cannot access that bet!";
