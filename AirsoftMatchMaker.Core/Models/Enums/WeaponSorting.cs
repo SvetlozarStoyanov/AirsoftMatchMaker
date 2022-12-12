@@ -6,6 +6,8 @@
         PriceDescending,
         RangeAscending,
         RangeDescending,
+        Newest,
+        Oldest,
         FeetPerSecond,
         FireRate,
         AverageAmmoSpent
