@@ -1,0 +1,27 @@
+﻿@model UserViewModel
+@{
+    ViewBag.Title = "My profile information";
+}
+<h2 class="text-center">@ViewBag.Title</h2>
+
+<article class="mt-6 mb-6 bg-white bg-opacity-25 border border-dark">
+    <div class="text-center">
+        <p>
+            <h4>
+                UserName :
+                <b>@Model.UserName</b>
+            </h4>
+        </p>
+        <p>
+            <h4>
+                Email :
+                <b>@Model.Email</b>
+            </h4>
+        </p>
+        <p>
+            <h4>
+                <b>@Model.Credits credits</b>
+            </h4>
+        </p>
+    </div>
+</article>
