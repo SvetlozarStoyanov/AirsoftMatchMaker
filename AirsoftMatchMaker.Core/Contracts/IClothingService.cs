@@ -1,5 +1,7 @@
 ﻿using AirsoftMatchMaker.Core.Models.Clothes;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 
 namespace AirsoftMatchMaker.Core.Contracts
 {
@@ -41,11 +43,14 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<bool> UserHasEnoughCreditsAsync(string userId, int clothingId);
 
 
-        /// <summary>
-        /// Returns all clothes
-        /// </summary>
-        /// <returns><see cref="IEnumerable{T}"/></returns>
-        Task<IEnumerable<ClothingListModel>> GetAllClothesAsync();
+
+        Task<ClothesQueryModel> GetAllClothesAsync(
+            ClothingColor? clothingColor,
+            ClothingSorting sorting = ClothingSorting.Newest,
+            string? searchTerm = null,
+            int clothesPerPage = 6,
+            int currentPage = 1
+            );
 
         /// <summary>
         /// Returns clothing with given id

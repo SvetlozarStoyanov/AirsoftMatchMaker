@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Clothes;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
@@ -82,22 +83,57 @@ namespace AirsoftMatchMaker.Core.Services
             return true;
 
         }
-        public async Task<IEnumerable<ClothingListModel>> GetAllClothesAsync()
+        public async Task<ClothesQueryModel> GetAllClothesAsync(
+            ClothingColor? clothingColor,
+            ClothingSorting sorting = ClothingSorting.Newest,
+            string? searchTerm = null,
+            int clothesPerPage = 6,
+            int currentPage = 1)
         {
             var clothes = await repository.AllReadOnly<Clothing>()
                 .Where(c => c.PlayerId == null && c.VendorId != null)
-                .Include(c => c.Vendor)
-                .ThenInclude(c => c.User)
-                .Select(c => new ClothingListModel()
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Price = c.Price,
-                    ImageUrl = c.ImageUrl,
-                    ClothingColor = c.ClothingColor,
-                })
                 .ToListAsync();
-            return clothes;
+            if (clothingColor != null)
+            {
+                clothes = clothes.Where(c => c.ClothingColor == clothingColor).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                clothes = clothes.Where(c => c.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
+            }
+            switch (sorting)
+            {
+                case ClothingSorting.PriceAscending:
+                    clothes = clothes.OrderBy(c => c.Price).ToList();
+                    break;
+                case ClothingSorting.PriceDescending:
+                    clothes = clothes.OrderByDescending(c => c.Price).ToList();
+                    break;
+                case ClothingSorting.Alphabetically:
+                    clothes = clothes.OrderBy(c => c.Name).ToList();
+                    break;
+                case ClothingSorting.Newest:
+                    clothes = clothes.OrderByDescending(c => c.Id).ToList();
+                    break;
+                case ClothingSorting.Oldest:
+                    clothes = clothes.OrderBy(c => c.Id).ToList();
+                    break;
+            }
+            var filteredClothes = clothes
+            .Skip((currentPage - 1) * clothesPerPage)
+            .Take(clothesPerPage)
+            .Select(c => new ClothingListModel()
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Price = c.Price,
+                ImageUrl = c.ImageUrl,
+                ClothingColor = c.ClothingColor,
+            }).ToList();
+            var model = CreateClothesQueryModel();
+            model.Clothes = filteredClothes;
+            model.ClothesCount = clothes.Count;
+            return model;
         }
 
         public async Task<ClothingViewModel> GetClothingByIdAsync(int id)
@@ -217,6 +253,21 @@ namespace AirsoftMatchMaker.Core.Services
             clothing.PlayerId = null;
             clothing.VendorId = vendor.Id;
             await repository.SaveChangesAsync();
+        }
+
+        private ClothesQueryModel CreateClothesQueryModel()
+        {
+            var model = new ClothesQueryModel();
+            var colours = Enum.GetNames<ClothingColor>().Cast<string>().ToList();
+            var modelColours = new List<string>()
+            {
+                "All"
+            };
+            modelColours.AddRange(colours);
+            model.Colors = modelColours;
+            model.SortingOptions = Enum.GetValues<ClothingSorting>().Cast<ClothingSorting>().ToList();
+
+            return model;
         }
     }
 }

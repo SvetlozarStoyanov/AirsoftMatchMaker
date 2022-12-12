@@ -21,9 +21,21 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
             this.htmlSanitizingService = htmlSanitizingService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] ClothesQueryModel model)
         {
-            var model = await clothingService.GetAllClothesAsync();
+            model.SearchTerm = htmlSanitizingService.SanitizeStringProperty(model.SearchTerm);
+            var queryResult = await clothingService.GetAllClothesAsync
+                (
+                    model.ClothingColor,
+                    model.Sorting,
+                    model.SearchTerm,
+                    model.ClothesPerPage,
+                    model.CurrentPage
+                );
+            model.Clothes = queryResult.Clothes;
+            model.Colors = queryResult.Colors;
+            model.SortingOptions = queryResult.SortingOptions;
+            model.ClothesCount = queryResult.ClothesCount;
             return View(model);
         }
 

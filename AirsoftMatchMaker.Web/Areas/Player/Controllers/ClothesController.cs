@@ -1,4 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.Clothes;
+using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,14 +12,28 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
     public class ClothesController : Controller
     {
         private readonly IClothingService clothingService;
-        public ClothesController(IClothingService clothingService)
+        private readonly IHtmlSanitizingService htmlSanitizingService;
+        public ClothesController(IClothingService clothingService, IHtmlSanitizingService htmlSanitizingService)
         {
             this.clothingService = clothingService;
+            this.htmlSanitizingService = htmlSanitizingService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] ClothesQueryModel model)
         {
-            var model = await clothingService.GetAllClothesAsync();
+            model.SearchTerm = htmlSanitizingService.SanitizeStringProperty(model.SearchTerm);
+            var queryResult = await clothingService.GetAllClothesAsync
+                (
+                    model.ClothingColor,
+                    model.Sorting,
+                    model.SearchTerm,
+                    model.ClothesPerPage,
+                    model.CurrentPage
+                );
+            model.Clothes = queryResult.Clothes;
+            model.Colors = queryResult.Colors;
+            model.SortingOptions = queryResult.SortingOptions;
+            model.ClothesCount = queryResult.ClothesCount;
             return View(model);
         }
 
