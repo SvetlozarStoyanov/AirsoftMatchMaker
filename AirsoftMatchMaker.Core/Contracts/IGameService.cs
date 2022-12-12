@@ -48,7 +48,7 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// </summary>
         /// <param name="dateTimeString"></param>
         /// <returns><see cref="GameCreateModel"/></returns>
-        Task<GameCreateModel> CreateGameModelAsync(string dateTimeString);
+        Task<GameCreateModel> CreateGameCreateModelAsync(string dateTimeString);
 
 
         /// <summary>
