@@ -35,17 +35,18 @@
                     </td>
                     <td>
                         <div class="w-75 btn-group" role="group">
-                            @if (ViewBag.ViewType == "Index")
-                            {
-                                <a asp-area="Player" asp-controller="TeamRequests" asp-action="Accept" asp-route-id="@teamRequest.Id" class="btn btn-primary mx-2">
-                                    <i class="bi bi-check-lg"></i>
-                                    Accept
-                                </a>
-                                <a asp-area="Player" asp-controller="TeamRequests" asp-action="Decline" asp-route-id="@teamRequest.Id" class="btn btn-danger mx-2">
-                                    <i class="bi bi-trash"></i>
-                                    Decline
-                                </a>
-                            }
+                             <a asp-area="Player" asp-controller="Players" asp-action="Details" asp-route-id="@teamRequest.PlayerId" class="btn btn-info mx-2">
+                                <i class="bi bi-info"></i>
+                                Player details
+                            </a>
+                            <a asp-area="Player" asp-controller="TeamRequests" asp-action="Accept" asp-route-id="@teamRequest.Id" class="btn btn-primary mx-2">
+                                <i class="bi bi-check-lg"></i>
+                                Accept
+                            </a>
+                            <a asp-area="Player" asp-controller="TeamRequests" asp-action="Decline" asp-route-id="@teamRequest.Id" class="btn btn-danger mx-2">
+                                <i class="bi bi-trash"></i>
+                                Decline
+                            </a>
                         </div>
                     </td>
                 </tr>
