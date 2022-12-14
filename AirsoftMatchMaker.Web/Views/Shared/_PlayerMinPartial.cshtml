@@ -5,8 +5,7 @@
 
         <div class="card-body text-center bg-white bg-opacity-50">
             <h4 class="text-center">@Model.UserName</h4>
-            <h6>Class:<b>@Model.PlayerClassName</b></h6>
-            <h6><b>@Model.SkillLevel</b></h6>
+            <h6><b>@Model.PlayerClassName</b></h6>
             <br />
             <a asp-controller="Players" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-primary">
