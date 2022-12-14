@@ -195,6 +195,10 @@ namespace AirsoftMatchMaker.Core.Services
             var buyer = await repository.All<Player>()
                 .Where(p => p.UserId == buyerId)
                 .Include(p => p.User)
+                .Include(p => p.Team)
+                .ThenInclude(p => p.GamesAsTeamRed)
+                .Include(p => p.Team)
+                .ThenInclude(p => p.GamesAsTeamBlue)
                 .FirstOrDefaultAsync();
             if (buyer == null)
             {
@@ -222,6 +226,14 @@ namespace AirsoftMatchMaker.Core.Services
             vendor.User.Credits += weapon.Price;
             buyer.Weapons.Add(weapon);
             vendor.Weapons.Remove(weapon);
+            if (buyer.Team != null)
+            {
+                var buyerGames = buyer.Team.GamesAsTeamRed.Union(buyer.Team.GamesAsTeamBlue);
+                foreach (var game in buyerGames.Where(g => g.GameStatus == GameStatus.Upcoming))
+                {
+                    game.OddsAreUpdated = false;
+                }
+            }
             await repository.SaveChangesAsync();
         }
 
