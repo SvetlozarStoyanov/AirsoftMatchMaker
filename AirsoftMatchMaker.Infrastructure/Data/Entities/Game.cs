@@ -48,6 +48,12 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Entities
         public int TeamBluePoints { get; set; }
         public int TeamBlueOdds { get; set; }
 
+        public bool OddsAreUpdated { get; set; } = false;
+
+        [ForeignKey(nameof(Entities.GameBetCreditsContainer.Id))]
+        public int GameBetCreditsContainerId { get; set; }
+        public GameBetCreditsContainer GameBetCreditsContainer { get; set; }
+
         public virtual ICollection<Bet> Bets { get; set; }
     }
 }
