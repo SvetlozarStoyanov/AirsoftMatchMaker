@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Infrastructure.Data.Entities;
+
 namespace AirsoftMatchMaker.Core.Contracts
 {
     public interface IGameSimulationService
