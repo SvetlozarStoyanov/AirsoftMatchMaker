@@ -1,6 +1,13 @@
 ﻿const collapseBtn = document.getElementById('collapseBtn');
-const collapseBtnText = document.getElementById('collapseBtnText');
+const collapseBtnIcon = document.getElementById('collapseBtnIcon');
 collapseBtn.addEventListener('click', function () {
     console.log("Button clicked!");
-    collapseBtnText.textContent = collapseBtnText.textContent == 'Characteristics +' ? 'Characteristics -' : 'Characteristics +';
+    if (collapseBtnIcon.classList.contains('bi-arrow-up')) {
+        collapseBtnIcon.classList.remove('bi-arrow-up');
+        collapseBtnIcon.classList.add('bi-arrow-down');
+    }
+    else if (collapseBtnIcon.classList.contains('bi-arrow-down')) {
+        collapseBtnIcon.classList.remove('bi-arrow-down');
+        collapseBtnIcon.classList.add('bi-arrow-up');
+    }
 })
