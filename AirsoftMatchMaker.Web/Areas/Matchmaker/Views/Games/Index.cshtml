@@ -98,6 +98,8 @@
                asp-action="Index"
                asp-route-currentPage="@previousPage"
                asp-route-gameStatus="@Model.GameStatus"
+               asp-route-teamName="@Model.TeamName"
+               asp-route-gameModeName="@Model.GameModeName"
                asp-route-gamesPerPage="@Model.GamesPerPage"
                asp-route-sorting="@((int)Model.Sorting)"><i class="bi bi-arrow-left-square"></i></a>
         </div>
@@ -109,6 +111,8 @@
                asp-action="Index"
                asp-route-currentPage="@(Model.CurrentPage + 1)"
                asp-route-gameStatus="@Model.GameStatus"
+               asp-route-teamName="@Model.TeamName"
+               asp-route-gameModeName="@Model.GameModeName"
                asp-route-gamesPerPage="@Model.GamesPerPage"
                asp-route-sorting="@((int)Model.Sorting)"><i class="bi bi-arrow-right-square"></i></a>
         </div>
