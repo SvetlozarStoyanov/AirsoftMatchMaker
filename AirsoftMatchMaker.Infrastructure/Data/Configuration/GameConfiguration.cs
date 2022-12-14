@@ -24,15 +24,17 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     Id = 1,
                     Name = "Alpha vs Bravo",
                     Date = DateTime.Now.AddDays(-1),                    
-                    //Date = DateTime.Now.AddHours(1),
                     EntryFee = 40,
                     GameModeId = 1,
                     MatchmakerId = 1,
                     MapId = 1,
                     TeamRedId = 1,
                     TeamBlueId = 2,
-                    TeamRedOdds = -110,
-                    TeamBlueOdds = +120
+                    TeamRedOdds = -126,
+                    TeamBlueOdds = +124,
+                    GameBetCreditsContainerId = 1,
+                    OddsAreUpdated = true,
+
                 },
                 new Game()
                 {
@@ -45,8 +47,10 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     MapId = 2,
                     TeamRedId = 2,
                     TeamBlueId = 1,
-                    TeamRedOdds = +130,
-                    TeamBlueOdds = -130
+                    TeamRedOdds = +140,
+                    TeamBlueOdds = -140,
+                    GameBetCreditsContainerId = 2,
+                    OddsAreUpdated = false,
                 },
                 new Game()
                 {
@@ -60,7 +64,9 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     TeamRedId = 3,
                     TeamBlueId = 4,
                     TeamRedOdds = -160,
-                    TeamBlueOdds = +150
+                    TeamBlueOdds = +150,
+                    GameBetCreditsContainerId = 3,
+                    OddsAreUpdated = false,
                 },
             };
             return games;

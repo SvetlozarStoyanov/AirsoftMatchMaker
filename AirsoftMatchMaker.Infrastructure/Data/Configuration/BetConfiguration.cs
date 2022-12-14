@@ -26,18 +26,37 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     GameId = 1,
                     CreditsBet = 20,
                     WinningTeamId = 1,
-                    Odds = -110
+                    Odds = -122
                 },
-                //new Bet()
-                //{
-                //    Id = 2,
-                //    UserId = "1f5be09b-2910-4ac0-8ff5-5c525ddf1b61",
-                //    GameId = 1,
-                //    CreditsBet = 10,
-                //    WinningTeamId = 2,
-                //    Odds = -150
-                //}
+                new Bet()
+                {
+                    Id = 2,
+                    UserId = "1f5be09b-2910-4ac0-8ff5-5c525ddf1b61",
+                    GameId = 1,
+                    CreditsBet = 20,
+                    WinningTeamId = 2,
+                    Odds = +120
+                },
+                new Bet()
+                {
+                    Id = 3,
+                    UserId = "799495ef-8794-491d-94d9-6bd37d51ba40",
+                    GameId = 1,
+                    CreditsBet = 20,
+                    WinningTeamId = 2,
+                    Odds = +122
+                },
+                new Bet()
+                {
+                    Id = 4,
+                    UserId = "6f4bc586-751a-4a4b-8fec-4c7145b47a3e",
+                    GameId = 1,
+                    CreditsBet = 30,
+                    WinningTeamId = 1,
+                    Odds = -122
+                }
             };
+
             return bets;
         }
     }
