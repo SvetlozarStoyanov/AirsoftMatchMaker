@@ -1,0 +1,12 @@
+﻿@model TeamMinModel
+
+<div class="row col-5 border border-dark">
+    <h2 class="text-center">@Model.Name</h2>
+    <div class="text-center mt-3 mb-3">
+        <h4>@Model.Wins W : @Model.Losses L</h4>
+    </div>
+    <div class="text-center mt-3 mb-3">
+        <a class="btn btn-primary" asp-area="Matchmaker" asp-controller="Teams" asp-action="Details" asp-route-id="@Model.Id">Details</a>
+    </div>
+
+</div>
