@@ -42,6 +42,16 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="bool"/></returns>
         Task<bool> UserHasEnoughCreditsAsync(string userId, int weaponId);
 
+        /// <summary>
+        /// Returns <see cref="WeaponsQueryModel"/> filled with weapons which match the given criteria.
+        /// </summary>
+        /// <param name="weaponType"></param>
+        /// <param name="range"></param>
+        /// <param name="weaponSorting"></param>
+        /// <param name="searchTerm"></param>
+        /// <param name="weaponsPerPage"></param>
+        /// <param name="currentPage"></param>
+        /// <returns><see cref="WeaponsQueryModel"/></returns>
         Task<WeaponsQueryModel> GetAllWeaponsAsync(
             WeaponType? weaponType = null,
             PreferedEngagementDistance? range = null,

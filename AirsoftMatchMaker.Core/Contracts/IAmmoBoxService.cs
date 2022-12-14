@@ -33,7 +33,14 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="bool"/></returns>
         Task<bool> UserHasEnoughCreditsAsync(string userId, int ammoBoxId, int quantity);
 
-
+        /// <summary>
+        /// Returns <see cref="AmmoBoxesQueryModel"/> filled with ammo boxes which match the given criteria.
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <param name="sorting"></param>
+        /// <param name="ammoBoxesPerPage"></param>
+        /// <param name="currentPage"></param>
+        /// <returns><see cref="AmmoBoxesQueryModel"/></returns>
         Task<AmmoBoxesQueryModel> GetAllAmmoBoxesAsync(
             string? searchTerm,
             AmmoBoxSorting sorting,

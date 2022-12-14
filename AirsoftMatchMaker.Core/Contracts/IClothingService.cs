@@ -43,7 +43,15 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<bool> UserHasEnoughCreditsAsync(string userId, int clothingId);
 
 
-
+        /// <summary>
+        /// Returns <see cref="ClothesQueryModel"/> filled with clothes which match the given criteria.
+        /// </summary>
+        /// <param name="clothingColor"></param>
+        /// <param name="sorting"></param>
+        /// <param name="searchTerm"></param>
+        /// <param name="clothesPerPage"></param>
+        /// <param name="currentPage"></param>
+        /// <returns><see cref="ClothesQueryModel"/></returns>
         Task<ClothesQueryModel> GetAllClothesAsync(
             ClothingColor? clothingColor,
             ClothingSorting sorting = ClothingSorting.Newest,
