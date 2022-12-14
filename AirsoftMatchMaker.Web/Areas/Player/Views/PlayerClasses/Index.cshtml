@@ -1,0 +1,22 @@
+﻿@model IEnumerable<PlayerClassListModel>
+@{
+    ViewBag.Title = "Player Classes";
+}
+<h2 class="text-center mt-5 mb-5">
+    @ViewBag.Title
+</h2>
+<div class="text-center mt-5 mb-5 ">
+    <h2 class="mt-5 mb-5">My class</h2>
+    <partial class="" name="_PlayerClassPartial" model="@Model.First(pc => pc.Id == ViewBag.CurrentUserPlayerClassId)" />
+</div>
+<hr style="height:8px;border:16px thick;color:white" />
+
+<div class="row">
+    @foreach (var team in Model)
+    {
+        @if (ViewBag.CurrentUserPlayerClassId != team.Id)
+        {
+            <partial  name="_PlayerClassPartial" model="@team" />
+        }
+    }
+</div>
