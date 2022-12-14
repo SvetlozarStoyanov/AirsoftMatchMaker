@@ -1,4 +1,4 @@
-﻿@using System.Text.RegularExpressions;
+﻿@*@using System.Text.RegularExpressions;
 @model GameViewModel
 
 @{
@@ -10,14 +10,9 @@
 
 <div class="container" style="display:inline">
     <div class="row">
-        @*   <div class="col-4">
-        <img class="card-img-top" style="width: 20rem;"
-        src="@Model.ImageUrl" alt="House Image">
-        </div>*@
         <div class="card col-8 border-0">
             <p style="font-size:25px;">@Model.Name</p>
             <p style="font-size:25px;">@Model.Result</p>
-            @*<p>Located in: <b>@Model.Address</b></p>*@
             <p>
                 Status:
                 <b>@string.Join(" ", Regex.Matches(Model.GameStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
@@ -102,3 +97,4 @@
         </div>
     </span>
 </div>
+*@
