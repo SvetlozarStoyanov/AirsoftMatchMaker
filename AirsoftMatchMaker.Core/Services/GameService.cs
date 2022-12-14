@@ -44,6 +44,28 @@ namespace AirsoftMatchMaker.Core.Services
             return Math.Abs(teamRedPlayersCount - teamBluePlayersCount) <= 2;
         }
 
+        public async Task<bool> GameCanBeFinalisedByMatchmakerAsync(string userId, int gameId)
+        {
+            var game = await repository.AllReadOnly<Game>()
+                .Where(g => g.Id == gameId)
+                .Include(g => g.Matchmaker)
+                .ThenInclude(mm => mm.User)
+                .FirstOrDefaultAsync();
+
+            return game.Matchmaker.UserId == userId;
+        }
+
+        public async Task<bool> GameIsFinishedButNotFinalisedAsync(int id)
+        {
+            var game = await repository.AllReadOnly<Game>()
+                 .Where(g => g.Id == id)
+                 .Include(g => g.GameBetCreditsContainer)
+                 .FirstOrDefaultAsync();
+            return game.GameStatus == GameStatus.Finished && game.Result == null;
+        }
+
+
+
         public async Task<GamesQueryModel> GetAllGamesAsync(
             string? teamName,
             string? gameModeName,
@@ -53,6 +75,7 @@ namespace AirsoftMatchMaker.Core.Services
             int currentPage = 1)
         {
             var games = await repository.AllReadOnly<Game>()
+                .Where(g => (!g.GameBetCreditsContainer.BetsArePaidOut && g.GameStatus == GameStatus.Upcoming) || (g.GameBetCreditsContainer.BetsArePaidOut && g.GameStatus == GameStatus.Finished))
                 .Include(g => g.TeamRed)
                 .Include(g => g.TeamBlue)
                 .Include(g => g.GameMode)
@@ -91,6 +114,8 @@ namespace AirsoftMatchMaker.Core.Services
                     Name = g.Name,
                     GameStatus = g.GameStatus,
                     Date = g.Date,
+                    Odds = g.TeamRedOdds > 0 && g.TeamBlueOdds < 0 ? $"+{g.TeamRedOdds}:{g.TeamBlueOdds}" : g.TeamRedOdds < 0 && g.TeamBlueOdds > 0 ? $"{g.TeamRedOdds}:+{g.TeamBlueOdds}" : $"{g.TeamRedOdds}:{g.TeamBlueOdds}",
+
                     GameModeName = g.GameMode.Name,
                     MapId = g.MapId,
                     MapName = g.Map.Name,
@@ -98,10 +123,10 @@ namespace AirsoftMatchMaker.Core.Services
                     TerrainType = g.Map.Terrain,
                     TeamRedId = g.TeamRedId,
                     TeamRedName = g.TeamRed.Name,
-                    TeamRedOdds = g.TeamRedOdds,
+
                     TeamBlueId = g.TeamBlueId,
                     TeamBlueName = g.TeamBlue.Name,
-                    TeamBlueOdds = g.TeamBlueOdds,
+
                     Result = g.Result != null ? g.Result : "Not played yet",
                 })
                 .ToList();
@@ -124,7 +149,6 @@ namespace AirsoftMatchMaker.Core.Services
                         .ThenInclude(t => t.Players)
                         .ThenInclude(p => p.User)
                         .Include(g => g.Matchmaker)
-
                         .ThenInclude(mm => mm.User)
                         .Select(g => new GameViewModel()
                         {
@@ -135,34 +159,49 @@ namespace AirsoftMatchMaker.Core.Services
                             EntryFee = g.EntryFee,
                             GameModeId = g.GameModeId,
                             GameModeName = g.GameMode.Name,
-                            MapId = g.MapId,
-                            MapName = g.Map.Name,
+                            Map = new MapMinModel()
+                            {
+                                Id = g.MapId,
+                                Name = g.Map.Name,
+                                ImageUrl = g.Map.ImageUrl,
+                                Terrain = g.Map.Terrain
+                            },
                             MatchmakerId = g.MatchmakerId,
                             MatchmakerName = g.Matchmaker.User.UserName,
-                            TeamRedId = g.TeamRedId,
-                            TeamRedName = g.TeamRed.Name,
-                            TeamRedBets = g.Bets.Count(b => b.WinningTeamId == g.TeamRedId),
-                            TeamRedOdds = g.TeamRedOdds,
-                            TeamRedPlayers = g.TeamRed.Players
-                            .Select(p => new PlayerMinModel()
+                            TeamRed = new TeamMinModel()
                             {
-                                Id = p.Id,
-                                UserName = p.User.UserName,
-                                SkillLevel = p.SkillLevel
-                            })
-                            .ToList(),
-                            TeamBlueId = g.TeamBlueId,
-                            TeamBlueName = g.TeamBlue.Name,
-                            TeamBlueBets = g.Bets.Count(b => b.WinningTeamId == g.TeamBlueId),
-                            TeamBlueOdds = g.TeamBlueOdds,
-                            TeamBluePlayers = g.TeamBlue.Players
-                            .Select(p => new PlayerMinModel()
+                                Id = g.TeamRedId,
+                                Name = g.TeamRed.Name,
+                                Wins = g.TeamRed.Wins,
+                                Losses = g.TeamRed.Losses,
+                                Players = g.TeamRed.Players
+                                .Where(p => p.IsActive && p.Weapons.Any())
+                                .Select(p => new PlayerMinModel()
+                                {
+                                    Id = p.Id,
+                                    UserName = p.User.UserName,
+                                    SkillLevel = p.SkillLevel,
+                                    PlayerClassName = p.PlayerClass.Name
+                                })
+                                .ToList(),
+                            },
+                            TeamBlue = new TeamMinModel()
                             {
-                                Id = p.Id,
-                                UserName = p.User.UserName,
-                                SkillLevel = p.SkillLevel
-                            })
-                            .ToList(),
+                                Id = g.TeamBlueId,
+                                Name = g.TeamBlue.Name,
+                                Wins = g.TeamBlue.Wins,
+                                Losses = g.TeamBlue.Losses,
+                                Players = g.TeamBlue.Players
+                                .Where(p => p.IsActive && p.Weapons.Any())
+                                .Select(p => new PlayerMinModel()
+                                {
+                                    Id = p.Id,
+                                    UserName = p.User.UserName,
+                                    SkillLevel = p.SkillLevel,
+                                    PlayerClassName = p.PlayerClass.Name
+                                })
+                                .ToList(),
+                            },
                             Result = g.Result != null ? g.Result : "Not played yet",
                         })
                         .FirstOrDefaultAsync();
@@ -306,13 +345,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(m => m.GameMode)
                 .FirstOrDefaultAsync();
 
-            var teamRedImpact = CalculateTeamImpactForBettingOdds(teamRed, map.AverageEngagementDistance.ToString());
-            var teamBlueImpact = CalculateTeamImpactForBettingOdds(teamBlue, map.AverageEngagementDistance.ToString());
 
-
-
-
-            (int teamRedOdds, int teamBlueOdds) odds = CalculateOdds(teamRedImpact, teamBlueImpact);
 
             Game game = new Game()
             {
@@ -326,8 +359,9 @@ namespace AirsoftMatchMaker.Core.Services
                 GameModeId = map.GameModeId,
                 TeamRedId = model.TeamRedId,
                 TeamBlueId = model.TeamBlueId,
-                TeamRedOdds = odds.teamRedOdds,
-                TeamBlueOdds = odds.teamBlueOdds
+                TeamRedOdds = 0,
+                TeamBlueOdds = 0,
+                OddsAreUpdated = false
             };
             matchmaker.OrganisedGames.Add(game);
             await repository.SaveChangesAsync();
@@ -348,6 +382,7 @@ namespace AirsoftMatchMaker.Core.Services
                    Name = g.Name,
                    GameStatus = g.GameStatus,
                    Date = g.Date,
+                   Odds = g.TeamRedOdds > 0 && g.TeamBlueOdds < 0 ? $"+{g.TeamRedOdds}:{g.TeamBlueOdds}" : g.TeamRedOdds < 0 && g.TeamBlueOdds > 0 ? $"{g.TeamRedOdds}:+{g.TeamBlueOdds}" : $"{g.TeamRedOdds}:{g.TeamBlueOdds}",
                    GameModeName = g.GameMode.Name,
                    MapId = g.MapId,
                    MapName = g.Map.Name,
@@ -355,10 +390,10 @@ namespace AirsoftMatchMaker.Core.Services
                    TerrainType = g.Map.Terrain,
                    TeamRedId = g.TeamRedId,
                    TeamRedName = g.TeamRed.Name,
-                   TeamRedOdds = g.TeamRedOdds,
+
                    TeamBlueId = g.TeamBlueId,
                    TeamBlueName = g.TeamBlue.Name,
-                   TeamBlueOdds = g.TeamBlueOdds
+
                })
                .ToListAsync();
             return games;
@@ -390,6 +425,7 @@ namespace AirsoftMatchMaker.Core.Services
                     Name = g.Name,
                     GameStatus = g.GameStatus,
                     Date = g.Date,
+                    Odds = g.TeamRedOdds > 0 && g.TeamBlueOdds < 0 ? $"+{g.TeamRedOdds}:{g.TeamBlueOdds}" : g.TeamRedOdds < 0 && g.TeamBlueOdds > 0 ? $"{g.TeamRedOdds}:+{g.TeamBlueOdds}" : $"{g.TeamRedOdds}:{g.TeamBlueOdds}",
                     GameModeName = g.GameMode.Name,
                     MapId = g.MapId,
                     MapName = g.Map.Name,
@@ -397,10 +433,8 @@ namespace AirsoftMatchMaker.Core.Services
                     TerrainType = g.Map.Terrain,
                     TeamRedId = g.TeamRedId,
                     TeamRedName = g.TeamRed.Name,
-                    TeamRedOdds = g.TeamRedOdds,
                     TeamBlueId = g.TeamBlueId,
                     TeamBlueName = g.TeamBlue.Name,
-                    TeamBlueOdds = g.TeamBlueOdds,
                     Result = g.Result != null ? g.Result : "Not played yet",
                 })
                 .ToListAsync();
@@ -425,57 +459,75 @@ namespace AirsoftMatchMaker.Core.Services
             return playerGames;
         }
 
-        private int CalculateTeamImpactForBettingOdds(Team team, string averageEngagementDistance)
+        public async Task<GameFinaliseModel> CreateGameFinaliseModelAsync(int id)
         {
-            var averageSkillPoints = team.Players.Average(p => p.SkillPoints);
-            var appropriateEngagementRangePlayers = 0;
-            foreach (var player in team.Players)
-            {
-                if (player.Weapons.Any(w => w.PreferedEngagementDistance.ToString() == averageEngagementDistance))
-                    appropriateEngagementRangePlayers++;
-            }
-            var teamImpact = averageSkillPoints;
-            if (appropriateEngagementRangePlayers == 0)
-            {
-                teamImpact *= 0.90;
-            }
-            else
-            {
-                teamImpact *= 1 + ((double)appropriateEngagementRangePlayers) / 10;
-            }
-            if (team.Wins > team.Losses)
-            {
-                teamImpact += (team.Wins - team.Losses) * 2;
-            }
-            else if (team.Wins < team.Losses)
-            {
-                teamImpact += (team.Losses - team.Wins) * 2;
-            }
-
-            return (int)Math.Round(teamImpact, 0);
+            var model = await repository.AllReadOnly<Game>()
+                .Where(g => g.Id == id)
+                .Select(g => new GameFinaliseModel()
+                {
+                    Id = g.Id,
+                    GameModeMaxPoints = g.GameMode.PointsToWin,
+                })
+                .FirstOrDefaultAsync();
+            return model;
         }
 
-        private ValueTuple<int, int> CalculateOdds(int teamRedImpact, int teamBlueImpact)
+        public async Task FinalizeGameAsync(GameFinaliseModel model)
         {
-            int impactDifference = Math.Abs(teamRedImpact - teamBlueImpact) + 100;
+            var game = await repository.All<Game>()
+                .Where(g => g.Id == model.Id)
+                .Include(g => g.Matchmaker)
+                .ThenInclude(mm => mm.User)
+                .Include(g => g.Map)
+                .ThenInclude(m => m.GameMode)
+                .Include(g => g.TeamRed)
+                .Include(g => g.TeamBlue)
+                .FirstOrDefaultAsync();
 
-            (int teamRedOdds, int teamBlueOdds) odds = new ValueTuple<int, int>();
-            if (teamRedImpact > teamBlueImpact)
+            game.TeamRedPoints = model.TeamRedPoints;
+            game.TeamBluePoints = model.TeamBluePoints;
+
+            var teamRed = game.TeamRed;
+
+            var teamRedPlayers = await repository.All<Player>()
+                .Where(p => p.TeamId.HasValue && p.TeamId == teamRed.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
+                .Include(p => p.User)
+                .Include(p => p.Clothes)
+                .Include(p => p.Weapons)
+                .Include(p => p.PlayerClass)
+                .ToListAsync();
+
+            var teamBlue = game.TeamBlue;
+
+            var teamBluePlayers = await repository.All<Player>()
+            .Where(p => p.TeamId.HasValue && p.TeamId == teamBlue.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
+            .Include(p => p.User)
+            .Include(p => p.Clothes)
+            .Include(p => p.Weapons)
+            .Include(p => p.PlayerClass)
+            .ToListAsync();
+
+            var map = game.Map;
+
+            var gameMode = map.GameMode;
+
+            var matchmaker = game.Matchmaker;
+
+            if (model.TeamRedPoints > model.TeamBluePoints)
             {
-                odds.teamRedOdds = -impactDifference;
-                odds.teamBlueOdds = +impactDifference;
+                AwardWinningTeam(teamRed, teamRedPlayers, map);
+                AwardLosingTeam(teamBlue, teamBluePlayers, map);
             }
-            else if (teamRedImpact < teamBlueImpact)
+            else if (model.TeamRedPoints < model.TeamBluePoints)
             {
-                odds.teamRedOdds = +impactDifference;
-                odds.teamBlueOdds = -impactDifference;
+                AwardLosingTeam(teamRed, teamRedPlayers, map);
+                AwardWinningTeam(teamBlue, teamBluePlayers, map);
             }
-            else
-            {
-                odds.teamRedOdds = -impactDifference;
-                odds.teamBlueOdds = -impactDifference;
-            }
-            return odds;
+            game.Result = $"{model.TeamRedPoints}:{model.TeamBluePoints}";
+
+            int totalPlayerCount = teamRedPlayers.Count + teamBluePlayers.Count;
+            TakeEntryFeeFromPlayers(teamRedPlayers, teamBluePlayers, matchmaker, game.EntryFee);
+            await repository.SaveChangesAsync();
         }
 
 
@@ -509,5 +561,98 @@ namespace AirsoftMatchMaker.Core.Services
             model.SortingOptions = Enum.GetValues<GameSorting>().ToList();
             return model;
         }
+
+
+        private void AwardWinningTeam(Team team, List<Player> players, Map map)
+        {
+            team.Wins += 1;
+            foreach (var player in players)
+            {
+                var weaponUsed = DetermineWeaponUsed(player, map);
+                var random = new Random();
+
+                player.Ammo -= random.Next((int)(weaponUsed.AverageAmmoExpendedPerGame / 2), (int)weaponUsed.AverageAmmoExpendedPerGame * 2);
+
+                if (player.Ammo < 0)
+                    player.Ammo = 0;
+
+                if (player.SkillPoints < 1000)
+                {
+                    player.SkillPoints += 50;
+                    switch (player.SkillPoints)
+                    {
+                        case > 800:
+                            player.SkillLevel = SkillLevel.Expert;
+                            break;
+                        case > 600:
+                            player.SkillLevel = SkillLevel.Skilled;
+                            break;
+                        case > 300:
+                            player.SkillLevel = SkillLevel.Intermediate;
+                            break;
+                    }
+                }
+            }
+        }
+        private void AwardLosingTeam(Team team, List<Player> players, Map map)
+        {
+            team.Losses += 1;
+            foreach (var player in players)
+            {
+                var weaponUsed = DetermineWeaponUsed(player, map);
+
+                var random = new Random();
+
+                player.Ammo -= random.Next((int)(weaponUsed.AverageAmmoExpendedPerGame / 2), (int)weaponUsed.AverageAmmoExpendedPerGame * 2);
+
+                if (player.Ammo < 0)
+                    player.Ammo = 0;
+                if (player.SkillPoints < 1000)
+                {
+                    player.SkillPoints += 25;
+                    switch (player.SkillPoints)
+                    {
+                        case > 800:
+                            player.SkillLevel = SkillLevel.Expert;
+                            break;
+                        case > 600:
+                            player.SkillLevel = SkillLevel.Skilled;
+                            break;
+                        case > 300:
+                            player.SkillLevel = SkillLevel.Intermediate;
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void TakeEntryFeeFromPlayers(List<Player> teamRedPlayers, List<Player> teamBluePlayers, Matchmaker matchmaker, decimal entryFee)
+        {
+            var allPlayers = teamRedPlayers.Union(teamBluePlayers).ToList();
+            foreach (var player in allPlayers)
+            {
+                player.User.Credits -= entryFee;
+                matchmaker.User.Credits += entryFee;
+                if (player.User.Credits < 0)
+                {
+                    matchmaker.User.Credits += player.User.Credits;
+                    player.User.Credits = 0;
+                }
+            }
+        }
+
+        private Weapon DetermineWeaponUsed(Player player, Map map)
+        {
+            var weaponUsed = player.Weapons.FirstOrDefault(w => w.PreferedEngagementDistance.ToString() == map.AverageEngagementDistance.ToString());
+
+            if (weaponUsed == null)
+            {
+                var random = new Random();
+                weaponUsed = player.Weapons.ToArray()[random.Next(0, player.Weapons.Count - 1)];
+            }
+            return weaponUsed;
+        }
+
+
     }
 }

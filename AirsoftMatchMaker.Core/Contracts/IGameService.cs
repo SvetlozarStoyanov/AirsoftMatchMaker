@@ -25,6 +25,31 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<bool> AreTeamPlayerCountsSimilarAsync(int teamRedId, int teamBlueId);
 
 
+        /// <summary>
+        /// Returns true if <see cref="Game.Matchmaker"/>'s <see cref="Matchmaker.UserId"/>  is equal to given userId , otherwise returns false.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="gameId"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> GameCanBeFinalisedByMatchmakerAsync(string userId,int gameId);
+
+        /// <summary>
+        /// Returns true if <see cref="Game"/> is finished but it has no <see cref="Game.Result"/> yet, otherwise returns false
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> GameIsFinishedButNotFinalisedAsync(int id);
+
+        /// <summary>
+        /// Returns <see cref="GamesQueryModel"/> filled with games which match the given criteria.
+        /// </summary>
+        /// <param name="teamName"></param>
+        /// <param name="gameModeName"></param>
+        /// <param name="gameStatus"></param>
+        /// <param name="sorting"></param>
+        /// <param name="gamesPerPage"></param>
+        /// <param name="currentPage"></param>
+        /// <returns><see cref="GamesQueryModel"/></returns>
         Task<GamesQueryModel> GetAllGamesAsync(
             string? teamName,
             string? gameModeName,
@@ -71,7 +96,17 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="IEnumerable<<see cref="GameListModel"/>>"/></returns>
         Task<IEnumerable<GameListModel>> GetUpcomingGamesByDateAsync();
 
-
+        /// <summary>
+        /// Returns <see cref="Player"/>'s most recent finished and first upcoming <see cref="Game"/>
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns><see cref="IEnumerable{T}"/></returns>
         Task<IEnumerable<GameListModel>> GetPlayersLastFinishedAndFirstUpcomingGameAsync(string userId);
+
+
+        Task<GameFinaliseModel> CreateGameFinaliseModelAsync(int id);
+
+
+        Task FinalizeGameAsync(GameFinaliseModel model);
     }
 }
