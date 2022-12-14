@@ -10,6 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddScoped<IRepository, Repository>();
             services.AddScoped<IPlayerService, PlayerService>();
+            services.AddScoped<IPlayerClassService, PlayerClassService>();
             services.AddScoped<IWeaponService, WeaponService>();
             services.AddScoped<IClothingService, ClothingService>();
             services.AddScoped<IAmmoBoxService, AmmoBoxService>();
@@ -27,9 +28,11 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IInventoryService, InventoryService>();
             services.AddScoped<IGameSimulationService, GameSimulationService>();
             services.AddScoped<IBackgroundTeamService, BackgroundTeamService>();
+            services.AddScoped<IBackgroundGameService, BackgroundGameService>();
+            services.AddScoped<IBackgroundBetService, BackgroundBetService>();
             services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
             services.AddScoped<IHtmlSanitizingService, HtmlSanitizingService>();
-            
+
             services.AddHostedService<RepeatingService>();
             return services;
         }
