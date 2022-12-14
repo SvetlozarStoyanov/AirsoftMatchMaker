@@ -20,6 +20,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data
         public DbSet<PlayerClass> PlayerClasses { get; set; } = null!;
         public DbSet<Clothing> Clothes { get; set; } = null!;
         public DbSet<Bet> Bets { get; set; } = null!;
+        public DbSet<GameBetCreditsContainer> GameBetCreditsContainers { get; set; } = null!;
         public DbSet<AmmoBox> AmmoBoxes { get; set; } = null!;
         public DbSet<Vendor> Vendors { get; set; } = null!;
         public DbSet<Matchmaker> Matchmakers { get; set; } = null!;
@@ -65,6 +66,18 @@ namespace AirsoftMatchMaker.Infrastructure.Data
                .HasForeignKey(g => g.GameModeId)
                .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Game>()
+               .HasOne(g => g.GameBetCreditsContainer)
+               .WithOne(gbcc => gbcc.Game)
+               .HasForeignKey<Game>(g => g.GameBetCreditsContainerId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<GameBetCreditsContainer>()
+               .HasOne(gbcc => gbcc.Game)
+               .WithOne(g => g.GameBetCreditsContainer)
+               .HasForeignKey<GameBetCreditsContainer>(g => g.GameId)
+               .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<Bet>()
                 .HasOne(b => b.Game)
                 .WithMany(g => g.Bets)
@@ -87,6 +100,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data
             builder.ApplyConfiguration(new MapConfiguration());
             builder.ApplyConfiguration(new GameConfiguration());
             builder.ApplyConfiguration(new BetConfiguration());
+            builder.ApplyConfiguration(new GameBetCreditsContainerConfiguration());
             builder.ApplyConfiguration(new TeamRequestConfiguration());
 
             base.OnModelCreating(builder);
