@@ -9,7 +9,7 @@ namespace AirsoftMatchMaker.Core.Models.Games
         public string Name { get; set; } = null!;
         public DateTime Date { get; set; }
         public GameStatus GameStatus { get; set; }
-
+        public string Odds { get; set; }
         public int MapId { get; set; }
         public string MapName { get; set; }
         public string? MapImageUrl { get; set; }
@@ -22,11 +22,10 @@ namespace AirsoftMatchMaker.Core.Models.Games
 
         public int TeamRedId { get; set; }
         public string TeamRedName { get; set; } = null!;
-        public int TeamRedOdds { get; set; }
-
+        
         public int TeamBlueId { get; set; }
         public string TeamBlueName { get; set; } = null!;
-        public int TeamBlueOdds { get; set; }
+     
 
     }
 }
