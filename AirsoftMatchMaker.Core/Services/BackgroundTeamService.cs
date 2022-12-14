@@ -52,7 +52,6 @@ namespace AirsoftMatchMaker.Core.Services
                         break;
                 }
             }
-            //await repository.SaveChangesAsync();
             repository.DeleteRange<TeamRequest>(teamRequests);
             await repository.SaveChangesAsync();
 
