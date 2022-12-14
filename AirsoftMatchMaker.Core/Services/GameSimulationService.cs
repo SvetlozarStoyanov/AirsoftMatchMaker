@@ -64,7 +64,7 @@ namespace AirsoftMatchMaker.Core.Services
             var teamRedImpact = CalculateTeamImpactForSimulation(teamRedPlayers, teamRed.Wins, teamRed.Losses, map);
             var teamBlueImpact = CalculateTeamImpactForSimulation(teamBluePlayers, teamBlue.Wins, teamBlue.Losses, map);
 
-            if (Math.Abs(teamRedImpact - teamRedImpact) < 50)
+            if (Math.Abs(teamRedImpact - teamBlueImpact) < 50)
             {
                 teamRedImpact = AdditionalCalculationsForSimulation(teamRedPlayers, teamRedImpact, map);
                 teamBlueImpact = AdditionalCalculationsForSimulation(teamBluePlayers, teamBlueImpact, map);
@@ -259,7 +259,7 @@ namespace AirsoftMatchMaker.Core.Services
                 var weaponUsed = DetermineWeaponUsed(player, map);
                 var random = new Random();
 
-                player.Ammo -= weaponUsed.AverageAmmoExpendedPerGame + random.Next(-30, +30);
+                player.Ammo -= random.Next((int)(weaponUsed.AverageAmmoExpendedPerGame / 2), (int)weaponUsed.AverageAmmoExpendedPerGame * 2);
 
                 if (player.Ammo < 0)
                     player.Ammo = 0;
@@ -291,7 +291,8 @@ namespace AirsoftMatchMaker.Core.Services
 
                 var random = new Random();
 
-                player.Ammo -= weaponUsed.AverageAmmoExpendedPerGame + random.Next(-30, +30);
+                player.Ammo -= random.Next((int)(weaponUsed.AverageAmmoExpendedPerGame / 2), (int)weaponUsed.AverageAmmoExpendedPerGame * 2);
+
 
                 if (player.Ammo < 0)
                     player.Ammo = 0;
