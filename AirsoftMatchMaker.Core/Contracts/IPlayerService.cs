@@ -1,9 +1,16 @@
-﻿using AirsoftMatchMaker.Core.Models.Players;
+﻿using AirsoftMatchMaker.Core.Models.PlayerClasses;
+using AirsoftMatchMaker.Core.Models.Players;
+using AirsoftMatchMaker.Infrastructure.Data.Entities;
 
 namespace AirsoftMatchMaker.Core.Contracts
 {
     public interface IPlayerService
     {
+        /// <summary>
+        /// Returns false if <see cref="Player"/> is in team which has an upcoming <see cref="Game"/>, otherwise returns true.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<bool> CanUserLeavePlayerRole(string userId);
 
         /// <summary>
@@ -33,5 +40,8 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="id"></param>
         /// <returns><see cref="PlayerViewModel"/></returns>
         Task<PlayerViewModel> GetPlayerByIdAsync(int id);
+
+
+
     }
 }

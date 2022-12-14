@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Clothes;
+using AirsoftMatchMaker.Core.Models.PlayerClasses;
 using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Core.Models.Weapons;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
@@ -116,7 +117,5 @@ namespace AirsoftMatchMaker.Core.Services
                 .FirstOrDefaultAsync();
             return player;
         }
-
-
     }
 }
