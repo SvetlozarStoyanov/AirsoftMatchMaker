@@ -21,6 +21,7 @@
                 <a class="dropdown-item active" asp-area="Player" asp-controller="Bets" asp-action="Mine">My bets</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item active" asp-area="Player" asp-controller="Inventory" asp-action="Index">My items</a>
+                <a class="dropdown-item active" asp-area="Player" asp-controller="PlayerClasses" asp-action="Index">Change class</a>
                 <div class="dropdown-divider"></div>
                 @if (await teamService.DoesUserHaveTeamAsync(User.Id()))
                 {
