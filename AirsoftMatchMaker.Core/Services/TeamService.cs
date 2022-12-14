@@ -25,7 +25,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(p => p.TeamRequests)
                 .FirstOrDefaultAsync();
 
-            return player.TeamId != null ;
+            return player.TeamId != null;
         }
 
         public async Task<bool> DoesTeamWithSameNameExistAsync(string name)
@@ -75,7 +75,11 @@ namespace AirsoftMatchMaker.Core.Services
                         PlayerClassName = p.PlayerClass.Name
                     })
                     .ToList(),
-                    Games = t.GamesAsTeamRed.Union(t.GamesAsTeamBlue).Select(g => new GameMinModel()
+                    Games = t.GamesAsTeamRed.Union(t.GamesAsTeamBlue)
+                    .Where(g => g.GameStatus == GameStatus.Finished)
+                    .OrderByDescending(g => g.Date)
+                    .Take(6)
+                    .Select(g => new GameMinModel()
                     {
                         Id = g.Id,
                         Name = g.Name,
@@ -119,14 +123,18 @@ namespace AirsoftMatchMaker.Core.Services
                         PlayerClassName = p.PlayerClass.Name
                     })
                     .ToList(),
-                    Games = t.GamesAsTeamRed.Union(t.GamesAsTeamBlue).Select(g => new GameMinModel()
+                    Games = t.GamesAsTeamRed.Union(t.GamesAsTeamBlue)
+                    .Where(g => g.GameStatus == GameStatus.Finished)
+                    .OrderByDescending(g => g.Date)
+                    .Take(6)
+                    .Select(g => new GameMinModel()
                     {
                         Id = g.Id,
                         Name = g.Name,
                         GameStatus = g.GameStatus,
                         Odds = g.TeamRedOdds > 0 && g.TeamBlueOdds < 0 ? $"+{g.TeamRedOdds}:{g.TeamBlueOdds}" : g.TeamRedOdds < 0 && g.TeamBlueOdds > 0 ? $"{g.TeamRedOdds}:+{g.TeamBlueOdds}" : $"{g.TeamRedOdds}:{g.TeamBlueOdds}",
                         Date = g.Date.ToShortDateString(),
-                        Result = g.Result != null ? g.Result : "Not played yet"
+                        Result = g.Result != null ? g.Result : "Not played yet!"
                     })
                     .ToHashSet()
                 })
@@ -134,7 +142,7 @@ namespace AirsoftMatchMaker.Core.Services
             return team;
         }
 
-          public async Task CreateTeamAsync(string userId, TeamCreateModel model)
+        public async Task CreateTeamAsync(string userId, TeamCreateModel model)
         {
             var player = await repository.All<Player>()
                 .Where(p => p.UserId == userId)
@@ -166,9 +174,5 @@ namespace AirsoftMatchMaker.Core.Services
             }
             return skillLevel;
         }
-
-      
-
-
     }
 }
