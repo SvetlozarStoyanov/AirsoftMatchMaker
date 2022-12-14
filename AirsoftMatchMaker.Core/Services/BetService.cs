@@ -107,6 +107,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(g => g.TeamRed)
                 .ThenInclude(t => t.Players)
                 .Include(g => g.Bets)
+                .Include(g => g.GameBetCreditsContainer)
                 .FirstOrDefaultAsync();
 
             if (game.TeamRed.Players.Any(p => p.UserId == userId) || game.TeamBlue.Players.Any(p => p.UserId == userId))
@@ -125,56 +126,15 @@ namespace AirsoftMatchMaker.Core.Services
                 BetStatus = BetStatus.Active
             };
             game.Bets.Add(bet);
-            await repository.SaveChangesAsync();
-            if (model.WinningTeamId == game.TeamRedId)
+            if (bet.WinningTeamId == game.TeamRedId)
             {
-                if (game.TeamRedOdds < 0)
-                {
-                    game.TeamRedOdds -= (int)Math.Round(model.CreditsPlaced / 10, 0);
-                    //if (game.TeamRedOdds > -100)
-                    //    game.TeamRedOdds *= -1;
-                    game.TeamBlueOdds += (int)Math.Round(model.CreditsPlaced / 8, 0);
-                    if (game.TeamBlueOdds <= -100)
-                    {
-
-                    }
-                    else if (game.TeamBlueOdds < 100)
-                        game.TeamBlueOdds = 200 - Math.Abs(game.TeamBlueOdds);
-                }
-                if (game.TeamRedOdds > 0)
-                {
-                    game.TeamRedOdds -= (int)Math.Round(model.CreditsPlaced / 8, 0);
-                    if (game.TeamRedOdds < 100)
-                        game.TeamRedOdds = Math.Abs(game.TeamRedOdds) - 200;
-                    game.TeamBlueOdds += (int)Math.Round(model.CreditsPlaced / 10, 0);
-                    if (game.TeamBlueOdds > -100)
-                        game.TeamBlueOdds = 200 - Math.Abs(game.TeamBlueOdds);
-                }
+                game.GameBetCreditsContainer.TeamRedCreditsBet += bet.CreditsBet;
             }
-            else if (model.WinningTeamId == game.TeamBlueId)
+            else if (bet.WinningTeamId == game.TeamBlueId)
             {
-                if (game.TeamBlueOdds < 0)
-                {
-                    game.TeamBlueOdds -= (int)Math.Round(model.CreditsPlaced / 10, 0);
-
-                    game.TeamRedOdds += (int)Math.Round(model.CreditsPlaced / 8, 0);
-                    if (game.TeamRedOdds <= -100)
-                    {
-
-                    }
-                    else if (game.TeamRedOdds < 100)
-                        game.TeamRedOdds = 200 - Math.Abs(game.TeamRedOdds);
-                }
-                if (game.TeamBlueOdds > 0)
-                {
-                    game.TeamBlueOdds -= (int)Math.Round(model.CreditsPlaced / 8, 0);
-                    if (game.TeamBlueOdds < 100)
-                        game.TeamBlueOdds = Math.Abs(game.TeamBlueOdds) - 200;
-                    game.TeamRedOdds += (int)Math.Round(model.CreditsPlaced / 10, 0);
-                    if (game.TeamRedOdds > -100)
-                        game.TeamRedOdds = 200 - Math.Abs(game.TeamRedOdds);
-                }
+                game.GameBetCreditsContainer.TeamBlueCreditsBet += bet.CreditsBet;
             }
+            game.OddsAreUpdated = false;
             await repository.SaveChangesAsync();
         }
 
@@ -225,71 +185,24 @@ namespace AirsoftMatchMaker.Core.Services
             var bet = await repository.All<Bet>()
                 .Where(b => b.Id == model.Id)
                 .Include(b => b.Game)
+                .ThenInclude(b => b.GameBetCreditsContainer)
                 .Include(b => b.User)
                 .FirstOrDefaultAsync();
 
-            var user = bet.User;
-            user.Credits += bet.CreditsBet;
             var game = bet.Game;
             if (bet.WinningTeamId == game.TeamRedId)
             {
-                if (game.TeamRedOdds < 0)
-                {
-                    game.TeamRedOdds += (int)Math.Round(bet.CreditsBet / 10, 0);
-                    if (game.TeamRedOdds <= -100)
-                    {
-
-                    }
-                    else if (game.TeamRedOdds < 100)
-                        game.TeamRedOdds = 200 - Math.Abs(game.TeamRedOdds);
-                    game.TeamBlueOdds -= (int)Math.Round(bet.CreditsBet / 8, 0);
-                    if (game.TeamBlueOdds < 100)
-                        game.TeamBlueOdds = Math.Abs(game.TeamBlueOdds) - 200;
-                }
-                if (game.TeamRedOdds > 0)
-                {
-                    game.TeamRedOdds -= (int)Math.Round(bet.CreditsBet / 8, 0);
-                    if (game.TeamRedOdds < 100)
-                        game.TeamRedOdds = Math.Abs(game.TeamRedOdds) - 200;
-                    game.TeamBlueOdds += (int)Math.Round(bet.CreditsBet / 10, 0);
-                    if (game.TeamBlueOdds <= -100)
-                    {
-
-                    }
-                    else if (game.TeamBlueOdds < 100)
-                        game.TeamBlueOdds = 200 - Math.Abs(game.TeamBlueOdds);
-                }
+                game.GameBetCreditsContainer.TeamRedCreditsBet -= bet.CreditsBet;
             }
             else if (bet.WinningTeamId == game.TeamBlueId)
             {
-                if (game.TeamBlueOdds < 0)
-                {
-                    game.TeamBlueOdds += (int)Math.Round(bet.CreditsBet / 10, 0);
-                    if (game.TeamBlueOdds <= -100)
-                    {
-
-                    }
-                    else if (game.TeamBlueOdds < 100)
-                        game.TeamBlueOdds = 200 - Math.Abs(game.TeamBlueOdds);
-                    game.TeamRedOdds -= (int)Math.Round(bet.CreditsBet / 8, 0);
-                    if (game.TeamRedOdds < 100)
-                        game.TeamRedOdds = Math.Abs(game.TeamRedOdds) - 200;
-                }
-                if (game.TeamBlueOdds > 0)
-                {
-                    game.TeamBlueOdds -= (int)Math.Round(bet.CreditsBet / 8, 0);
-                    if (game.TeamBlueOdds < 100)
-                        game.TeamBlueOdds = Math.Abs(game.TeamBlueOdds) - 200;
-                    game.TeamRedOdds += (int)Math.Round(bet.CreditsBet / 10, 0);
-                    if (game.TeamRedOdds <= -100)
-                    {
-
-                    }
-                    else if (game.TeamRedOdds < 100)
-                        game.TeamRedOdds = 200 - Math.Abs(game.TeamRedOdds);
-                }
+                game.GameBetCreditsContainer.TeamBlueCreditsBet -= bet.CreditsBet;
             }
+
+            var user = bet.User;
+            user.Credits += bet.CreditsBet;
             await repository.DeleteAsync<Bet>(bet.Id);
+            game.OddsAreUpdated = false;
             await repository.SaveChangesAsync();
         }
 
