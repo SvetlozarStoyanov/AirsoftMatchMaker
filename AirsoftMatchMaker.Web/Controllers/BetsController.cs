@@ -23,9 +23,19 @@ namespace AirsoftMatchMaker.Web.Controllers
 
         public async Task<IActionResult> Create(int gameId)
         {
+            if (await betService.IsUserMatchmakerAsync(User.Id()))
+            {
+                TempData["error"] = "Users who are/were in matchmaker role cannot bet!";
+                return RedirectToAction("Index", "Games");
+            }
             if (await betService.IsGameFinishedAsync(gameId))
             {
                 TempData["error"] = "Game has already concluded!";
+                return RedirectToAction("Index", "Games");
+            }
+            if (!(await betService.DoesGameStillAcceptBetsAsync(gameId)))
+            {
+                TempData["error"] = "Game no longer accepts bets!";
                 return RedirectToAction("Index", "Games");
             }
             if (await betService.HasUserAlreadyBetOnGameAsync(User.Id(), gameId))
