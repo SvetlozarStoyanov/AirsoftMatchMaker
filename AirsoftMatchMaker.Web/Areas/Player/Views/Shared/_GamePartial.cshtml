@@ -26,7 +26,7 @@
                class="btn btn-primary">
                 Details
             </a>
-            @if (Model.GameStatus != GameStatus.Finished)
+            @if (Model.IsAcceptingBets)
             {
                 <a asp-controller="Bets" asp-action="Create" asp-route-gameId="@Model.Id"
                class="btn btn-warning">
