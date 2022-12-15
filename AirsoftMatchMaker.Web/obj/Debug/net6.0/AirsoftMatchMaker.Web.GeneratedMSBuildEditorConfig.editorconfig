@@ -20,8 +20,16 @@ build_property._RazorSourceGeneratorDebug =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5pc3RyYXRvclxWaWV3c1xHYW1lc1xEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Areas/Administrator/Views/Games/Finalise.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5pc3RyYXRvclxWaWV3c1xHYW1lc1xGaW5hbGlzZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Areas/Administrator/Views/Games/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5pc3RyYXRvclxWaWV3c1xHYW1lc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Areas/Administrator/Views/Games/_GameFinalisePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5pc3RyYXRvclxWaWV3c1xHYW1lc1xfR2FtZUZpbmFsaXNlUGFydGlhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Areas/Administrator/Views/Home/Index.cshtml]
@@ -676,6 +684,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Games/_GameModeDetailsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZXNcX0dhbWVNb2RlRGV0YWlsc1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Games/_MapDetailsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZXNcX01hcERldGFpbHNQYXJ0aWFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -754,6 +770,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Shared/_MapPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9NYXBQYXJ0aWFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Shared/_MapWithGameModePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9NYXBXaXRoR2FtZU1vZGVQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Shared/_Navbar.cshtml]

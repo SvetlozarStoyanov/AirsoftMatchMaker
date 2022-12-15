@@ -8,5 +8,6 @@ namespace AirsoftMatchMaker.Core.Models.Maps
         public string Name { get; set; } = null!;
         public string? ImageUrl { get; set; }
         public TerrainType Terrain { get; set; }
+
     }
 }
