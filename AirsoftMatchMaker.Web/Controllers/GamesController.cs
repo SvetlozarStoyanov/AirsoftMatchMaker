@@ -8,10 +8,14 @@ namespace AirsoftMatchMaker.Web.Controllers
     public class GamesController : Controller
     {
         private readonly IGameService gameService;
+        private readonly IMapService mapService;
+        private readonly IGameModeService gameModeService;
 
-        public GamesController(IGameService gameService)
+        public GamesController(IGameService gameService, IMapService mapService, IGameModeService gameModeService)
         {
             this.gameService = gameService;
+            this.mapService = mapService;
+            this.gameModeService = gameModeService;
         }
 
         public async Task<IActionResult> Index([FromQuery] GamesQueryModel model)
@@ -40,6 +44,8 @@ namespace AirsoftMatchMaker.Web.Controllers
                 TempData["error"] = $"Game with {id} id does not exist!";
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Map = await mapService.GetMapByIdAsync(model.Map.Id);
+            ViewBag.GameMode = await gameModeService.GetGameModeByIdAsync(model.Map.GameModeId);
             return View(model);
         }
     }
