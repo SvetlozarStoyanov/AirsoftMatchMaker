@@ -22,10 +22,10 @@ namespace AirsoftMatchMaker.Core.Models.Games
 
         public int TeamRedId { get; set; }
         public string TeamRedName { get; set; } = null!;
-        
+
         public int TeamBlueId { get; set; }
         public string TeamBlueName { get; set; } = null!;
-     
 
+        public bool IsAcceptingBets { get; set; }
     }
 }
