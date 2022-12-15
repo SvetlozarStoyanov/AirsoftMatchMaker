@@ -1,0 +1,54 @@
+﻿@model MapWithGameModeModel
+
+<div class="mt-3">
+    <div class="mb-3">
+        <div class=" text-center">
+            <h4 class="text-center">@Model.Name</h4>
+            <br />
+            <div class="mx-2 mt-3 mb-3">
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#mapModal">
+                    <i class="bi bi-info"></i>
+                    Map Details
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <partial name="_MapDetailsPartial" model="ViewBag.Map" />
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mx-2 mt-3 mb-3">
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#gameModeModal">
+                    <i class="bi bi-info"></i>
+                    Game Mode Details
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="gameModeModal" tabindex="-1" aria-labelledby="gameModeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <partial name="_GameModeDetailsPartial" model="ViewBag.GameMode" />
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
