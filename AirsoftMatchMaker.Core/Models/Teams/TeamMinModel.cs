@@ -8,6 +8,6 @@ namespace AirsoftMatchMaker.Core.Models.Teams
         public string Name { get; set; } = null!;
         public int Wins { get; set; }
         public int Losses { get; set; }
-        public ICollection<PlayerMinModel> Players { get; set; }
+        public string Odds { get; set; }
     }
 }
