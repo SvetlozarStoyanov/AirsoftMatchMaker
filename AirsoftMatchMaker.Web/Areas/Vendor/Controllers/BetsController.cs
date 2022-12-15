@@ -29,6 +29,11 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
                 TempData["error"] = "Game has already concluded!";
                 return RedirectToAction("Index", "Games");
             }
+            if (!(await betService.DoesGameStillAcceptBetsAsync(gameId)))
+            {
+                TempData["error"] = "Game no longer accepts bets!";
+                return RedirectToAction("Index", "Games");
+            }
             if (await betService.HasUserAlreadyBetOnGameAsync(User.Id(), gameId))
             {
                 TempData["error"] = "Cannot bet twice on the same game!";
