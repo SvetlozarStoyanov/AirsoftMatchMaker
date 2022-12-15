@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Models.Bets;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 
 namespace AirsoftMatchMaker.Core.Contracts
 {
@@ -10,7 +11,7 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// </summary>
         /// <param name="id"></param>
         /// <returns><see cref="bool"/></returns>
-        Task<bool>BetExistsAsync(int id);
+        Task<bool> BetExistsAsync(int id);
         /// <summary>
         /// Checks if the <see cref="User user"/> has already bet on <see cref="Game game"/> with given Id.
         /// </summary>
@@ -28,7 +29,27 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="bool"/></returns>
         Task<bool> IsUserInOneOfTheTeamsInTheGameAsync(string userId, int gameId);
 
+        /// <summary>
+        /// Returns true if <see cref="Game"/> is <see cref="GameStatus.Finished"/>, false otherwise
+        /// </summary>
+        /// <param name="gameId"></param>
+        /// <returns></returns>
         Task<bool> IsGameFinishedAsync(int gameId);
+
+        /// <summary>
+        /// Returns true if <see cref="Game.Date"/> is after current date , otherwise returns false
+        /// </summary>
+        /// <param name="gameId"></param>
+        /// <returns></returns>
+        Task<bool> DoesGameStillAcceptBetsAsync(int gameId);
+
+        /// <summary>
+        /// Returns true if <see cref="User"/> is in matchmaker or administrator role, otherwise false
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<bool> IsUserMatchmakerAsync(string userId);
+
         /// <summary>
         /// Returns all bets created by <see cref="User"/> with given id
         /// </summary>

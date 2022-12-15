@@ -47,6 +47,23 @@ namespace AirsoftMatchMaker.Core.Services
             var game = await repository.GetByIdAsync<Game>(gameId);
             return game.GameStatus == GameStatus.Finished;
         }
+
+        public async Task<bool> DoesGameStillAcceptBetsAsync(int gameId)
+        {
+            var game = await repository.GetByIdAsync<Game>(gameId);
+
+            return game.Date.Date > DateTime.Now.Date;
+        }
+
+        public async Task<bool> IsUserMatchmakerAsync(string userId)
+        {
+            var matchmaker = await repository.AllReadOnly<Matchmaker>()
+                .Where(mm => mm.UserId == userId)
+                .FirstOrDefaultAsync();
+
+            return matchmaker != null;
+        }
+
         public async Task<IEnumerable<BetListModel>> GetUserBetsAsync(string userId)
         {
             var bets = await repository.AllReadOnly<Bet>()
