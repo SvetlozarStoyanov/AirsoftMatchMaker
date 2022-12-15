@@ -1,5 +1,4 @@
-﻿@using System.Text.RegularExpressions;
-@model MapViewModel
+﻿@model MapViewModel
 
 @{
     string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Maps/{Model.Terrain}.jpg";
@@ -11,9 +10,7 @@
         <p>
             <h4>
                 Size :
-                <b>
-                    @Model.Mapsize
-                </b>
+                <b>@string.Join(" ", Regex.Matches(Model.Mapsize.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
             </h4>
         </p>
         <p>
