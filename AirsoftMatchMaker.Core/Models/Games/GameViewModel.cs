@@ -15,15 +15,16 @@ namespace AirsoftMatchMaker.Core.Models.Games
         public GameStatus GameStatus { get; set; }
         public string? Result { get; set; }
 
-        public MapMinModel Map { get; set; }
-        public int GameModeId { get; set; }
-        public string GameModeName { get; set; } = null!;
+        public MapWithGameModeModel Map { get; set; }
+
         public int MatchmakerId { get; set; }
         public string MatchmakerName { get; set; }
 
         public TeamMinModel TeamRed { get; set; }
 
         public TeamMinModel TeamBlue { get; set; }
+
+        public bool IsAcceptingBets { get; set; }
 
     }
 }
