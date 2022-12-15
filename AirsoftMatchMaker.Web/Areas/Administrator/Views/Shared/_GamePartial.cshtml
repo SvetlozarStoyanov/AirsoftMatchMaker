@@ -21,10 +21,17 @@
             <h6>Gamemode: <b>@Model.GameModeName</b> </h6>
             <h6>Map: <b>@Model.MapName</b></h6>
             <br />
-            <a asp-controller="Games" asp-action="Details" asp-route-id="@Model.Id"
+            <a asp-area="Administrator" asp-controller="Games" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-primary">
                 Details
             </a>
+            @if (Model.Date.Date < DateTime.Now.Date && Model.Result == null)
+            {
+                <a asp-area="Administrator" asp-controller="Games" asp-action="Finalise" asp-route-id="@Model.Id"
+               class="btn btn-secondary">
+                    Finalise
+                </a>
+            }
         </div>
     </div>
 </div>
