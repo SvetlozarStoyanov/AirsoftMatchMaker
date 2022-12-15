@@ -123,7 +123,7 @@ namespace AirsoftMatchMaker.Core.Services
                     TerrainType = g.Map.Terrain,
                     TeamRedId = g.TeamRedId,
                     TeamRedName = g.TeamRed.Name,
-
+                    IsAcceptingBets = g.Date.Date > DateTime.Now,
                     TeamBlueId = g.TeamBlueId,
                     TeamBlueName = g.TeamBlue.Name,
 
@@ -157,14 +157,15 @@ namespace AirsoftMatchMaker.Core.Services
                             GameStatus = g.GameStatus,
                             Date = g.Date.ToShortDateString(),
                             EntryFee = g.EntryFee,
-                            GameModeId = g.GameModeId,
-                            GameModeName = g.GameMode.Name,
-                            Map = new MapMinModel()
+
+                            Map = new MapWithGameModeModel()
                             {
                                 Id = g.MapId,
                                 Name = g.Map.Name,
                                 ImageUrl = g.Map.ImageUrl,
-                                Terrain = g.Map.Terrain
+                                Terrain = g.Map.Terrain,
+                                GameModeId = g.GameModeId,
+                                GameModeName = g.GameMode.Name
                             },
                             MatchmakerId = g.MatchmakerId,
                             MatchmakerName = g.Matchmaker.User.UserName,
@@ -174,16 +175,7 @@ namespace AirsoftMatchMaker.Core.Services
                                 Name = g.TeamRed.Name,
                                 Wins = g.TeamRed.Wins,
                                 Losses = g.TeamRed.Losses,
-                                Players = g.TeamRed.Players
-                                .Where(p => p.IsActive && p.Weapons.Any())
-                                .Select(p => new PlayerMinModel()
-                                {
-                                    Id = p.Id,
-                                    UserName = p.User.UserName,
-                                    SkillLevel = p.SkillLevel,
-                                    PlayerClassName = p.PlayerClass.Name
-                                })
-                                .ToList(),
+                                Odds = g.TeamRedOdds > 0 ? $"+{g.TeamRedOdds}" : $"{g.TeamRedOdds}"
                             },
                             TeamBlue = new TeamMinModel()
                             {
@@ -191,18 +183,10 @@ namespace AirsoftMatchMaker.Core.Services
                                 Name = g.TeamBlue.Name,
                                 Wins = g.TeamBlue.Wins,
                                 Losses = g.TeamBlue.Losses,
-                                Players = g.TeamBlue.Players
-                                .Where(p => p.IsActive && p.Weapons.Any())
-                                .Select(p => new PlayerMinModel()
-                                {
-                                    Id = p.Id,
-                                    UserName = p.User.UserName,
-                                    SkillLevel = p.SkillLevel,
-                                    PlayerClassName = p.PlayerClass.Name
-                                })
-                                .ToList(),
+                                Odds = g.TeamBlueOdds > 0 ? $"+{g.TeamBlueOdds}" : $"{g.TeamBlueOdds}"
                             },
-                            Result = g.Result != null ? g.Result : "Not played yet",
+                            IsAcceptingBets = g.Date.Date > DateTime.Now,
+                            Result = g.Result
                         })
                         .FirstOrDefaultAsync();
             return game;
@@ -390,7 +374,7 @@ namespace AirsoftMatchMaker.Core.Services
                    TerrainType = g.Map.Terrain,
                    TeamRedId = g.TeamRedId,
                    TeamRedName = g.TeamRed.Name,
-
+                   IsAcceptingBets = g.Date.Date > DateTime.Now,
                    TeamBlueId = g.TeamBlueId,
                    TeamBlueName = g.TeamBlue.Name,
 
