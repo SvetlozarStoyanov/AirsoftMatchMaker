@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Games;
+using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,11 +39,16 @@ namespace AirsoftMatchMaker.Web.Areas.Administrator.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var model = await gameService.GetGameByIdAsync(id);
-            if (model == null)
+            if (!(await gameService.GameExistsAsync(id)))
             {
                 TempData["error"] = $"Game with {id} id does not exist!";
                 return RedirectToAction(nameof(Index));
+            }
+            var model = await gameService.GetGameByIdAsync(id);
+
+            if (await gameService.GameIsFinishedButNotFinalisedAsync(id))
+            {
+                ViewBag.FinaliseGameModel = await gameService.CreateGameFinaliseModelAsync(id);
             }
             return View(model);
         }
@@ -52,6 +58,24 @@ namespace AirsoftMatchMaker.Web.Areas.Administrator.Controllers
             await gameSimulationService.SimulateGameAsync(id);
             await gameSimulationService.PayoutBetsByGameIdAsync(id);
             return RedirectToAction(nameof(Details), new { id = id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Finalise(int id)
+        {
+            var model = await gameService.CreateGameFinaliseModelAsync(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Finalise(GameFinaliseModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            await gameService.FinalizeGameAsync(model);
+            return RedirectToAction(nameof(Details), new { id = model.Id });
         }
     }
 }
