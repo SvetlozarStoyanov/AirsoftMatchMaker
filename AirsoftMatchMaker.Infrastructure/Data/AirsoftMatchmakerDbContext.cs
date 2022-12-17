@@ -11,6 +11,9 @@ namespace AirsoftMatchMaker.Infrastructure.Data
             : base(options)
         {
         }
+
+        public bool ApplyConfiguration { get; set; } = true;
+
         public DbSet<Weapon> Weapons { get; set; } = null!;
         public DbSet<Map> Maps { get; set; } = null!;
         public DbSet<GameMode> GameModes { get; set; } = null!;
@@ -84,24 +87,26 @@ namespace AirsoftMatchMaker.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-
-            builder.ApplyConfiguration(new UserConfiguration());
-            builder.ApplyConfiguration(new RoleConfiguration());
-            builder.ApplyConfiguration(new UserRoleConfiguration());
-            builder.ApplyConfiguration(new ClothingConfiguration());
-            builder.ApplyConfiguration(new AmmoBoxConfiguration());
-            builder.ApplyConfiguration(new VendorConfiguration());
-            builder.ApplyConfiguration(new MatchmakerConfiguration());
-            builder.ApplyConfiguration(new PlayerClassConfiguration());
-            builder.ApplyConfiguration(new PlayerConfiguration());
-            builder.ApplyConfiguration(new WeaponConfiguration());
-            builder.ApplyConfiguration(new TeamConfiguration());
-            builder.ApplyConfiguration(new GameModeConfiguration());
-            builder.ApplyConfiguration(new MapConfiguration());
-            builder.ApplyConfiguration(new GameConfiguration());
-            builder.ApplyConfiguration(new BetConfiguration());
-            builder.ApplyConfiguration(new GameBetCreditsContainerConfiguration());
-            builder.ApplyConfiguration(new TeamRequestConfiguration());
+            if (ApplyConfiguration)
+            {
+                builder.ApplyConfiguration(new UserConfiguration());
+                builder.ApplyConfiguration(new RoleConfiguration());
+                builder.ApplyConfiguration(new UserRoleConfiguration());
+                builder.ApplyConfiguration(new ClothingConfiguration());
+                builder.ApplyConfiguration(new AmmoBoxConfiguration());
+                builder.ApplyConfiguration(new VendorConfiguration());
+                builder.ApplyConfiguration(new MatchmakerConfiguration());
+                builder.ApplyConfiguration(new PlayerClassConfiguration());
+                builder.ApplyConfiguration(new PlayerConfiguration());
+                builder.ApplyConfiguration(new WeaponConfiguration());
+                builder.ApplyConfiguration(new TeamConfiguration());
+                builder.ApplyConfiguration(new GameModeConfiguration());
+                builder.ApplyConfiguration(new MapConfiguration());
+                builder.ApplyConfiguration(new GameConfiguration());
+                builder.ApplyConfiguration(new BetConfiguration());
+                builder.ApplyConfiguration(new GameBetCreditsContainerConfiguration());
+                builder.ApplyConfiguration(new TeamRequestConfiguration());
+            }
 
             base.OnModelCreating(builder);
         }
