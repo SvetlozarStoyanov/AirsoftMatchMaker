@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Games;
+using AirsoftMatchMaker.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +11,13 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
     public class GamesController : Controller
     {
         private readonly IGameService gameService;
-        public GamesController(IGameService gameService)
+        private readonly IGameModeService gameModeService;
+        private readonly IMapService mapService;
+        public GamesController(IGameService gameService, IGameModeService gameModeService, IMapService mapService)
         {
             this.gameService = gameService;
+            this.gameModeService = gameModeService;
+            this.mapService = mapService;
         }
 
         public async Task<IActionResult> Index([FromQuery] GamesQueryModel model)
@@ -36,12 +41,19 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
+            if (!(await gameService.GameExistsAsync(id)))
+            {
+                TempData["error"] = "Game does not exist!";
+                return RedirectToAction(nameof(Index));
+            }
             var model = await gameService.GetGameByIdAsync(id);
             if (model == null)
             {
                 TempData["error"] = $"Game with {id} id does not exist!";
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Map = await mapService.GetMapByIdAsync(model.Map.Id);
+            ViewBag.GameMode = await gameModeService.GetGameModeByIdAsync(model.Map.GameModeId);
             return View(model);
         }
     }
