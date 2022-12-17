@@ -29,7 +29,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IGameSimulationService, GameSimulationService>();
             services.AddScoped<IBackgroundTeamService, BackgroundTeamService>();
             services.AddScoped<IBackgroundGameService, BackgroundGameService>();
-            services.AddScoped<IBackgroundBetService, BackgroundBetService>();
             services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
             services.AddScoped<IHtmlSanitizingService, HtmlSanitizingService>();
 
