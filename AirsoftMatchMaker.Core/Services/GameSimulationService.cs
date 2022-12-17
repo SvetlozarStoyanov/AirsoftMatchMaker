@@ -106,21 +106,64 @@ namespace AirsoftMatchMaker.Core.Services
                 .Where(g => g.Id == gameId)
                 .Include(g => g.Bets)
                 .ThenInclude(b => b.User)
+                .Include(g => g.GameBetCreditsContainer)
                 .FirstOrDefaultAsync();
+
+            var container = game.GameBetCreditsContainer;
             if (game == null || game.GameStatus == GameStatus.Upcoming)
             {
                 throw new ArgumentException("Cannot payout bets on unfinished game!");
             }
             var winningTeamId = game.TeamRedPoints > game.TeamBluePoints ? game.TeamRedId : game.TeamRedPoints < game.TeamBluePoints ? game.TeamBlueId : 0;
-            var winningBetters = new List<User>();
             foreach (var bet in game.Bets)
             {
                 if (bet.WinningTeamId == winningTeamId)
-                    bet.User.Credits += CalculateBetPayout(bet.Odds, bet.CreditsBet);
+                {
+                    var profit = CalculateBetProfit(bet.Odds, bet.CreditsBet);
+                    if (game.TeamRedId == winningTeamId)
+                    {
+                        container.TeamRedCreditsBet -= bet.CreditsBet;
+                        if (container.TeamBlueCreditsBet >= profit)
+                        {
+                            container.TeamBlueCreditsBet -= profit;
+                        }
+                        else if (container.TeamBlueCreditsBet == 0)
+                        {
+                            profit = 0;
+                        }
+                        else if (container.TeamBlueCreditsBet < profit)
+                        {
+                            profit = container.TeamBlueCreditsBet;
+                            container.TeamBlueCreditsBet = 0;
+                        }
+                        bet.User.Credits += bet.CreditsBet + profit;
+                    }
+                    else if (game.TeamBlueId == winningTeamId)
+                    {
+                        container.TeamBlueCreditsBet -= bet.CreditsBet;
+                        if (container.TeamRedCreditsBet >= profit)
+                        {
+                            container.TeamRedCreditsBet -= profit;
+                        }
+                        else if (container.TeamRedCreditsBet == 0)
+                        {
+                            profit = 0;
+                        }
+                        else if (container.TeamRedCreditsBet < profit)
+                        {
+                            profit = container.TeamRedCreditsBet;
+                            container.TeamRedCreditsBet = 0;
+                        }
+                        bet.User.Credits += bet.CreditsBet + profit;
+                    }
+                }
                 bet.BetStatus = BetStatus.Finished;
             }
+            container.BetsArePaidOut = true;
             await repository.SaveChangesAsync();
         }
+
+
 
 
         private int CalculateTeamImpactForSimulation(List<Player> players, int wins, int losses, Map map)
@@ -404,16 +447,16 @@ namespace AirsoftMatchMaker.Core.Services
             game.GameStatus = GameStatus.Finished;
         }
 
-        private static decimal CalculateBetPayout(int odds, decimal creditsBet)
+        private static decimal CalculateBetProfit(int odds, decimal creditsBet)
         {
-            var profit = creditsBet;
+            var profit = 0m;
             if (odds < 0)
             {
-                profit += profit * (100 / (decimal)Math.Abs(odds));
+                profit += creditsBet * (100 / (decimal)Math.Abs(odds));
             }
             else
             {
-                profit += profit * ((decimal)odds / 100);
+                profit += creditsBet * ((decimal)odds / 100);
             }
             return Math.Round(profit, 2);
         }
