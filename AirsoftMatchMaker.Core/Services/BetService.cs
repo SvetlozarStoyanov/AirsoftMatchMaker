@@ -170,7 +170,7 @@ namespace AirsoftMatchMaker.Core.Services
                     WinningTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
                     CreditsBet = b.CreditsBet,
                     Odds = b.Odds,
-                    PotentialProfit = CalculateProfit(b.Odds, b.CreditsBet),
+                    PotentialProfit = CalculatePayout(b.Odds, b.CreditsBet),
                 })
                 .FirstOrDefaultAsync();
             return bet;
@@ -190,7 +190,7 @@ namespace AirsoftMatchMaker.Core.Services
                     CreditsBet = b.CreditsBet,
                     WinningTeamId = b.WinningTeamId,
                     WinningTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
-                    PotentialProfit = CalculateProfit(b.Odds, b.CreditsBet),
+                    PotentialProfit = CalculatePayout(b.Odds, b.CreditsBet),
                     Odds = b.Odds
                 })
                 .FirstOrDefaultAsync();
@@ -223,9 +223,85 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
+        public async Task PayoutBetsByGameIdAsync(int gameId)
+        {
+            var game = await repository.All<Game>()
+                .Where(g => g.Id == gameId)
+                .Include(g => g.Bets)
+                .ThenInclude(b => b.User)
+                .Include(g => g.GameBetCreditsContainer)
+                .FirstOrDefaultAsync();
+
+            var container = game.GameBetCreditsContainer;
+            if (game == null || game.GameStatus == GameStatus.Upcoming)
+            {
+                throw new ArgumentException("Cannot payout bets on unfinished game!");
+            }
+            var winningTeamId = game.TeamRedPoints > game.TeamBluePoints ? game.TeamRedId : game.TeamRedPoints < game.TeamBluePoints ? game.TeamBlueId : 0;
+            foreach (var bet in game.Bets)
+            {
+                if (bet.WinningTeamId == winningTeamId)
+                {
+                    var profit = CalculateBetProfit(bet.Odds, bet.CreditsBet);
+                    if (game.TeamRedId == winningTeamId)
+                    {
+                        container.TeamRedCreditsBet -= bet.CreditsBet;
+                        if (container.TeamBlueCreditsBet >= profit)
+                        {
+                            container.TeamBlueCreditsBet -= profit;
+                        }
+                        else if (container.TeamBlueCreditsBet == 0)
+                        {
+                            profit = 0;
+                        }
+                        else if (container.TeamBlueCreditsBet < profit)
+                        {
+                            profit = container.TeamBlueCreditsBet;
+                            container.TeamBlueCreditsBet = 0;
+                        }
+                        bet.User.Credits += bet.CreditsBet + profit;
+                    }
+                    else if (game.TeamBlueId == winningTeamId)
+                    {
+                        container.TeamBlueCreditsBet -= bet.CreditsBet;
+                        if (container.TeamRedCreditsBet >= profit)
+                        {
+                            container.TeamRedCreditsBet -= profit;
+                        }
+                        else if (container.TeamRedCreditsBet == 0)
+                        {
+                            profit = 0;
+                        }
+                        else if (container.TeamRedCreditsBet < profit)
+                        {
+                            profit = container.TeamRedCreditsBet;
+                            container.TeamRedCreditsBet = 0;
+                        }
+                        bet.User.Credits += bet.CreditsBet + profit;
+                    }
+                }
+                bet.BetStatus = BetStatus.Finished;
+            }
+            container.BetsArePaidOut = true;
+            await repository.SaveChangesAsync();
+        }
+
+        private static decimal CalculateBetProfit(int odds, decimal creditsBet)
+        {
+            var profit = 0m;
+            if (odds < 0)
+            {
+                profit += creditsBet * (100 / (decimal)Math.Abs(odds));
+            }
+            else
+            {
+                profit += creditsBet * ((decimal)odds / 100);
+            }
+            return Math.Round(profit, 2);
+        }
 
 
-        private static decimal CalculateProfit(int odds, decimal creditsBet)
+        private static decimal CalculatePayout(int odds, decimal creditsBet)
         {
             var profit = creditsBet;
             if (odds < 0)
