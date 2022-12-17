@@ -10,10 +10,19 @@
     {
        
             var userDto = await UserManager.FindByIdAsync(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-        
-     
-        <li class="nav-item">
-            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
+
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item " asp-area="Matchmaker" asp-controller="Users" asp-action="MyProfile">My profile info</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item " asp-area="Matchmaker" asp-controller="RoleRequests" asp-action="Index">Roles</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" asp-area="Matchmaker" asp-controller="Games" asp-action="Mine">My games</a>
+                <div class="dropdown-divider"></div>
+                
+            </div>
         </li>
         <li class="nav-item">
             <a class="nav-link" disabled>@userDto.Credits credits</a>
