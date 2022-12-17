@@ -1,5 +1,8 @@
-﻿@using System.Text.RegularExpressions;
-@model IEnumerable<GameModeListModel>
+﻿@model IEnumerable<GameModeListModel>
+<a class="btn btn-primary btn-lg" asp-area="Matchmaker" asp-controller="GameModes" asp-action="Create">
+    <i class="bg-info bi-plus-circle"></i>
+    Create
+</a>
 <table class=" table table-bordered  table-striped" style="width:100%">
     <thead>
         <tr>
