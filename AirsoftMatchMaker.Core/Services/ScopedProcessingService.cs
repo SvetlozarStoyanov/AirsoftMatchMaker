@@ -9,11 +9,10 @@ namespace AirsoftMatchMaker.Core.Services
         //private readonly IGameSimulationService gameSimulationService;
         private readonly IBackgroundTeamService backgroundTeamService;
         private readonly IBackgroundGameService backgroundGameService;
-        private readonly IBackgroundBetService backgroundBetService;
-        public ScopedProcessingService(IBackgroundGameService backgroundGameService, IBackgroundBetService backgroundBetService, IBackgroundTeamService backgroundTeamService)
+        
+        public ScopedProcessingService(IBackgroundGameService backgroundGameService, IBackgroundTeamService backgroundTeamService)
         {
             this.backgroundGameService = backgroundGameService;
-            this.backgroundBetService = backgroundBetService;
             this.backgroundTeamService = backgroundTeamService;
         }
 
@@ -28,11 +27,6 @@ namespace AirsoftMatchMaker.Core.Services
                     Console.WriteLine($"Game with id {gameId} odds have been calculated!");
                 }
                 await backgroundGameService.MarkGamesAsFinishedAsync(DateTime.Now);
-                var gamesToHaveTheirBetsPayedOutIds = await backgroundBetService.GetAllFinalisedGameIdsWithUnpaidBetsAsync();
-                foreach (var gameId in gamesToHaveTheirBetsPayedOutIds)
-                {
-                    await backgroundBetService.PayoutBetsByGameIdAsync(gameId);
-                }
                 var teamRequestIds = await backgroundTeamService.GetPlayersToAssignOrRemoveFromTeamsTeamRequestIdsAsync();
                 if (teamRequestIds.Any())
                 {
