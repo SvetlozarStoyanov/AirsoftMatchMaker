@@ -1,100 +1,61 @@
-﻿@*@using System.Text.RegularExpressions;
-@model GameViewModel
+﻿@model GameViewModel
 
 @{
     ViewBag.Title = "Game Details";
 }
 
+
+
+
 <h2 class="text-center">@ViewBag.Title</h2>
 
-
-<div class="container" style="display:inline">
+<div class="container mt-5 mb-5">
+    @if (Model.Result != null)
+    {
+        <div class="d-flex align-items-center justify-content-around mt-3 mb-3">
+            <h3>
+                @Model.Result
+            </h3>
+        </div>
+    }
     <div class="row">
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.Name</p>
-            <p style="font-size:25px;">@Model.Result</p>
-            <p>
-                Status:
-                <b>@string.Join(" ", Regex.Matches(Model.GameStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
-            </p>
-            <p>
-                Matchmaker:
-                <b>
-                    <a class="btn btn-info" asp-area="Administrator" asp-controller="Matchmakers" asp-action="Details" asp-route-id="@Model.MatchmakerId"> @Model.MatchmakerName</a>
-                </b>
-            </p>
-            <p>
-                Map
-                <b>
+        <partial name="_TeamMinPartial" model="Model.TeamRed" />
 
-                    @Model.MapName
 
-                </b>
+        <div class="col text-center d-flex align-items-center justify-content-center">
+            <p style="font-size:35px" class="mt-5 mb-5 mx-2">
+                <b>VS</b>
             </p>
-            <p>
-                Game Mode
-                <b>
-                    @Model.GameModeName
-                </b>
-            </p>
+        </div>
+        <partial name="_TeamMinPartial" model="Model.TeamBlue" />
+
+    </div>
+
+    <div class="text-center d-flex align-items-center justify-content-center">
+        <partial name="_MapWithGameModePartial" model="Model.Map" />
+    </div>
+</div>
+@if (ViewBag.FinaliseGameModel != null)
+{
+    <div class="text-center">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Finalise
+        </button>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <partial name="_GameFinalisePartial" model="@ViewBag.FinaliseGameModel" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
-    <p>
-        Bets for Red Team
-        <b>
-            @Model.TeamRedBets
-        </b>
-    </p>
-    <p>
-        Bets for Blue Team
-        <b>
-            @Model.TeamBlueBets
-        </b>
-    </p>
-    <p>
-        Red Team Odds
-        <b>
-            @Model.TeamRedOdds
-        </b>
-    </p>
-    <p>
-        Blue Team Odds
-        <b>
-            @Model.TeamBlueOdds
-        </b>
-    </p>
-    <span>
-        <div class="container">
-            <h2>Red Team : @Model.TeamRedName</h2>
-            @foreach (var player in Model.TeamRedPlayers)
-            {
-                <a class="btn" asp-area="Administrator" asp-controller="Players" asp-action="Details" asp-route-id="@player.Id">
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">@player.UserName</h5>
-
-                            <p class="card-text">@player.SkillLevel</p>
-                        </div>
-                    </div>
-                </a>
-            }
-        </div>
-        <div class="container">
-            <h2>Blue Team: @Model.TeamBlueName</h2>
-            @foreach (var player in Model.TeamBluePlayers)
-            {
-                <a class="btn" asp-area="Administrator" asp-controller="Players" asp-action="Details" asp-route-id="@player.Id">
-
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">@player.UserName</h5>
-
-                            <p class="card-text">@player.SkillLevel</p>
-                        </div>
-                    </div>
-                </a>
-            }
-        </div>
-    </span>
-</div>
-*@
+}

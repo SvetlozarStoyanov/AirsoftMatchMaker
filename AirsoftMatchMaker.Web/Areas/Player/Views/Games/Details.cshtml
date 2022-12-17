@@ -1,5 +1,4 @@
-﻿@*@using System.Text.RegularExpressions;
-@model GameViewModel
+﻿@model GameViewModel
 
 @{
     ViewBag.Title = "Game Details";
@@ -7,86 +6,38 @@
 
 <h2 class="text-center">@ViewBag.Title</h2>
 
-
-<div class="container" style="display:inline">
+<div class="container mt-5 mb-5">
+    @if (Model.Result != null)
+    {
+            <div class="d-flex align-items-center justify-content-around mt-3 mb-3">
+                <h3>
+                @Model.Result
+                </h3>
+            </div>
+    }
+    @if (Model.IsAcceptingBets)
+    {
+            <div class="d-flex align-items-center justify-content-around mt-3 mb-3">
+                <a asp-controller="Bets" asp-action="Create" asp-route-gameId="@Model.Id"
+           class="btn btn-warning btn-lg">
+                    Bet
+                </a>
+            </div>
+    }
     <div class="row">
+        <partial name="_TeamMinPartial" model="Model.TeamRed" />
 
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.Name</p>
-            <p style="font-size:25px;">@Model.Result</p>
-            <p>
-                Status:
-                <b>@string.Join(" ", Regex.Matches(Model.GameStatus.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
-            </p>
-            <p>
-                Matchmaker:
-                <b>
-                    <a class="btn btn-info" asp-area="Player" asp-controller="Matchmakers" asp-action="Details" asp-route-id="@Model.MatchmakerId"> @Model.MatchmakerName</a>
-                </b>
-            </p>
-            <p>
-                Map
-                <b>
-                    <a class="btn btn-primary" asp-area="Player" asp-controller="Maps" asp-action="Details" asp-route-id="@Model.MapId">
-                        @Model.MapName
-                    </a>
-                </b>
-            </p>
-            <p>
-                Game Mode
-                <b>
-                    <a class="btn btn-secondary" asp-controller="GameModes" asp-action="Details" asp-route-id="@Model.GameModeId">
-                        @Model.GameModeName
-                    </a>
-                </b>
+
+        <div class="col text-center d-flex align-items-center justify-content-center">
+            <p style="font-size:35px" class="mt-5 mb-5 mx-2">
+                <b>VS</b>
             </p>
         </div>
+        <partial name="_TeamMinPartial" model="Model.TeamBlue" />
+
     </div>
-    <p>
-        Bets for Red Team
-        <b>
-            @Model.TeamRedBets
-        </b>
 
-    </p>
-    <p>
-        Bets for Blue Team
-        <b>
-            @Model.TeamBlueBets
-        </b>
-    </p>
-    <span>
-        <div class="container">
-            <h2>Red Team : @Model.TeamRedName</h2>
-            @foreach (var player in Model.TeamRedPlayers)
-            {
-                <a class="btn" asp-controller="Players" asp-action="Details" asp-route-id="@player.Id">
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">@player.UserName</h5>
-
-                            <p class="card-text">@player.SkillLevel</p>
-                        </div>
-                    </div>
-                </a>
-            }
-        </div>
-        <div class="container">
-            <h2>Blue Team: @Model.TeamBlueName</h2>
-            @foreach (var player in Model.TeamBluePlayers)
-            {
-                <a class="btn" asp-controller="Players" asp-action="Details" asp-route-id="@player.Id">
-
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">@player.UserName</h5>
-
-                            <p class="card-text">@player.SkillLevel</p>
-                        </div>
-                    </div>
-                </a>
-            }
-        </div>
-    </span>
+    <div class="text-center d-flex align-items-center justify-content-center">
+        <partial name="_MapWithGameModePartial" model="Model.Map" />
+    </div>
 </div>
-</div>*@
