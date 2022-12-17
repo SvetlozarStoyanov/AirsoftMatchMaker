@@ -96,5 +96,12 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns></returns>
         Task DeleteBetAsync(BetDeleteModel model);
 
+        /// <summary>
+        /// Pays out the profit to the bettors who correctly predicted the result of the<see cref= "Game game" /> with given id.
+        /// </summary>
+        /// <param name="gameId"></param>
+        /// <returns></returns>
+        Task PayoutBetsByGameIdAsync(int gameId);
+
     }
 }
