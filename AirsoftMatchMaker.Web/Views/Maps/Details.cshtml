@@ -9,7 +9,7 @@
     <div class="text-center">
         <p>
             <h4>
-                Size :
+                Size:
                 <b>@string.Join(" ", Regex.Matches(Model.Mapsize.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
             </h4>
         </p>
@@ -46,16 +46,19 @@
                     @Model.Description
                 </p>
             </div>
-            <div class="mt-6 mb-6 text-center">
-                <p>
-                    <h4>
-                        Games played:
-                        <b>
-                            @Model.Games.Count
-                        </b>
-                    </h4>
-                </p>
-            </div>
+            <section class="text-center mt-3 mb-3">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGames" aria-expanded="false" aria-controls="collapseGames">
+                    <h5>Games with this gamemode: @Model.Games.Count </h5>
+                </button>
+                <div class="collapse" id="collapseGames">
+                    <div class="row">
+                        @foreach (var game in Model.Games)
+                        {
+                            <partial name="_GameMinPartial" model="@game" />
+                        }
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 </article>

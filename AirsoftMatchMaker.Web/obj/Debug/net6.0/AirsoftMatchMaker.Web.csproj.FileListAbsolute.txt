@@ -287,3 +287,4 @@ C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\obj\Debug\net
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net6.0\AngleSharp.dll
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net6.0\AngleSharp.Css.dll
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net6.0\HtmlSanitizer.dll
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.InMemory.dll

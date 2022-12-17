@@ -27,7 +27,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             if (await teamService.DoesUserHaveTeamAsync(User.Id()))
             {
                 var playerGamesmodel = await gameService.GetPlayersLastFinishedAndFirstUpcomingGameAsync(User.Id());
-                if (playerGamesmodel == null || playerGamesmodel.Count() == 0)
+                if (playerGamesmodel.Count() == 0)
                 {
                     var defaultModel = await gameService.GetUpcomingGamesByDateAsync();
                     return View(defaultModel);
