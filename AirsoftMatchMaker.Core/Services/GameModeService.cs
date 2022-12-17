@@ -17,6 +17,14 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
+
+
+        public async Task<bool> DoesGameModeExistAsync(string gameModeName)
+        {
+            return await repository.AllReadOnly<GameMode>()
+                .AnyAsync(gm => gm.Name == gameModeName);
+        }
+
         public async Task<IEnumerable<GameModeListModel>> GetAllGameModesAsync()
         {
             var gameModes = await repository.AllReadOnly<GameMode>()
@@ -66,6 +74,19 @@ namespace AirsoftMatchMaker.Core.Services
                 })
                 .FirstOrDefaultAsync();
             return gameMode;
+        }
+
+        public async Task CreateGameModeAsync(GameModeCreateModel model)
+        {
+            var gameMode = new GameMode()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                PointsToWin = model.PointsToWin
+            };
+
+            await repository.AddAsync<GameMode>(gameMode);
+            await repository.SaveChangesAsync();
         }
     }
 }

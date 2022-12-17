@@ -1,14 +1,18 @@
 ﻿using AirsoftMatchMaker.Core.Models.GameModes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AirsoftMatchMaker.Infrastructure.Data.Entities;
+
 
 namespace AirsoftMatchMaker.Core.Contracts
 {
     public interface IGameModeService
     {
+        /// <summary>
+        /// Returns true if <see cref="GameMode"/> with given name already exists, false otherwise
+        /// </summary>
+        /// <param name="gameModeName"></param>
+        /// <returns></returns>
+        Task<bool> DoesGameModeExistAsync(string gameModeName);
+
         /// <summary>
         /// Returns all game modes
         /// </summary>
@@ -21,5 +25,12 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="id"></param>
         /// <returns><see cref="GameModeViewModel"/></returns>
         Task<GameModeViewModel> GetGameModeByIdAsync(int id);
+
+        /// <summary>
+        /// Creates a new <see cref="GameMode"/> from <see cref="GameModeCreateModel"/>
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task CreateGameModeAsync(GameModeCreateModel model);
     }
 }
