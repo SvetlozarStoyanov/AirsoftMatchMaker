@@ -16,6 +16,12 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
+        public async Task<bool> MapAlreadyExists(string mapName)
+        {
+            return await repository.AllReadOnly<Map>()
+                .AnyAsync(m => m.Name == mapName);
+        }
+
         public async Task<IEnumerable<MapListModel>> GetAllMapsAsync()
         {
             var maps = await repository.AllReadOnly<Map>()
@@ -72,6 +78,44 @@ namespace AirsoftMatchMaker.Core.Services
                 })
                 .FirstOrDefaultAsync();
             return map;
+        }
+
+
+
+
+        public async Task<MapCreateModel> CreateMapCreateModelAsync()
+        {
+            var model = new MapCreateModel();
+            model.TerrainTypes = Enum.GetValues<TerrainType>().ToList();
+            model.AverageEngagementDistances = Enum.GetValues<AverageEngagementDistance>().ToList();
+            model.Mapsizes = Enum.GetValues<Mapsize>().ToList();
+            var gameModes = await repository.AllReadOnly<GameMode>()
+                .Select(gm => new
+                {
+                    Id = gm.Id,
+                    Name = gm.Name
+                })
+                .ToListAsync();
+            model.GameModeIds = gameModes.Select(gm => gm.Id).ToList();
+            model.GameModeNames = gameModes.Select(gm => gm.Name).ToList();
+            return model;
+        }
+
+
+        public async Task CreateMapAsync(MapCreateModel model)
+        {
+            var map = new Map()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                ImageUrl = model.ImageUrl,
+                Terrain = model.TerrainType,
+                Mapsize = model.Mapsize,
+                AverageEngagementDistance= model.AverageEngagementDistance,
+                GameModeId = model.GameModeId,
+            };
+            await repository.AddAsync<Map>(map);
+            await repository.SaveChangesAsync();
         }
     }
 }
