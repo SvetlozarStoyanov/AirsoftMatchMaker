@@ -2,7 +2,6 @@
 using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Maps;
-using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Core.Models.Teams;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
@@ -74,22 +73,22 @@ namespace AirsoftMatchMaker.Core.Services
             int gamesPerPage = 6,
             int currentPage = 1)
         {
+            var allGames = await repository.AllReadOnly<Game>()
+                .ToListAsync();
             var games = await repository.AllReadOnly<Game>()
                 .Where(g => (!g.GameBetCreditsContainer.BetsArePaidOut && g.GameStatus == GameStatus.Upcoming) || (g.GameBetCreditsContainer.BetsArePaidOut && g.GameStatus == GameStatus.Finished))
                 .Include(g => g.TeamRed)
                 .Include(g => g.TeamBlue)
                 .Include(g => g.GameMode)
                 .Include(g => g.Map)
-                .Include(g => g.Matchmaker)
-                .ThenInclude(mm => mm.User)
                 .ToListAsync();
             if (!string.IsNullOrEmpty(teamName))
             {
-                games = games.Where(g => g.TeamRed.Name == teamName || g.TeamBlue.Name == teamName).ToList();
+                games = games.Where(g => g.TeamRed.Name.ToLower() == teamName.ToLower() || g.TeamBlue.Name.ToLower() == teamName.ToLower()).ToList();
             }
             if (!string.IsNullOrEmpty(gameModeName))
             {
-                games = games.Where(g => g.GameMode.Name == gameModeName).ToList();
+                games = games.Where(g => g.GameMode.Name.ToLower() == gameModeName.ToLower()).ToList();
             }
             if (gameStatus != null)
             {
@@ -126,7 +125,6 @@ namespace AirsoftMatchMaker.Core.Services
                     IsAcceptingBets = g.Date.Date > DateTime.Now,
                     TeamBlueId = g.TeamBlueId,
                     TeamBlueName = g.TeamBlue.Name,
-
                     Result = g.Result != null ? g.Result : "Not played yet",
                 })
                 .ToList();
@@ -315,14 +313,6 @@ namespace AirsoftMatchMaker.Core.Services
 
             DateTime dateTime = DateTime.Parse(model.DateString);
 
-            if (teamRed.GamesAsTeamRed.Any(g => g.Date.Date == dateTime.Date) || teamRed.GamesAsTeamBlue.Any(g => g.Date.Date == dateTime.Date))
-            {
-                return;
-            }
-            if (teamBlue.GamesAsTeamRed.Any(g => g.Date.Date == dateTime.Date) || teamBlue.GamesAsTeamBlue.Any(g => g.Date.Date == dateTime.Date))
-            {
-                return;
-            }
 
             var map = await repository.All<Map>()
                 .Where(m => m.Id == model.MapId)
@@ -331,7 +321,7 @@ namespace AirsoftMatchMaker.Core.Services
 
 
 
-            Game game = new Game()
+            var game = new Game()
             {
                 Name = $"{teamRed.Name} VS {teamBlue.Name}",
                 EntryFee = model.EntryFee,
@@ -347,7 +337,13 @@ namespace AirsoftMatchMaker.Core.Services
                 TeamBlueOdds = 0,
                 OddsAreUpdated = false
             };
+            var container = new GameBetCreditsContainer()
+            {
+                GameId = game.Id,
+                BetsArePaidOut = false
+            };
             matchmaker.OrganisedGames.Add(game);
+            await repository.AddAsync<GameBetCreditsContainer>(container);
             await repository.SaveChangesAsync();
         }
 
@@ -377,7 +373,6 @@ namespace AirsoftMatchMaker.Core.Services
                    IsAcceptingBets = g.Date.Date > DateTime.Now,
                    TeamBlueId = g.TeamBlueId,
                    TeamBlueName = g.TeamBlue.Name,
-
                })
                .ToListAsync();
             return games;
@@ -389,9 +384,10 @@ namespace AirsoftMatchMaker.Core.Services
             var player = await repository.AllReadOnly<Player>()
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
+
             if (player.TeamId == null)
             {
-                return null;
+                return new List<GameListModel>();
             }
 
             var team = await repository.AllReadOnly<Team>()
@@ -410,6 +406,7 @@ namespace AirsoftMatchMaker.Core.Services
                     GameStatus = g.GameStatus,
                     Date = g.Date,
                     Odds = g.TeamRedOdds > 0 && g.TeamBlueOdds < 0 ? $"+{g.TeamRedOdds}:{g.TeamBlueOdds}" : g.TeamRedOdds < 0 && g.TeamBlueOdds > 0 ? $"{g.TeamRedOdds}:+{g.TeamBlueOdds}" : $"{g.TeamRedOdds}:{g.TeamBlueOdds}",
+                    GameModeId = g.GameModeId,
                     GameModeName = g.GameMode.Name,
                     MapId = g.MapId,
                     MapName = g.Map.Name,
@@ -443,6 +440,78 @@ namespace AirsoftMatchMaker.Core.Services
             return playerGames;
         }
 
+        public async Task<GamesMatchmakerQueryModel> GetMatchmakersOrganisedGamesAsync(int matchmakerId,
+            MatchmakerGameStatus? status,
+            GameSorting sorting,
+            int gamesPerPage = 6,
+            int currentPage = 1)
+        {
+            var games = await repository.AllReadOnly<Game>()
+            .Where(g => g.MatchmakerId == matchmakerId)
+            .Include(g => g.TeamRed)
+            .Include(g => g.TeamBlue)
+            .Include(g => g.GameMode)
+            .Include(g => g.Map)
+            .Include(g => g.Matchmaker)
+            .ThenInclude(mm => mm.User)
+            .ToListAsync();
+            if (status != null)
+            {
+                switch (status)
+                {
+                    case MatchmakerGameStatus.Upcoming:
+                        games = games.Where(g => g.GameStatus == GameStatus.Upcoming).ToList();
+                        break;
+                    case MatchmakerGameStatus.Finished:
+                        games = games.Where(g => g.GameStatus == GameStatus.Finished && g.Result == null).ToList();
+                        break;
+                    case MatchmakerGameStatus.Finalized:
+                        games = games.Where(g => g.GameStatus == GameStatus.Finished && g.Result != null).ToList();
+                        break;
+                }
+            }
+
+            switch (sorting)
+            {
+                case GameSorting.Newest:
+                    games = games.OrderByDescending(g => g.Date).ToList();
+                    break;
+                case GameSorting.Oldest:
+                    games = games.OrderBy(g => g.Date).ToList();
+                    break;
+            }
+
+            var filteredGames = games
+                .Skip((currentPage - 1) * gamesPerPage)
+                .Take(gamesPerPage)
+                .Select(g => new GameListModel()
+                {
+                    Id = g.Id,
+                    Name = g.Name,
+                    GameStatus = g.GameStatus,
+                    Date = g.Date,
+                    Odds = g.TeamRedOdds > 0 && g.TeamBlueOdds < 0 ? $"+{g.TeamRedOdds}:{g.TeamBlueOdds}" : g.TeamRedOdds < 0 && g.TeamBlueOdds > 0 ? $"{g.TeamRedOdds}:+{g.TeamBlueOdds}" : $"{g.TeamRedOdds}:{g.TeamBlueOdds}",
+
+                    GameModeName = g.GameMode.Name,
+                    MapId = g.MapId,
+                    MapName = g.Map.Name,
+                    MapImageUrl = g.Map.ImageUrl,
+                    TerrainType = g.Map.Terrain,
+                    TeamRedId = g.TeamRedId,
+                    TeamRedName = g.TeamRed.Name,
+                    IsAcceptingBets = g.Date.Date > DateTime.Now,
+                    TeamBlueId = g.TeamBlueId,
+                    TeamBlueName = g.TeamBlue.Name,
+                    EntryFee = g.EntryFee,
+                    Result = g.Result
+                })
+                .ToList();
+            GamesMatchmakerQueryModel model = CreateMatchmakerGamesQueryModel();
+            model.GamesCount = games.Count;
+            model.Games = filteredGames;
+            return model;
+        }
+
         public async Task<GameFinaliseModel> CreateGameFinaliseModelAsync(int id)
         {
             var model = await repository.AllReadOnly<Game>()
@@ -453,6 +522,8 @@ namespace AirsoftMatchMaker.Core.Services
                     GameModeMaxPoints = g.GameMode.PointsToWin,
                 })
                 .FirstOrDefaultAsync();
+
+
             return model;
         }
 
@@ -473,12 +544,11 @@ namespace AirsoftMatchMaker.Core.Services
 
             var teamRed = game.TeamRed;
 
+       
             var teamRedPlayers = await repository.All<Player>()
                 .Where(p => p.TeamId.HasValue && p.TeamId == teamRed.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
                 .Include(p => p.User)
-                .Include(p => p.Clothes)
                 .Include(p => p.Weapons)
-                .Include(p => p.PlayerClass)
                 .ToListAsync();
 
             var teamBlue = game.TeamBlue;
@@ -486,9 +556,7 @@ namespace AirsoftMatchMaker.Core.Services
             var teamBluePlayers = await repository.All<Player>()
             .Where(p => p.TeamId.HasValue && p.TeamId == teamBlue.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
             .Include(p => p.User)
-            .Include(p => p.Clothes)
             .Include(p => p.Weapons)
-            .Include(p => p.PlayerClass)
             .ToListAsync();
 
             var map = game.Map;
@@ -542,6 +610,20 @@ namespace AirsoftMatchMaker.Core.Services
                 .Select(t => t.Name)
                 .ToListAsync());
             model.GameModeNames = modelGameModeNames;
+            model.SortingOptions = Enum.GetValues<GameSorting>().ToList();
+            return model;
+        }
+
+        private GamesMatchmakerQueryModel CreateMatchmakerGamesQueryModel()
+        {
+            var model = new GamesMatchmakerQueryModel();
+            var gameStatuses = Enum.GetNames<MatchmakerGameStatus>().Cast<string>().ToList();
+            var modelGameStatuses = new List<string>()
+            {
+                "All"
+            };
+            modelGameStatuses.AddRange(gameStatuses);
+            model.MatchmakerGameStatuses = modelGameStatuses;
             model.SortingOptions = Enum.GetValues<GameSorting>().ToList();
             return model;
         }

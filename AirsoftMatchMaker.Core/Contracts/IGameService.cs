@@ -31,7 +31,7 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="userId"></param>
         /// <param name="gameId"></param>
         /// <returns><see cref="bool"/></returns>
-        Task<bool> GameCanBeFinalisedByMatchmakerAsync(string userId,int gameId);
+        Task<bool> GameCanBeFinalisedByMatchmakerAsync(string userId, int gameId);
 
         /// <summary>
         /// Returns true if <see cref="Game"/> is finished but it has no <see cref="Game.Result"/> yet, otherwise returns false
@@ -103,10 +103,28 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="IEnumerable{T}"/></returns>
         Task<IEnumerable<GameListModel>> GetPlayersLastFinishedAndFirstUpcomingGameAsync(string userId);
 
+        Task<GamesMatchmakerQueryModel> GetMatchmakersOrganisedGamesAsync(
+            int matchmakerId,
+            MatchmakerGameStatus? status,
+            GameSorting sorting,
+            int gamesPerPage = 6,
+            int currentPage = 1
+            );
 
+        /// <summary>
+        /// Creates a <see cref="GameFinaliseModel"/> which allows the user to input the result of a game
+        /// limited by the <see cref="GameFinaliseModel.GameModeMaxPoints"/> of the model.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<GameFinaliseModel> CreateGameFinaliseModelAsync(int id);
 
-
+        /// <summary>
+        /// Takes the <see cref="GameFinaliseModel.TeamRedPoints"/> and <see cref="GameFinaliseModel.TeamBluePoints"/>
+        /// and forms the result of a game
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task FinalizeGameAsync(GameFinaliseModel model);
     }
 }
