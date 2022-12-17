@@ -23,7 +23,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 {
                     Id = 1,
                     Name = "Alpha vs Bravo",
-                    Date = DateTime.Now.AddDays(-1),                    
+                    Date = DateTime.Now.AddDays(-1),
                     EntryFee = 40,
                     GameModeId = 1,
                     MatchmakerId = 1,
@@ -34,7 +34,6 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     TeamBlueOdds = +124,
                     GameBetCreditsContainerId = 1,
                     OddsAreUpdated = true,
-
                 },
                 new Game()
                 {

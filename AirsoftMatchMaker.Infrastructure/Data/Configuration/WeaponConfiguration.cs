@@ -233,7 +233,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     Price = 30,
                     PreferedEngagementDistance = PreferedEngagementDistance.Short,
                     PlayerId = AddPlayerIdToWeapon()
-                   
+
                 },
                 new Weapon()
                 {

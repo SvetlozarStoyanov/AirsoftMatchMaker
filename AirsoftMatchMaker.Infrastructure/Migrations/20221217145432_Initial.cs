@@ -568,26 +568,26 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Credits", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "0a9aab7f-739a-41d8-b18d-8b797c7a2dfe", 0, "3658f4b3-714f-49f7-b640-4520ee2679f0", 200m, "Liam@gmail.com", false, false, null, "LIAM@GMAIL.COM", "LIAM", "AQAAAAEAACcQAAAAEP9kFuCLc8YE0DHXCH3K0WTXxJcla+Rlm9OUMN/+tBX1AZSGzZ9Ql+2yqNkWUYCBlQ==", null, false, "92d21b6e-ab53-49c2-b5d2-9e3f7c104f15", false, "Liam" },
-                    { "14677dd9-7de7-41c0-9418-e43ddcf64859", 0, "778be55f-83e4-40dd-95d9-78e2db5f7f9b", 200m, "John@gmail.com", false, false, null, "JOHN@GMAIL.COM", "JOHN", "AQAAAAEAACcQAAAAEBza9bL+Rw78FAhoSHZoxCOGN8FYbYbPOeuY2JrlHRiGsDrMuZLXwrsIDf//vKCwag==", null, false, "a02b54c6-9ba6-4645-9398-63591dc30061", false, "John" },
-                    { "18a322e4-ade8-4f13-8981-4cac7be64b9c", 0, "435ef562-41c4-4918-b7a1-4d6ac86a9160", 200m, "Stoyan@gmail.com", false, false, null, "STOYAN@GMAIL.COM", "STOYAN", "AQAAAAEAACcQAAAAELfbl7OKqV1Ra122/iMZjKW6bJIg4gr/1btbxsHCwe+Q1fJaRU+nslAepJfaWqzojQ==", null, false, "80971636-0fbd-4d1b-96a0-e8cc5a065072", false, "Stoyan" },
-                    { "1f1087d3-a55a-4b7a-932e-1c3f9817fcf0", 0, "383154f0-f141-479e-971b-b65c35290898", 200m, "Daniel@gmail.com", false, false, null, "DANIEL@GMAIL.COM", "DANIEL", "AQAAAAEAACcQAAAAEHPhVd9pWqYVw4ykr7SRplZmRFdNJNIxbAiMnbEyIp9gCjHrYlEHU5E+R/JoTZ8qlQ==", null, false, "6ee1ca12-3e85-416e-a2a6-79092fd149e5", false, "Daniel" },
-                    { "1f5be09b-2910-4ac0-8ff5-5c525ddf1b61", 0, "7c772282-ed4d-4275-8160-bfe3dbe74bbc", 200m, "Paul@gmail.com", false, false, null, "PAUL@GMAIL.COM", "PAUL", "AQAAAAEAACcQAAAAEPI5iQgTmT1fH6p6mZeZUqE6RkzvNgoBnUWxsdrrV09SFOIrrqoQFAfGksnjTDituw==", null, false, "13c3873b-366f-4356-b37e-33551c80fc47", false, "Paul" },
-                    { "202efe8b-7748-49ca-834c-fd1c37978ab2", 0, "248484c5-3d76-4195-8321-cf941fe9e8b0", 200m, "Georgi@gmail.com", false, false, null, "GEORGI@GMAIL.COM", "GEORGI", "AQAAAAEAACcQAAAAECU2dKuQ5Zv6CL4jSai5zmZry/FRpKbLh2bXFvrq3krhcyuB7n8DrgoSpCTTIJs1SA==", null, false, "a876b913-c93d-4e95-891c-16643e97f78f", false, "Georgi" },
-                    { "2a1bd8b6-6d06-470b-9dda-fe88aa1bf5e8", 0, "f32f1684-e323-4884-84fd-d19786fccf03", 200m, "Ivan@gmail.com", false, false, null, "IVAN@GMAIL.COM", "IVAN", "AQAAAAEAACcQAAAAECz6E6d8vCd/wYKHmkLoG6Hq+N4ypL50JFpIIiTUj7wN3q/r+MIUCw6hZxrgN5L/gA==", null, false, "12d2e117-f655-4e3d-ab7c-4e9bdd812809", false, "Ivan" },
-                    { "3bf3238b-ab04-4945-8bd0-1eabf8a208d5", 0, "0e460d9a-9a7a-4993-aff5-f8c5c066490d", 200m, "Tihomir@gmail.com", false, false, null, "TIHOMIR@GMAIL.COM", "TIHOMIR", "AQAAAAEAACcQAAAAENOM4aDpGPY7WgXSeGmt/s4nXB9v9ESdiuWPyVyUOELrY/k/R1HToK7I0nR+IqrmPg==", null, false, "f9bd290f-5ae9-4056-9d2c-fda552f8dae0", false, "Tihomir" },
-                    { "4d64daba-17d4-452c-af3e-5d731a250283", 0, "cd765a34-835d-4bac-8558-074ddc06d90d", 200m, "Michael@gmail.com", false, false, null, "MICHAEL@GMAIL.COM", "MICHAEL", "AQAAAAEAACcQAAAAEOi6n0iQVFSJJ6jAQhlCOsNL2Q6g7UaPb9OL+7S2+KrAOuUofm8IZpeRcYdEbtLAkA==", null, false, "f20a5dd0-ce56-4bdd-94f5-0cfe424a0af9", false, "Michael" },
-                    { "56d661fd-2339-498a-bd7e-c95f37908b28", 0, "00e8d868-002f-4712-be66-74e65451cec4", 200m, "Petar@gmail.com", false, false, null, "PETAR@GMAIL.COM", "PETAR", "AQAAAAEAACcQAAAAEHu+t/xnaF1OkpudxWRYFtMAYnEL3Agoa0gzZrPpDNYN6Uw7A15J5EfNKYzHjYheEw==", null, false, "1b2e8b9f-e231-4280-831c-ce14462a84ad", false, "Petar" },
-                    { "5f83ea0f-418b-463f-9a52-bf1b9eac8bc6", 0, "aa422cfb-887b-42bf-97c2-e67c925c36f8", 200m, "Philip@gmail.com", false, false, null, "PHILIP@GMAIL.COM", "PHILIP", "AQAAAAEAACcQAAAAELWXLBHzoAWvQQVjpraJbImPnM4kwc1jzwX+fcmhKaYhuzetUMRvbMwegT1RdrYUFQ==", null, false, "c0a8d3b2-2572-45b9-a09a-a2e5894aa688", false, "Philip" },
-                    { "6f4bc586-751a-4a4b-8fec-4c7145b47a3e", 0, "9e55fa7f-fd17-414e-88c0-231974542987", 200m, "Dimitrichko@gmail.com", false, false, null, "DIMITRICHKO@GMAIL.COM", "DIMITRICHKO", "AQAAAAEAACcQAAAAEAzFpCDlGEDke/Bko0UWzHTF7A+/eLAqiJyphFCAMWmFK2Kte8qJlLQj93LdnfYPPw==", null, false, "67c3d30c-f293-4dad-830f-9cbe3b95a062", false, "Dimitrichko" },
-                    { "77388c0c-698c-4df9-9ad9-cef29116b666", 0, "5f24ebb3-48f6-429d-bbbc-ec8cc9485da8", 200m, "Vasil@gmail.com", false, false, null, "VASIL@GMAIL.COM", "VASIL", "AQAAAAEAACcQAAAAEM8ejHOWD7vqaAo/GLqR8n3J69KYtiHHTl1cxJql28h00gjS5sm4+NZm/mFV1Qkkjg==", null, false, "3a6bc6bd-7bbb-4fea-a940-17850f782eaf", false, "Vasil" },
-                    { "799495ef-8794-491d-94d9-6bd37d51ba40", 0, "4dd98f95-7e2f-4531-b42f-e553602666ec", 200m, "Ivaylo@gmail.com", false, false, null, "IVAYLO@GMAIL.COM", "IVAYLO", "AQAAAAEAACcQAAAAEKh6DVOBs9Puorvxv49FjfXQDwmI1zhVRRDq7TGgWSOvcNQviZtnQ0Od2dJQ2iuFVQ==", null, false, "1bd53e80-5052-45e5-b9cc-75288267f383", false, "Ivaylo" },
-                    { "b2451308-1197-4362-be78-f7ea7ca35fe9", 0, "279c38d6-0b58-4665-8c10-d24f871c89d3", 200m, "Alexander@gmail.com", false, false, null, "ALEXANDER@GMAIL.COM", "ALEXANDER", "AQAAAAEAACcQAAAAEDUNRenedU9HpMrBQRczIWywzeYwacsgxzz+gf1/P22WALVapQFGOrEXtBApqH1SCA==", null, false, "b0b27d4d-5abd-43a4-a052-a836beeee244", false, "Alexander" },
-                    { "c5d9e543-7c2f-4345-a014-ebd860eef718", 0, "a6a6a746-8afd-4148-bf66-a4d7391c230e", 200m, "Krum@gmail.com", false, false, null, "KRUM@GMAIL.COM", "KRUM", "AQAAAAEAACcQAAAAEK+/i/1e8H9m6rDA9+Jcn0aYJFLBmyqf7p6i6qEs5ELiO+e+mAP6KVCNIdu5uS4Kmg==", null, false, "8c5f9729-6132-4ab0-a8b5-97f68a31dfd1", false, "Krum" },
-                    { "c95011ef-d0e4-49c0-bbdd-1b9985bf7a74", 0, "de030ce3-7e99-4e2e-b501-40e040ea1954", 200m, "Walter@gmail.com", false, false, null, "WALTER@GMAIL.COM", "WALTER", "AQAAAAEAACcQAAAAEMj11Leje1hff9LiBqQpp7f9eG2RpkLK8selvPooguZKOslH0Sg440T/EZ5U2947JQ==", null, false, "11aab6b5-7211-4382-9265-436cd0e24d86", false, "Walter" },
-                    { "cc1cb39b-c0cf-41ed-856c-d3943aec605a", 0, "ec22e279-1d9a-4c80-a31e-b90c9e252c67", 200m, "Joe@gmail.com", false, false, null, "JOE@GMAIL.COM", "JOE", "AQAAAAEAACcQAAAAEBY/+EthCqC3k5gN8aHS419MQw5p7GhyzZWyBiyzfNaB2bHnC09IehA3bsGDZC2CEg==", null, false, "4c42d908-d2d7-47f4-97c5-0a65f8dcd8c2", false, "Joe" },
-                    { "f3534aed-259b-4ff7-b816-15e8207e084a", 0, "23c6b2e3-e17c-44b4-bde7-ec86e618c7f1", 200m, "Todor@gmail.com", false, false, null, "TODOR@GMAIL.COM", "TODOR", "AQAAAAEAACcQAAAAEBFAbNRBgY1ZmgZ+ibfr4p2wbHT67RUna6+4cZQCRJ8V2ypmZ6jeCJBt8koJzIGebg==", null, false, "cdb5688a-e966-4fde-996e-c8fe40370700", false, "Todor" },
-                    { "f580c1f9-d41f-455e-b4ec-705b834e4b19", 0, "aa178758-c30b-4bd5-9053-6dc9b8a84e43", 200m, "Hank@gmail.com", false, false, null, "HANK@GMAIL.COM", "HANK", "AQAAAAEAACcQAAAAENSYA7SDphtMo8ibzhCZk10LUQX/K7DlEahhy/gks0tOZZrKnInG3XFVadO5pIdn7Q==", null, false, "a89a7f6f-82bf-4550-8ad5-d3b90c950f63", false, "Hank" }
+                    { "0a9aab7f-739a-41d8-b18d-8b797c7a2dfe", 0, "5364d927-2414-458e-bbdc-d380d6433b15", 200m, "Liam@gmail.com", false, false, null, "LIAM@GMAIL.COM", "LIAM", "AQAAAAEAACcQAAAAENxbWAcl5keJV0Y/4Lr4sVbWDgLcKGm2HiBhhgRRGd18Nwp+aleDvp+EpJLf0s92kQ==", null, false, "af91b70c-57d0-42d5-85d9-e47748ab432c", false, "Liam" },
+                    { "14677dd9-7de7-41c0-9418-e43ddcf64859", 0, "9aaaae80-df07-400f-b61e-6b083a55f3ac", 200m, "John@gmail.com", false, false, null, "JOHN@GMAIL.COM", "JOHN", "AQAAAAEAACcQAAAAEGSLg/FJ/lI9yb5tv1BTdgN+ELAfUthRhMHp1MJ4cVn+wP2Q6/i/4iHVZzm482XP0A==", null, false, "eb64b814-d4a4-44bd-bba8-4d48eb4dc079", false, "John" },
+                    { "18a322e4-ade8-4f13-8981-4cac7be64b9c", 0, "95800c1e-dd94-409f-ba3d-3cdeaf2ee7ba", 200m, "Stoyan@gmail.com", false, false, null, "STOYAN@GMAIL.COM", "STOYAN", "AQAAAAEAACcQAAAAEBHSIxjxAqr4w4MrmHIsiqkemm3GG+zhPdDQmYT1SHbCCAkrOh09FODc+7G9pCKvxw==", null, false, "61e688e3-84ea-4579-9da6-ef4d9f10bf2c", false, "Stoyan" },
+                    { "1f1087d3-a55a-4b7a-932e-1c3f9817fcf0", 0, "16d499ab-cf03-41fe-86e8-179225cc9d93", 200m, "Daniel@gmail.com", false, false, null, "DANIEL@GMAIL.COM", "DANIEL", "AQAAAAEAACcQAAAAELk6FDIVJ2/yNKJ1cDMC//+74urOHAHHmc6G1fiFT+ZOaFq+HaVGN0d0wS5McxadWg==", null, false, "73d0ba13-0925-46c8-95ae-e2cbc8467e41", false, "Daniel" },
+                    { "1f5be09b-2910-4ac0-8ff5-5c525ddf1b61", 0, "12bfa966-6743-4bb4-8ab2-649778794742", 200m, "Paul@gmail.com", false, false, null, "PAUL@GMAIL.COM", "PAUL", "AQAAAAEAACcQAAAAEB2KV/3qTbNTbdVdBSq5y6JusuRY9ncX+WXZoM3ji2r9NqQ4asi9ozFnpHblLhOPgQ==", null, false, "d19f8b1d-a1b1-4aec-9f4c-3642bb64409a", false, "Paul" },
+                    { "202efe8b-7748-49ca-834c-fd1c37978ab2", 0, "85b36ff8-4fac-4391-9b5b-4177c661b935", 200m, "Georgi@gmail.com", false, false, null, "GEORGI@GMAIL.COM", "GEORGI", "AQAAAAEAACcQAAAAEG5i1SSirktWBqiI4AWC8jHtuXM+7P3Ev6FzaJil7ZFe7QyutLaUUAamHWkXK3f7sA==", null, false, "dcff68d3-02a5-48b1-9fd3-aa706106ab22", false, "Georgi" },
+                    { "2a1bd8b6-6d06-470b-9dda-fe88aa1bf5e8", 0, "4548dcaa-669c-40df-b045-35ba3d19bafb", 200m, "Ivan@gmail.com", false, false, null, "IVAN@GMAIL.COM", "IVAN", "AQAAAAEAACcQAAAAEJMlyq38DbJZkyC4xHTC9ynGCjV8y+1TXWxs33y8ZCxfS00vzfMkjHJdluQ5evCKhA==", null, false, "3b004132-2a60-48d2-aad0-ec5027406623", false, "Ivan" },
+                    { "3bf3238b-ab04-4945-8bd0-1eabf8a208d5", 0, "36741c0c-5542-4130-9212-63808de21fa9", 200m, "Tihomir@gmail.com", false, false, null, "TIHOMIR@GMAIL.COM", "TIHOMIR", "AQAAAAEAACcQAAAAELSgy57IZj6E4eN5l4CPi8Gd/PR/fAeTtSK4Vu5KzW64Hp1MBYMRsRUljEFQ8WhsIA==", null, false, "bfa50aa8-2eb1-4241-873d-09823ba096db", false, "Tihomir" },
+                    { "4d64daba-17d4-452c-af3e-5d731a250283", 0, "b1d8befd-54f7-4337-b36f-a9f08871b44f", 200m, "Michael@gmail.com", false, false, null, "MICHAEL@GMAIL.COM", "MICHAEL", "AQAAAAEAACcQAAAAENH/s6lLBBZFkIME0vtU1SjY4nYvP6Q1mUyRHoSGsJfpAtLpVD/ls3ZzjG06TZui5w==", null, false, "77e91de5-e8da-43c8-a4af-231ba3a2643d", false, "Michael" },
+                    { "56d661fd-2339-498a-bd7e-c95f37908b28", 0, "ef050970-2fbc-4ae7-a254-7bf38f25c9c8", 200m, "Petar@gmail.com", false, false, null, "PETAR@GMAIL.COM", "PETAR", "AQAAAAEAACcQAAAAEK1zQA+ysR+7joxCVGLQjcjRW9fkVf6M9WADeP60L1uERlgPF7uOUz4BvW2QR4xG4A==", null, false, "78444e12-e704-4cad-88e2-ebc4ead236bc", false, "Petar" },
+                    { "5f83ea0f-418b-463f-9a52-bf1b9eac8bc6", 0, "4a3e1c64-d888-478b-a946-e5a07010df0d", 200m, "Philip@gmail.com", false, false, null, "PHILIP@GMAIL.COM", "PHILIP", "AQAAAAEAACcQAAAAEKhR3ENPfcSdxSuiPFptaKJqTY6zRRgUXPcbxl2cTF37bKpNerJKO3ZJkSDHoOproA==", null, false, "f6dfab00-e56a-42b6-8625-522f63202364", false, "Philip" },
+                    { "6f4bc586-751a-4a4b-8fec-4c7145b47a3e", 0, "33f1ac73-e7b8-4b8f-8b59-55231887ebe9", 200m, "Dimitrichko@gmail.com", false, false, null, "DIMITRICHKO@GMAIL.COM", "DIMITRICHKO", "AQAAAAEAACcQAAAAEGlTgU9riVFoclKkhFYHvMb19jc9sGjZ1NRSnCtga75hEFyhEst0lRsHnudqp8JEsg==", null, false, "49e6839d-a15e-417d-a366-a5b54536c898", false, "Dimitrichko" },
+                    { "77388c0c-698c-4df9-9ad9-cef29116b666", 0, "482883e0-cfd4-4f6d-807d-30a91cd0f164", 200m, "Vasil@gmail.com", false, false, null, "VASIL@GMAIL.COM", "VASIL", "AQAAAAEAACcQAAAAEOqLjjTCFPpYE3AbhNvghIuHtTIObn5Meh6FeOkWz44sHefIdZDVnCk+dFzTO49+yA==", null, false, "003ca97a-8a04-4bfe-8c41-f0acf46575e4", false, "Vasil" },
+                    { "799495ef-8794-491d-94d9-6bd37d51ba40", 0, "7f0692c0-dee2-490b-a118-d52085260f94", 200m, "Ivaylo@gmail.com", false, false, null, "IVAYLO@GMAIL.COM", "IVAYLO", "AQAAAAEAACcQAAAAEAVvgyvq9SJpVVtCij57AP2LeUjwSaoDfOHop4l3em9xXYSv4u+aBLosSxuNOzjGZw==", null, false, "ed02d38e-6c84-45bc-a737-d942924d59d9", false, "Ivaylo" },
+                    { "b2451308-1197-4362-be78-f7ea7ca35fe9", 0, "7e5e12f1-b49d-40d4-bbf6-9e8f4a6f7bad", 200m, "Alexander@gmail.com", false, false, null, "ALEXANDER@GMAIL.COM", "ALEXANDER", "AQAAAAEAACcQAAAAECt8ODUWi7oS5Rd+dkdbzzKRm/f2Ysu9G9viWUbv+kB7hAI0u673Z2i79adiCrcFhw==", null, false, "82e937f6-54e2-42d7-9d2b-4232b3dab9cc", false, "Alexander" },
+                    { "c5d9e543-7c2f-4345-a014-ebd860eef718", 0, "a5164fac-1687-4d7a-924e-60cbe9ae3ebf", 200m, "Krum@gmail.com", false, false, null, "KRUM@GMAIL.COM", "KRUM", "AQAAAAEAACcQAAAAECpJ46hL/M4TAh5zQDYeBPE1G+WTxWGeE9jK5FxH11Pn7kgaC4GRF8NDQGCCvDWvOA==", null, false, "3a06ca0b-fa60-425a-837b-e8ea00f73ac6", false, "Krum" },
+                    { "c95011ef-d0e4-49c0-bbdd-1b9985bf7a74", 0, "07358601-4d2e-4ae9-bab9-12ec6dc616b7", 200m, "Walter@gmail.com", false, false, null, "WALTER@GMAIL.COM", "WALTER", "AQAAAAEAACcQAAAAEKVfd9eVKsiVw9JJdPhPv2owFfOxNg09sK+uFQMsRrwcNfQttqLrHKyxJn+4NJV8Vg==", null, false, "5a508bca-0f4a-4666-a90f-0546bcd22685", false, "Walter" },
+                    { "cc1cb39b-c0cf-41ed-856c-d3943aec605a", 0, "ec5aa4ea-e525-4953-943a-4d1bdef72b5e", 200m, "Joe@gmail.com", false, false, null, "JOE@GMAIL.COM", "JOE", "AQAAAAEAACcQAAAAEO+8vAWmYpwoAEyr7HMljrxQkvDaXkFNiK3TrDP6pKH9p+Yrqpdi937yqomOIN2Dyg==", null, false, "c507b157-dbfb-4579-a5de-d8ec8cf20aa6", false, "Joe" },
+                    { "f3534aed-259b-4ff7-b816-15e8207e084a", 0, "a4816e16-033f-4de9-b8d0-b63f775dc718", 200m, "Todor@gmail.com", false, false, null, "TODOR@GMAIL.COM", "TODOR", "AQAAAAEAACcQAAAAEB2KucUMAkwQsNgh6hxzrVdYlOn5xun/TnxE16S5SA8QlYGUoA5hd1EXNJqfUXBGTg==", null, false, "322851f3-6497-4598-b6e5-91f3f16676d0", false, "Todor" },
+                    { "f580c1f9-d41f-455e-b4ec-705b834e4b19", 0, "20e0e59b-2740-4fd1-9cb7-071ce0f66c79", 200m, "Hank@gmail.com", false, false, null, "HANK@GMAIL.COM", "HANK", "AQAAAAEAACcQAAAAEHRrToIm14Mp3AiA9TFEOXedEkAGbgRuBydxe5lKPvwmtoxQlR6nrs2bhGYFdJ++dg==", null, false, "a66232ee-50e5-4e9f-9efa-b0951d047800", false, "Hank" }
                 });
 
             migrationBuilder.InsertData(
@@ -727,20 +727,20 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                 columns: new[] { "Id", "ClothingColor", "Description", "ImageUrl", "Name", "PlayerId", "Price", "VendorId" },
                 values: new object[,]
                 {
-                    { 1, 0, "Hard to spot in forest.", null, "Green outfit", 10, 50m, null },
-                    { 2, 0, "Hard to spot in forest.", null, "Green outfit", 9, 50m, null },
-                    { 3, 0, "Hard to spot in forest.", null, "Green outfit", 1, 50m, null },
-                    { 4, 0, "Hard to spot in forest.", null, "Green outfit", 12, 50m, null },
-                    { 5, 0, "Hard to spot in forest.", null, "Green outfit", 6, 50m, null },
-                    { 6, 0, "Hard to spot in forest.", null, "Green outfit", 2, 50m, null },
-                    { 7, 0, "Hard to spot in forest.", null, "Green outfit", 8, 50m, null },
-                    { 8, 0, "Hard to spot in forest.", null, "Green Ghillie Suit", 3, 80m, null },
-                    { 9, 0, "Hard to spot in forest.", null, "Green Ghillie Suit", 4, 80m, null },
-                    { 10, 0, "Hard to spot in forest.", null, "Green Army camouflage", 14, 60m, null },
+                    { 1, 0, "Hard to spot in forest.", null, "Green outfit", 3, 50m, null },
+                    { 2, 0, "Hard to spot in forest.", null, "Green outfit", 13, 50m, null },
+                    { 3, 0, "Hard to spot in forest.", null, "Green outfit", 5, 50m, null },
+                    { 4, 0, "Hard to spot in forest.", null, "Green outfit", 8, 50m, null },
+                    { 5, 0, "Hard to spot in forest.", null, "Green outfit", 14, 50m, null },
+                    { 6, 0, "Hard to spot in forest.", null, "Green outfit", 12, 50m, null },
+                    { 7, 0, "Hard to spot in forest.", null, "Green outfit", 1, 50m, null },
+                    { 8, 0, "Hard to spot in forest.", null, "Green Ghillie Suit", 6, 80m, null },
+                    { 9, 0, "Hard to spot in forest.", null, "Green Ghillie Suit", 9, 80m, null },
+                    { 10, 0, "Hard to spot in forest.", null, "Green Army camouflage", 11, 60m, null },
                     { 11, 0, "Hard to spot in forest.", null, "Green Army camouflage", 7, 60m, null },
-                    { 12, 2, "Hard to spot in urban enviroment.", null, "Urban outfit", 13, 40m, null },
-                    { 13, 2, "Hard to spot in urban enviroment.", null, "Urban outfit", 11, 40m, null },
-                    { 14, 2, "Hard to spot in urban enviroment.", null, "Urban outfit", 5, 40m, null },
+                    { 12, 2, "Hard to spot in urban enviroment.", null, "Urban outfit", 10, 40m, null },
+                    { 13, 2, "Hard to spot in urban enviroment.", null, "Urban outfit", 4, 40m, null },
+                    { 14, 2, "Hard to spot in urban enviroment.", null, "Urban outfit", 2, 40m, null },
                     { 15, 2, "Hard to spot in urban enviroment.", null, "Urban outfit", 15, 40m, null },
                     { 16, 2, "Hard to spot in urban enviroment.", null, "Gray tracksuit", null, 20m, 1 },
                     { 17, 3, "Hard to spot in field.", null, "Brown Army outfit ", null, 30m, 1 },
@@ -762,9 +762,9 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                 columns: new[] { "Id", "Date", "EntryFee", "GameBetCreditsContainerId", "GameModeId", "GameStatus", "MapId", "MatchmakerId", "Name", "OddsAreUpdated", "Result", "TeamBlueId", "TeamBlueOdds", "TeamBluePoints", "TeamRedId", "TeamRedOdds", "TeamRedPoints" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2022, 12, 13, 15, 38, 0, 266, DateTimeKind.Local).AddTicks(1562), 40m, 1, 1, 0, 1, 1, "Alpha vs Bravo", true, null, 2, 124, 0, 1, -126, 0 },
-                    { 2, new DateTime(2022, 12, 15, 15, 38, 0, 266, DateTimeKind.Local).AddTicks(1595), 40m, 2, 1, 0, 2, 1, "Bravo vs Alpha", false, null, 1, -140, 0, 2, 140, 0 },
-                    { 3, new DateTime(2022, 12, 15, 15, 38, 0, 266, DateTimeKind.Local).AddTicks(1599), 40m, 3, 1, 0, 2, 1, "Charlie vs Delta", false, null, 4, 150, 0, 3, -160, 0 }
+                    { 1, new DateTime(2022, 12, 16, 16, 54, 31, 495, DateTimeKind.Local).AddTicks(5748), 40m, 1, 1, 0, 1, 1, "Alpha vs Bravo", true, null, 2, 124, 0, 1, -126, 0 },
+                    { 2, new DateTime(2022, 12, 18, 16, 54, 31, 495, DateTimeKind.Local).AddTicks(5785), 40m, 2, 1, 0, 2, 1, "Bravo vs Alpha", false, null, 1, -140, 0, 2, 140, 0 },
+                    { 3, new DateTime(2022, 12, 18, 16, 54, 31, 495, DateTimeKind.Local).AddTicks(5789), 40m, 3, 1, 0, 2, 1, "Charlie vs Delta", false, null, 4, 150, 0, 3, -160, 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -781,11 +781,11 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                 columns: new[] { "Id", "AverageAmmoExpendedPerGame", "Description", "FeetPerSecond", "FireRate", "ImageUrl", "Name", "PlayerId", "PreferedEngagementDistance", "Price", "VendorId", "WeaponType" },
                 values: new object[,]
                 {
-                    { 1, 40, "Small pistol", 120.0, 300.0, "https://arms-bg.com/wp-content/uploads/imported/2.6412_17_links_2000_1125_0-600x600.jpg", "Glock 17", 11, 0, 20m, null, 0 },
-                    { 2, 15, "Shotgun", 150.0, 100.0, "https://www.airsoft.bg/products/1334236938_160704__031226700_1656_02022011.jpg", "Benelli M3", 5, 1, 50m, null, 1 },
-                    { 3, 90, "Popular Assault Rifle", 300.0, 666.0, "https://arms-bg.com/wp-content/uploads/2021/11/cyma-cm002a1-600x600.jpg", "M4A1", 7, 1, 100m, null, 3 },
-                    { 4, 15, "Sniper Rifle", 500.0, 20.0, "https://cqb.bg/wp-content/uploads/1152193374_1.jpg", "AWP", 6, 2, 130m, null, 4 },
-                    { 5, 120, "Good Smg", 110.0, 700.0, "https://nelo-mill.com/wp-content/uploads/2019/07/2.6311_MP5A5_links_ret_613_400_0.jpg", "Mp5", 4, 0, 70m, null, 2 }
+                    { 1, 40, "Small pistol", 120.0, 300.0, "https://arms-bg.com/wp-content/uploads/imported/2.6412_17_links_2000_1125_0-600x600.jpg", "Glock 17", 10, 0, 20m, null, 0 },
+                    { 2, 15, "Shotgun", 150.0, 100.0, "https://www.airsoft.bg/products/1334236938_160704__031226700_1656_02022011.jpg", "Benelli M3", 7, 1, 50m, null, 1 },
+                    { 3, 90, "Popular Assault Rifle", 300.0, 666.0, "https://arms-bg.com/wp-content/uploads/2021/11/cyma-cm002a1-600x600.jpg", "M4A1", 5, 1, 100m, null, 3 },
+                    { 4, 15, "Sniper Rifle", 500.0, 20.0, "https://cqb.bg/wp-content/uploads/1152193374_1.jpg", "AWP", 1, 2, 130m, null, 4 },
+                    { 5, 120, "Good Smg", 110.0, 700.0, "https://nelo-mill.com/wp-content/uploads/2019/07/2.6311_MP5A5_links_ret_613_400_0.jpg", "Mp5", 2, 0, 70m, null, 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -793,15 +793,15 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                 columns: new[] { "Id", "AverageAmmoExpendedPerGame", "Description", "FeetPerSecond", "FireRate", "ImageUrl", "Name", "PlayerId", "PreferedEngagementDistance", "Price", "VendorId", "WeaponType" },
                 values: new object[,]
                 {
-                    { 6, 100, "Very fast fire rate", 280.0, 1200.0, "https://shop.crgroup.bg/media/t44s4/2543.jpg", "FAMAS", 1, 1, 80m, null, 3 },
-                    { 7, 180, "Machine gun with good fire rate and good accuracy", 260.0, 900.0, "https://cqb.bg/wp-content/uploads/1152226012_6.jpg", "M249", 8, 1, 150m, null, 5 },
-                    { 8, 20, "Old fashioned sniper rifle for classy people", 400.0, 15.0, "https://cqb.bg/wp-content/uploads/1152190150_3.jpg", "Kar98k", 10, 2, 110m, null, 4 },
-                    { 9, 60, "Versatile assault rifle with good accuracy", 240.0, 600.0, "https://www.airsoft.bg/products/1333793093_Kalashnikov-AKM-AEG_CG120914_airsoft_zm.jpg", "AKM", 14, 1, 90m, null, 3 },
-                    { 10, 300, "Overkill", 290.0, 3000.0, "https://www.evike.com/images/large/34905.jpg", "Minigun", 9, 0, 250m, null, 5 },
+                    { 6, 100, "Very fast fire rate", 280.0, 1200.0, "https://shop.crgroup.bg/media/t44s4/2543.jpg", "FAMAS", 9, 1, 80m, null, 3 },
+                    { 7, 180, "Machine gun with good fire rate and good accuracy", 260.0, 900.0, "https://cqb.bg/wp-content/uploads/1152226012_6.jpg", "M249", 6, 1, 150m, null, 5 },
+                    { 8, 20, "Old fashioned sniper rifle for classy people", 400.0, 15.0, "https://cqb.bg/wp-content/uploads/1152190150_3.jpg", "Kar98k", 8, 2, 110m, null, 4 },
+                    { 9, 60, "Versatile assault rifle with good accuracy", 240.0, 600.0, "https://www.airsoft.bg/products/1333793093_Kalashnikov-AKM-AEG_CG120914_airsoft_zm.jpg", "AKM", 4, 1, 90m, null, 3 },
+                    { 10, 300, "Overkill", 290.0, 3000.0, "https://www.evike.com/images/large/34905.jpg", "Minigun", 12, 0, 250m, null, 5 },
                     { 11, 40, "Small pistol. Good in tight quarters.", 110.0, 300.0, "https://i.pinimg.com/736x/92/86/dc/9286dcbb94e7faf0d648e63dd199de2f--products-is-.jpg", "USP", 13, 0, 25m, null, 0 },
-                    { 12, 70, "Assault rifle good in most ranges.", 200.0, 666.0, "https://iwi.net/wp-content/uploads/2021/08/ACE_22_IWI_3687.jpg", "Galil", 12, 1, 60m, null, 3 },
-                    { 13, 10, "Old sniper rifle frow WW2.", 240.0, 15.0, "https://static3.gunfire.com/eng_pl_Mosin-Nagant-1891-30-rifle-replica-with-PU-scope-1152227065_1.webp", "Mosin Nagant", 2, 2, 50m, null, 4 },
-                    { 14, 90, "British bullpup assault rifle", 400.0, 650.0, "https://static4.gunfire.com/eng_pl_L85A2-Assault-Rifle-Replica-1152213851_1.webp", "L85A2", 3, 1, 80m, null, 3 },
+                    { 12, 70, "Assault rifle good in most ranges.", 200.0, 666.0, "https://iwi.net/wp-content/uploads/2021/08/ACE_22_IWI_3687.jpg", "Galil", 14, 1, 60m, null, 3 },
+                    { 13, 10, "Old sniper rifle frow WW2.", 240.0, 15.0, "https://static3.gunfire.com/eng_pl_Mosin-Nagant-1891-30-rifle-replica-with-PU-scope-1152227065_1.webp", "Mosin Nagant", 3, 2, 50m, null, 4 },
+                    { 14, 90, "British bullpup assault rifle", 400.0, 650.0, "https://static4.gunfire.com/eng_pl_L85A2-Assault-Rifle-Replica-1152213851_1.webp", "L85A2", 11, 1, 80m, null, 3 },
                     { 15, 120, "Small automatic pistol", 125.0, 900.0, "https://media.mwstatic.com/product-images/src/alt1/850/850613a1.jpg?imwidth=480", "Glock 18 auto", 15, 0, 30m, null, 0 },
                     { 16, 20, "Only for terminators", 140.0, 50.0, "https://taylorsfirearms.com/media/catalog/product/cache/a309b6cb2676967c1a0c3ab51e5fa3c7/1/8/1887bl-l_2641_2_.jpg", "Winchester model 1887", null, 0, 70m, 1, 1 },
                     { 17, 45, "Burst fire  assault rifle .", 250.0, 400.0, "https://cdn.shopify.com/s/files/1/1333/2651/products/Copy_of_M16-A3-01_grande.jpg?v=1571467240", "M16A3", null, 1, 60m, 1, 3 },
