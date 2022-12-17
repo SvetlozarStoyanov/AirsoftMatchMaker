@@ -15,6 +15,15 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
+        public async Task<int> GetMatchmakerIdAsync(string userId)
+        {
+            var matchmakerId = await repository.AllReadOnly<Matchmaker>()
+                .Where(mm => mm.UserId == userId)
+                .Select(mm => mm.Id)
+                .FirstOrDefaultAsync();
+            return matchmakerId;
+        }
+
         public async Task CreateMatchmakerAsync(string userId)
         {
             var matchmaker = await repository.All<Matchmaker>()
@@ -90,5 +99,7 @@ namespace AirsoftMatchMaker.Core.Services
                     .FirstOrDefaultAsync();
             return matchmaker;
         }
+
+
     }
 }

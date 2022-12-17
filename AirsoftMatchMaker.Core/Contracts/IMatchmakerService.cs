@@ -1,10 +1,17 @@
 ﻿using AirsoftMatchMaker.Core.Models.Matchmakers;
-using AirsoftMatchMaker.Core.Models.Vendors;
+using AirsoftMatchMaker.Infrastructure.Data.Entities;
 
 namespace AirsoftMatchMaker.Core.Contracts
 {
     public interface IMatchmakerService
     {
+        /// <summary>
+        /// Returns <see cref="Matchmaker.Id"/> by given User Id,
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns><see cref="int"/></returns>
+        Task<int> GetMatchmakerIdAsync(string userId);
+
         /// <summary>
         /// Checks for matchmaker with given userId and marks them as active, 
         /// if there is no matchmaker with this id it creates a new one and marks them as active.
