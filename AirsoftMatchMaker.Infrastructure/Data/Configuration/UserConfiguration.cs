@@ -15,7 +15,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
         {
             var hasher = new PasswordHasher<IdentityUser>();
             List<User> users = new List<User>();
-            string[] names = { "Petar", "Georgi", "Ivan", "Michael", "Alexander", "Todor", "Hank", "John", "Walter", "Daniel", "Philip", "Liam", "Tihomir", "Stoyan", "Ivaylo", "Dimitrichko", "Vasil", "Krum", "Joe", "Paul" };
+            string[] names = { "Admin", "Georgi", "Ivan", "Michael", "Alexander", "Todor", "Hank", "John", "Walter", "Daniel", "Philip", "Liam", "Tihomir", "Stoyan", "Ivaylo", "Dimitrichko", "Vendor", "Matchmaker", "Joe", "Paul" };
             string[] guids =
                 {
                     //Admins
