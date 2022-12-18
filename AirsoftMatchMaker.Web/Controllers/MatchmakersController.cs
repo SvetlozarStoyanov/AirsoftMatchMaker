@@ -47,19 +47,5 @@ namespace AirsoftMatchMaker.Web.Controllers
             };
             return RedirectToAction("LeaveRole", "RoleRequests", model);
         }
-        [AllowAnonymous]
-        public async Task<IActionResult> Index()
-        {
-            var model = await matchmakerService.GetAllMatchmakersAsync();
-            return View(model);
-        }
-
-        [AllowAnonymous]
-        public async Task<IActionResult> Details(int id)
-        {
-            var model = await matchmakerService.GetMatchmakerByIdAsync(id);
-            return View(model);
-        }
-
     }
 }
