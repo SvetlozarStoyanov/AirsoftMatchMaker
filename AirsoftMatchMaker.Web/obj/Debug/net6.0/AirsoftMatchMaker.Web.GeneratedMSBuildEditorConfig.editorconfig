@@ -756,14 +756,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFwc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Matchmakers/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0Y2htYWtlcnNcRGV0YWlscy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Matchmakers/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0Y2htYWtlcnNcSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Players/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxheWVyc1xEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -874,14 +866,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Users/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcUmVnaXN0ZXIuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Vendors/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVuZG9yc1xEZXRhaWxzLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Vendors/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVuZG9yc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/source/repos/AirsoftMatchMaker/AirsoftMatchMaker.Web/Views/Weapons/Details.cshtml]
