@@ -32,7 +32,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                 {
                     Id = 3,
                     Name = "Charlie",
-                    Wins = 1,
+                    Wins = 0,
                     Losses = 0
                 },
                 new Team()
@@ -40,7 +40,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     Id = 4,
                     Name = "Delta",
                     Wins = 0,
-                    Losses = 1
+                    Losses = 0
                 }
             };
             return teams;

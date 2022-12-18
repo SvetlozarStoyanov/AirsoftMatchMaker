@@ -25,6 +25,22 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\img\\Default\\Clothes\\Brown.jpg",
+      "PackagePath": "staticwebassets\\img\\Default\\Clothes\\Brown.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\img\\Default\\Clothes\\Gray.jpg",
+      "PackagePath": "staticwebassets\\img\\Default\\Clothes\\Gray.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\img\\Default\\Clothes\\Green.jpg",
+      "PackagePath": "staticwebassets\\img\\Default\\Clothes\\Green.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\img\\Default\\Clothes\\White.jpg",
+      "PackagePath": "staticwebassets\\img\\Default\\Clothes\\White.jpg"
+    },
+    {
       "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\img\\Default\\Maps\\Field.jpg",
       "PackagePath": "staticwebassets\\img\\Default\\Maps\\Field.jpg"
     },
