@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AirsoftMatchMaker.Infrastructure.Migrations
 {
     [DbContext(typeof(AirsoftMatchmakerDbContext))]
-    [Migration("20221217145432_Initial")]
+    [Migration("20221218132027_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -220,7 +220,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green outfit",
-                            PlayerId = 3,
+                            PlayerId = 2,
                             Price = 50m
                         },
                         new
@@ -229,7 +229,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green outfit",
-                            PlayerId = 13,
+                            PlayerId = 12,
                             Price = 50m
                         },
                         new
@@ -238,7 +238,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green outfit",
-                            PlayerId = 5,
+                            PlayerId = 13,
                             Price = 50m
                         },
                         new
@@ -247,7 +247,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green outfit",
-                            PlayerId = 8,
+                            PlayerId = 6,
                             Price = 50m
                         },
                         new
@@ -256,7 +256,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green outfit",
-                            PlayerId = 14,
+                            PlayerId = 5,
                             Price = 50m
                         },
                         new
@@ -265,7 +265,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green outfit",
-                            PlayerId = 12,
+                            PlayerId = 3,
                             Price = 50m
                         },
                         new
@@ -274,7 +274,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green outfit",
-                            PlayerId = 1,
+                            PlayerId = 7,
                             Price = 50m
                         },
                         new
@@ -283,7 +283,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green Ghillie Suit",
-                            PlayerId = 6,
+                            PlayerId = 8,
                             Price = 80m
                         },
                         new
@@ -292,7 +292,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green Ghillie Suit",
-                            PlayerId = 9,
+                            PlayerId = 4,
                             Price = 80m
                         },
                         new
@@ -301,7 +301,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green Army camouflage",
-                            PlayerId = 11,
+                            PlayerId = 1,
                             Price = 60m
                         },
                         new
@@ -310,7 +310,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 0,
                             Description = "Hard to spot in forest.",
                             Name = "Green Army camouflage",
-                            PlayerId = 7,
+                            PlayerId = 10,
                             Price = 60m
                         },
                         new
@@ -319,7 +319,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 2,
                             Description = "Hard to spot in urban enviroment.",
                             Name = "Urban outfit",
-                            PlayerId = 10,
+                            PlayerId = 9,
                             Price = 40m
                         },
                         new
@@ -328,7 +328,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 2,
                             Description = "Hard to spot in urban enviroment.",
                             Name = "Urban outfit",
-                            PlayerId = 4,
+                            PlayerId = 11,
                             Price = 40m
                         },
                         new
@@ -337,7 +337,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             ClothingColor = 2,
                             Description = "Hard to spot in urban enviroment.",
                             Name = "Urban outfit",
-                            PlayerId = 2,
+                            PlayerId = 14,
                             Price = 40m
                         },
                         new
@@ -545,7 +545,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Date = new DateTime(2022, 12, 16, 16, 54, 31, 495, DateTimeKind.Local).AddTicks(5748),
+                            Date = new DateTime(2022, 12, 17, 15, 20, 26, 121, DateTimeKind.Local).AddTicks(8748),
                             EntryFee = 40m,
                             GameBetCreditsContainerId = 1,
                             GameModeId = 1,
@@ -564,7 +564,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         new
                         {
                             Id = 2,
-                            Date = new DateTime(2022, 12, 18, 16, 54, 31, 495, DateTimeKind.Local).AddTicks(5785),
+                            Date = new DateTime(2022, 12, 19, 15, 20, 26, 121, DateTimeKind.Local).AddTicks(8801),
                             EntryFee = 40m,
                             GameBetCreditsContainerId = 2,
                             GameModeId = 1,
@@ -583,7 +583,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            Date = new DateTime(2022, 12, 18, 16, 54, 31, 495, DateTimeKind.Local).AddTicks(5789),
+                            Date = new DateTime(2022, 12, 19, 15, 20, 26, 121, DateTimeKind.Local).AddTicks(8804),
                             EntryFee = 40m,
                             GameBetCreditsContainerId = 3,
                             GameModeId = 1,
@@ -1143,12 +1143,12 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             Id = 3,
                             Losses = 0,
                             Name = "Charlie",
-                            Wins = 1
+                            Wins = 0
                         },
                         new
                         {
                             Id = 4,
-                            Losses = 1,
+                            Losses = 0,
                             Name = "Delta",
                             Wins = 0
                         });
@@ -1273,33 +1273,33 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "56d661fd-2339-498a-bd7e-c95f37908b28",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ef050970-2fbc-4ae7-a254-7bf38f25c9c8",
+                            ConcurrencyStamp = "2f0684cb-448a-4a9e-83cb-8a5f99ee1073",
                             Credits = 200m,
-                            Email = "Petar@gmail.com",
+                            Email = "Admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizedEmail = "PETAR@GMAIL.COM",
-                            NormalizedUserName = "PETAR",
-                            PasswordHash = "AQAAAAEAACcQAAAAEK1zQA+ysR+7joxCVGLQjcjRW9fkVf6M9WADeP60L1uERlgPF7uOUz4BvW2QR4xG4A==",
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHYZ6MCoxzoHS9eu8a0LKrUkA/pi4s+nvn8lOWOqR06nUMTcFywmCO5r+O7YkNflgw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "78444e12-e704-4cad-88e2-ebc4ead236bc",
+                            SecurityStamp = "e0f74cbb-1fae-4ddb-a9e4-05dc0518d008",
                             TwoFactorEnabled = false,
-                            UserName = "Petar"
+                            UserName = "Admin"
                         },
                         new
                         {
                             Id = "202efe8b-7748-49ca-834c-fd1c37978ab2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "85b36ff8-4fac-4391-9b5b-4177c661b935",
+                            ConcurrencyStamp = "43390507-023d-410b-aafd-d90f11f6e110",
                             Credits = 200m,
                             Email = "Georgi@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "GEORGI@GMAIL.COM",
                             NormalizedUserName = "GEORGI",
-                            PasswordHash = "AQAAAAEAACcQAAAAEG5i1SSirktWBqiI4AWC8jHtuXM+7P3Ev6FzaJil7ZFe7QyutLaUUAamHWkXK3f7sA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELWWlgBRVMNRlEFgiB+qEcHfB74EugJz9RwQ+7tMzI9iGXwRWp3dobxu1oeP+5Ndjw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "dcff68d3-02a5-48b1-9fd3-aa706106ab22",
+                            SecurityStamp = "8f4fc1f7-a89b-48df-9429-443eb16b0201",
                             TwoFactorEnabled = false,
                             UserName = "Georgi"
                         },
@@ -1307,16 +1307,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "2a1bd8b6-6d06-470b-9dda-fe88aa1bf5e8",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4548dcaa-669c-40df-b045-35ba3d19bafb",
+                            ConcurrencyStamp = "0b6312f7-6284-432b-bcc7-59d6fa227677",
                             Credits = 200m,
                             Email = "Ivan@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "IVAN@GMAIL.COM",
                             NormalizedUserName = "IVAN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJMlyq38DbJZkyC4xHTC9ynGCjV8y+1TXWxs33y8ZCxfS00vzfMkjHJdluQ5evCKhA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGeQoqtm44Z59xbAqCJEMBIIp/mkK17xGHdXkIqwVp/IxDbdlkk2K8kXsFL9jE7voA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3b004132-2a60-48d2-aad0-ec5027406623",
+                            SecurityStamp = "c86d3ad2-c6dc-4bf3-b5dc-e79c3a59adb0",
                             TwoFactorEnabled = false,
                             UserName = "Ivan"
                         },
@@ -1324,16 +1324,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "4d64daba-17d4-452c-af3e-5d731a250283",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b1d8befd-54f7-4337-b36f-a9f08871b44f",
+                            ConcurrencyStamp = "f9dafbf5-8f8e-4096-adb6-015649bba46c",
                             Credits = 200m,
                             Email = "Michael@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MICHAEL@GMAIL.COM",
                             NormalizedUserName = "MICHAEL",
-                            PasswordHash = "AQAAAAEAACcQAAAAENH/s6lLBBZFkIME0vtU1SjY4nYvP6Q1mUyRHoSGsJfpAtLpVD/ls3ZzjG06TZui5w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOUIaFSmI0uJ+EybNM0nRyI7NtodY7/g/gSVLkthiegLAlJp+RFk2bO9l3Ug1oIJDQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "77e91de5-e8da-43c8-a4af-231ba3a2643d",
+                            SecurityStamp = "3204beb0-d890-4fb5-9c66-a14c0bf9dcb9",
                             TwoFactorEnabled = false,
                             UserName = "Michael"
                         },
@@ -1341,16 +1341,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "b2451308-1197-4362-be78-f7ea7ca35fe9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7e5e12f1-b49d-40d4-bbf6-9e8f4a6f7bad",
+                            ConcurrencyStamp = "14e4badd-cde9-46de-8000-12de22532d00",
                             Credits = 200m,
                             Email = "Alexander@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ALEXANDER@GMAIL.COM",
                             NormalizedUserName = "ALEXANDER",
-                            PasswordHash = "AQAAAAEAACcQAAAAECt8ODUWi7oS5Rd+dkdbzzKRm/f2Ysu9G9viWUbv+kB7hAI0u673Z2i79adiCrcFhw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJbBn7CLG3O2vvErbm3rF73KvxnD593wILRcCkYdX1ibPZWnk0OJQx60qR05O5LvAw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "82e937f6-54e2-42d7-9d2b-4232b3dab9cc",
+                            SecurityStamp = "08de0174-3ac3-470d-a8d8-dfe8c07550e6",
                             TwoFactorEnabled = false,
                             UserName = "Alexander"
                         },
@@ -1358,16 +1358,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "f3534aed-259b-4ff7-b816-15e8207e084a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a4816e16-033f-4de9-b8d0-b63f775dc718",
+                            ConcurrencyStamp = "8e0fa6fd-dc16-4e5d-9a00-6179bfaeaf66",
                             Credits = 200m,
                             Email = "Todor@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "TODOR@GMAIL.COM",
                             NormalizedUserName = "TODOR",
-                            PasswordHash = "AQAAAAEAACcQAAAAEB2KucUMAkwQsNgh6hxzrVdYlOn5xun/TnxE16S5SA8QlYGUoA5hd1EXNJqfUXBGTg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAE3jro9obKF+8jqBic1rx1T8R3DchC+ZBWQmPJK4D/hw1quBzRpLwMHphYsS6t/Aw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "322851f3-6497-4598-b6e5-91f3f16676d0",
+                            SecurityStamp = "147509d0-44a2-4aad-9960-2b6732e3e81e",
                             TwoFactorEnabled = false,
                             UserName = "Todor"
                         },
@@ -1375,16 +1375,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "f580c1f9-d41f-455e-b4ec-705b834e4b19",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "20e0e59b-2740-4fd1-9cb7-071ce0f66c79",
+                            ConcurrencyStamp = "da7b3f1c-aaaa-4caa-b03f-6d0dc7fa9f8e",
                             Credits = 200m,
                             Email = "Hank@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "HANK@GMAIL.COM",
                             NormalizedUserName = "HANK",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHRrToIm14Mp3AiA9TFEOXedEkAGbgRuBydxe5lKPvwmtoxQlR6nrs2bhGYFdJ++dg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKbqt0A1kPlpAGPK72i48GhvHwqBVmZR4/dqJ5MXZsybxIm5vucUtogwKHs3A0/QGg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a66232ee-50e5-4e9f-9efa-b0951d047800",
+                            SecurityStamp = "40d840ca-eda4-45e3-8905-013e85cc5522",
                             TwoFactorEnabled = false,
                             UserName = "Hank"
                         },
@@ -1392,16 +1392,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "14677dd9-7de7-41c0-9418-e43ddcf64859",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9aaaae80-df07-400f-b61e-6b083a55f3ac",
+                            ConcurrencyStamp = "09a03fd8-73a0-4f18-b603-320780f40733",
                             Credits = 200m,
                             Email = "John@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "JOHN@GMAIL.COM",
                             NormalizedUserName = "JOHN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGSLg/FJ/lI9yb5tv1BTdgN+ELAfUthRhMHp1MJ4cVn+wP2Q6/i/4iHVZzm482XP0A==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEF7VWfYd7ztbXQttWOMxOfk5ppLysizaXeJslNBAjklq416+G1B+IClKcz+lPTJDdw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "eb64b814-d4a4-44bd-bba8-4d48eb4dc079",
+                            SecurityStamp = "740932bc-3f4f-4727-b4d4-bc36826104a6",
                             TwoFactorEnabled = false,
                             UserName = "John"
                         },
@@ -1409,16 +1409,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "c95011ef-d0e4-49c0-bbdd-1b9985bf7a74",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "07358601-4d2e-4ae9-bab9-12ec6dc616b7",
+                            ConcurrencyStamp = "fd2599b7-3deb-48bc-a4d6-a80dbf7e86e1",
                             Credits = 200m,
                             Email = "Walter@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "WALTER@GMAIL.COM",
                             NormalizedUserName = "WALTER",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKVfd9eVKsiVw9JJdPhPv2owFfOxNg09sK+uFQMsRrwcNfQttqLrHKyxJn+4NJV8Vg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFq/7PiqFNZfOa6Q0EXWbgDo2EubmJB6rElTon8nycvJRagk/HFDjHvDhp/gpoY/mQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5a508bca-0f4a-4666-a90f-0546bcd22685",
+                            SecurityStamp = "462a3762-9f30-4429-a2d0-ee7f5aa75540",
                             TwoFactorEnabled = false,
                             UserName = "Walter"
                         },
@@ -1426,16 +1426,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "1f1087d3-a55a-4b7a-932e-1c3f9817fcf0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "16d499ab-cf03-41fe-86e8-179225cc9d93",
+                            ConcurrencyStamp = "a2cc55ec-6e0c-4927-aed8-07c915aee7da",
                             Credits = 200m,
                             Email = "Daniel@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "DANIEL@GMAIL.COM",
                             NormalizedUserName = "DANIEL",
-                            PasswordHash = "AQAAAAEAACcQAAAAELk6FDIVJ2/yNKJ1cDMC//+74urOHAHHmc6G1fiFT+ZOaFq+HaVGN0d0wS5McxadWg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBLACCu4DDZMgkD1XYbwLO+jpPDGc00TRA6MNhkCYk5WplPKPIBRwmUYFGs+m9H4sw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "73d0ba13-0925-46c8-95ae-e2cbc8467e41",
+                            SecurityStamp = "233d2781-140b-4736-9abe-1fb91bde7ce4",
                             TwoFactorEnabled = false,
                             UserName = "Daniel"
                         },
@@ -1443,16 +1443,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "5f83ea0f-418b-463f-9a52-bf1b9eac8bc6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4a3e1c64-d888-478b-a946-e5a07010df0d",
+                            ConcurrencyStamp = "bde3ed25-1ce4-416d-92d0-a23937d850bf",
                             Credits = 200m,
                             Email = "Philip@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "PHILIP@GMAIL.COM",
                             NormalizedUserName = "PHILIP",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKhR3ENPfcSdxSuiPFptaKJqTY6zRRgUXPcbxl2cTF37bKpNerJKO3ZJkSDHoOproA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFWZUZuYM8JdsaP2nwbU0Ipl+NZMKyyLrFHPc3At6PO58CIlzcaolEwshZ4FUyqfGg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f6dfab00-e56a-42b6-8625-522f63202364",
+                            SecurityStamp = "c594d470-9aa4-4459-b406-42ec09f7fb81",
                             TwoFactorEnabled = false,
                             UserName = "Philip"
                         },
@@ -1460,16 +1460,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "0a9aab7f-739a-41d8-b18d-8b797c7a2dfe",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5364d927-2414-458e-bbdc-d380d6433b15",
+                            ConcurrencyStamp = "47a1a7c2-464e-482c-b279-056dfb98d3cf",
                             Credits = 200m,
                             Email = "Liam@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "LIAM@GMAIL.COM",
                             NormalizedUserName = "LIAM",
-                            PasswordHash = "AQAAAAEAACcQAAAAENxbWAcl5keJV0Y/4Lr4sVbWDgLcKGm2HiBhhgRRGd18Nwp+aleDvp+EpJLf0s92kQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEF+LJU+m+TLJWzPz+yJSGXN1VmNHC9Hyf29u+APt2HUv3bF+0uBigIsPv3jXCY6cjA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "af91b70c-57d0-42d5-85d9-e47748ab432c",
+                            SecurityStamp = "0ebe14c7-80ef-470e-8919-eb6573b47ce3",
                             TwoFactorEnabled = false,
                             UserName = "Liam"
                         },
@@ -1477,16 +1477,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "3bf3238b-ab04-4945-8bd0-1eabf8a208d5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "36741c0c-5542-4130-9212-63808de21fa9",
+                            ConcurrencyStamp = "7b80eff9-289e-464f-a863-262fde6ed3a6",
                             Credits = 200m,
                             Email = "Tihomir@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "TIHOMIR@GMAIL.COM",
                             NormalizedUserName = "TIHOMIR",
-                            PasswordHash = "AQAAAAEAACcQAAAAELSgy57IZj6E4eN5l4CPi8Gd/PR/fAeTtSK4Vu5KzW64Hp1MBYMRsRUljEFQ8WhsIA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEB8cHMBB24KBe8O7vhkQPfiQBerroZgDfK9+OtlWOkjt/sbtHCh93UPpCwgYwFjtuw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bfa50aa8-2eb1-4241-873d-09823ba096db",
+                            SecurityStamp = "dbbfb0de-6a27-434d-a247-9d4cff37dacb",
                             TwoFactorEnabled = false,
                             UserName = "Tihomir"
                         },
@@ -1494,16 +1494,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "18a322e4-ade8-4f13-8981-4cac7be64b9c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "95800c1e-dd94-409f-ba3d-3cdeaf2ee7ba",
+                            ConcurrencyStamp = "19d78866-e0a1-4392-ae35-3016207c22a2",
                             Credits = 200m,
                             Email = "Stoyan@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "STOYAN@GMAIL.COM",
                             NormalizedUserName = "STOYAN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBHSIxjxAqr4w4MrmHIsiqkemm3GG+zhPdDQmYT1SHbCCAkrOh09FODc+7G9pCKvxw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEG4BeI/EeHa45uRKFKn8hbT1tN4qKV1pENrkL1qG8XrxJ0lvNlYLnf60m+GSks9CSg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "61e688e3-84ea-4579-9da6-ef4d9f10bf2c",
+                            SecurityStamp = "b7174041-9a1b-4b99-80c0-6a9a1caf34e5",
                             TwoFactorEnabled = false,
                             UserName = "Stoyan"
                         },
@@ -1511,16 +1511,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "799495ef-8794-491d-94d9-6bd37d51ba40",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7f0692c0-dee2-490b-a118-d52085260f94",
+                            ConcurrencyStamp = "8656938e-f8d3-4dfd-9d41-f519de8ffc64",
                             Credits = 200m,
                             Email = "Ivaylo@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "IVAYLO@GMAIL.COM",
                             NormalizedUserName = "IVAYLO",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAVvgyvq9SJpVVtCij57AP2LeUjwSaoDfOHop4l3em9xXYSv4u+aBLosSxuNOzjGZw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEWVcY9Pj5zfc/wE5hW9mp9iFiiNCSzrJT8mIE4XuWAHTnliI9HJDD4B+E5RfSPhpg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ed02d38e-6c84-45bc-a737-d942924d59d9",
+                            SecurityStamp = "ec681f0c-b509-463a-b706-38317a19129c",
                             TwoFactorEnabled = false,
                             UserName = "Ivaylo"
                         },
@@ -1528,16 +1528,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "6f4bc586-751a-4a4b-8fec-4c7145b47a3e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "33f1ac73-e7b8-4b8f-8b59-55231887ebe9",
+                            ConcurrencyStamp = "ce328f2f-68f8-4a6b-b6b0-dab7ef6f5654",
                             Credits = 200m,
                             Email = "Dimitrichko@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "DIMITRICHKO@GMAIL.COM",
                             NormalizedUserName = "DIMITRICHKO",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGlTgU9riVFoclKkhFYHvMb19jc9sGjZ1NRSnCtga75hEFyhEst0lRsHnudqp8JEsg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHr0u/ArFgBPtezPcLE6BmpRXTErsWhTW9Bcd9uPrtXSOFJqjf1U94ZCh+Hb0UDfuA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "49e6839d-a15e-417d-a366-a5b54536c898",
+                            SecurityStamp = "79ba0e11-056b-41db-ab09-abc9c4b45332",
                             TwoFactorEnabled = false,
                             UserName = "Dimitrichko"
                         },
@@ -1545,50 +1545,50 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "77388c0c-698c-4df9-9ad9-cef29116b666",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "482883e0-cfd4-4f6d-807d-30a91cd0f164",
+                            ConcurrencyStamp = "59e0c6cd-f129-438d-9393-e5ff0bda916e",
                             Credits = 200m,
-                            Email = "Vasil@gmail.com",
+                            Email = "Vendor@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizedEmail = "VASIL@GMAIL.COM",
-                            NormalizedUserName = "VASIL",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOqLjjTCFPpYE3AbhNvghIuHtTIObn5Meh6FeOkWz44sHefIdZDVnCk+dFzTO49+yA==",
+                            NormalizedEmail = "VENDOR@GMAIL.COM",
+                            NormalizedUserName = "VENDOR",
+                            PasswordHash = "AQAAAAEAACcQAAAAELoe2nk7gCLu1xEnA6ot2hbREj4zs30xx+AneommLBkWI5rOnBM3V+omfs9+l3BsaA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "003ca97a-8a04-4bfe-8c41-f0acf46575e4",
+                            SecurityStamp = "816a8eb5-52ee-4ca7-80fa-f2035a4cd7ab",
                             TwoFactorEnabled = false,
-                            UserName = "Vasil"
+                            UserName = "Vendor"
                         },
                         new
                         {
                             Id = "c5d9e543-7c2f-4345-a014-ebd860eef718",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a5164fac-1687-4d7a-924e-60cbe9ae3ebf",
+                            ConcurrencyStamp = "a1f0aa39-5020-4160-9dfd-f2e3852399d6",
                             Credits = 200m,
-                            Email = "Krum@gmail.com",
+                            Email = "Matchmaker@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizedEmail = "KRUM@GMAIL.COM",
-                            NormalizedUserName = "KRUM",
-                            PasswordHash = "AQAAAAEAACcQAAAAECpJ46hL/M4TAh5zQDYeBPE1G+WTxWGeE9jK5FxH11Pn7kgaC4GRF8NDQGCCvDWvOA==",
+                            NormalizedEmail = "MATCHMAKER@GMAIL.COM",
+                            NormalizedUserName = "MATCHMAKER",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMzXrFcdWrV1swTsItSCRiTmGo80N7b9b/sYjdh/UR+LLjvhG/MsKPaEpOpNKjVkgA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3a06ca0b-fa60-425a-837b-e8ea00f73ac6",
+                            SecurityStamp = "5311c6b5-cf04-49e9-9565-fb3f4dd8ad14",
                             TwoFactorEnabled = false,
-                            UserName = "Krum"
+                            UserName = "Matchmaker"
                         },
                         new
                         {
                             Id = "cc1cb39b-c0cf-41ed-856c-d3943aec605a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ec5aa4ea-e525-4953-943a-4d1bdef72b5e",
+                            ConcurrencyStamp = "d3459645-2f99-4e30-af1c-6909df529302",
                             Credits = 200m,
                             Email = "Joe@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "JOE@GMAIL.COM",
                             NormalizedUserName = "JOE",
-                            PasswordHash = "AQAAAAEAACcQAAAAEO+8vAWmYpwoAEyr7HMljrxQkvDaXkFNiK3TrDP6pKH9p+Yrqpdi937yqomOIN2Dyg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIAlMjaKd4TZtE57k+Iwt+jpZIC6G+nO9eBi1ro4L/oRCYmFPwkIrEE//g+0coYg8Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c507b157-dbfb-4579-a5de-d8ec8cf20aa6",
+                            SecurityStamp = "d123a72f-1d38-4fd1-8b64-098c50329634",
                             TwoFactorEnabled = false,
                             UserName = "Joe"
                         },
@@ -1596,16 +1596,16 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                         {
                             Id = "1f5be09b-2910-4ac0-8ff5-5c525ddf1b61",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "12bfa966-6743-4bb4-8ab2-649778794742",
+                            ConcurrencyStamp = "19b7e6bb-ef8f-49a1-b7b3-19d5deb3b9cd",
                             Credits = 200m,
                             Email = "Paul@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "PAUL@GMAIL.COM",
                             NormalizedUserName = "PAUL",
-                            PasswordHash = "AQAAAAEAACcQAAAAEB2KV/3qTbNTbdVdBSq5y6JusuRY9ncX+WXZoM3ji2r9NqQ4asi9ozFnpHblLhOPgQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECJKUjBxcZvcoPpnumgEfGjdoRhYk9wqmvlAdkhqsvVhmV6hqroh0NL3P3E+iM8zsA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d19f8b1d-a1b1-4aec-9f4c-3642bb64409a",
+                            SecurityStamp = "d8057f24-41f3-4507-8c42-d2f89753eabb",
                             TwoFactorEnabled = false,
                             UserName = "Paul"
                         });
@@ -1704,7 +1704,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 300.0,
                             ImageUrl = "https://arms-bg.com/wp-content/uploads/imported/2.6412_17_links_2000_1125_0-600x600.jpg",
                             Name = "Glock 17",
-                            PlayerId = 10,
+                            PlayerId = 3,
                             PreferedEngagementDistance = 0,
                             Price = 20m,
                             WeaponType = 0
@@ -1718,7 +1718,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 100.0,
                             ImageUrl = "https://www.airsoft.bg/products/1334236938_160704__031226700_1656_02022011.jpg",
                             Name = "Benelli M3",
-                            PlayerId = 7,
+                            PlayerId = 2,
                             PreferedEngagementDistance = 1,
                             Price = 50m,
                             WeaponType = 1
@@ -1732,7 +1732,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 666.0,
                             ImageUrl = "https://arms-bg.com/wp-content/uploads/2021/11/cyma-cm002a1-600x600.jpg",
                             Name = "M4A1",
-                            PlayerId = 5,
+                            PlayerId = 11,
                             PreferedEngagementDistance = 1,
                             Price = 100m,
                             WeaponType = 3
@@ -1746,7 +1746,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 20.0,
                             ImageUrl = "https://cqb.bg/wp-content/uploads/1152193374_1.jpg",
                             Name = "AWP",
-                            PlayerId = 1,
+                            PlayerId = 12,
                             PreferedEngagementDistance = 2,
                             Price = 130m,
                             WeaponType = 4
@@ -1760,7 +1760,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 700.0,
                             ImageUrl = "https://nelo-mill.com/wp-content/uploads/2019/07/2.6311_MP5A5_links_ret_613_400_0.jpg",
                             Name = "Mp5",
-                            PlayerId = 2,
+                            PlayerId = 7,
                             PreferedEngagementDistance = 0,
                             Price = 70m,
                             WeaponType = 2
@@ -1774,7 +1774,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 1200.0,
                             ImageUrl = "https://shop.crgroup.bg/media/t44s4/2543.jpg",
                             Name = "FAMAS",
-                            PlayerId = 9,
+                            PlayerId = 13,
                             PreferedEngagementDistance = 1,
                             Price = 80m,
                             WeaponType = 3
@@ -1788,7 +1788,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 900.0,
                             ImageUrl = "https://cqb.bg/wp-content/uploads/1152226012_6.jpg",
                             Name = "M249",
-                            PlayerId = 6,
+                            PlayerId = 4,
                             PreferedEngagementDistance = 1,
                             Price = 150m,
                             WeaponType = 5
@@ -1816,7 +1816,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 600.0,
                             ImageUrl = "https://www.airsoft.bg/products/1333793093_Kalashnikov-AKM-AEG_CG120914_airsoft_zm.jpg",
                             Name = "AKM",
-                            PlayerId = 4,
+                            PlayerId = 14,
                             PreferedEngagementDistance = 1,
                             Price = 90m,
                             WeaponType = 3
@@ -1830,7 +1830,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 3000.0,
                             ImageUrl = "https://www.evike.com/images/large/34905.jpg",
                             Name = "Minigun",
-                            PlayerId = 12,
+                            PlayerId = 5,
                             PreferedEngagementDistance = 0,
                             Price = 250m,
                             WeaponType = 5
@@ -1844,7 +1844,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 300.0,
                             ImageUrl = "https://i.pinimg.com/736x/92/86/dc/9286dcbb94e7faf0d648e63dd199de2f--products-is-.jpg",
                             Name = "USP",
-                            PlayerId = 13,
+                            PlayerId = 9,
                             PreferedEngagementDistance = 0,
                             Price = 25m,
                             WeaponType = 0
@@ -1858,7 +1858,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 666.0,
                             ImageUrl = "https://iwi.net/wp-content/uploads/2021/08/ACE_22_IWI_3687.jpg",
                             Name = "Galil",
-                            PlayerId = 14,
+                            PlayerId = 6,
                             PreferedEngagementDistance = 1,
                             Price = 60m,
                             WeaponType = 3
@@ -1872,7 +1872,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 15.0,
                             ImageUrl = "https://static3.gunfire.com/eng_pl_Mosin-Nagant-1891-30-rifle-replica-with-PU-scope-1152227065_1.webp",
                             Name = "Mosin Nagant",
-                            PlayerId = 3,
+                            PlayerId = 10,
                             PreferedEngagementDistance = 2,
                             Price = 50m,
                             WeaponType = 4
@@ -1886,7 +1886,7 @@ namespace AirsoftMatchMaker.Infrastructure.Migrations
                             FireRate = 650.0,
                             ImageUrl = "https://static4.gunfire.com/eng_pl_L85A2-Assault-Rifle-Replica-1152213851_1.webp",
                             Name = "L85A2",
-                            PlayerId = 11,
+                            PlayerId = 1,
                             PreferedEngagementDistance = 1,
                             Price = 80m,
                             WeaponType = 3
