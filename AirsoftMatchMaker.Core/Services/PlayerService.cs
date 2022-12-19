@@ -63,6 +63,34 @@ namespace AirsoftMatchMaker.Core.Services
             player.IsActive = false;
             await repository.SaveChangesAsync();
         }
+
+        public async Task<decimal> GetPlayersAvailableCreditsAsync(string userId)
+        {
+            var player = await repository.AllReadOnly<Player>()
+                .Where(p => p.UserId == userId)
+                .Include(p => p.Team)
+                .ThenInclude(p => p.GamesAsTeamRed)
+                .Include(p => p.Team)
+                .ThenInclude(p => p.GamesAsTeamBlue)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync();
+
+            var credits = player.User.Credits;
+            if (player.TeamId != null)
+            {
+                var upcomingGames = player.Team.GamesAsTeamRed.Union(player.Team.GamesAsTeamBlue).Where(g => g.GameStatus == GameStatus.Upcoming);
+                if (upcomingGames.Count() > 0)
+                {
+                    credits -= upcomingGames.Sum(g => g.EntryFee);
+                    if (credits < 0 )
+                    {
+                        credits = 0;
+                    }
+                }
+            }
+            return credits;
+        }
+
         public async Task<IEnumerable<PlayerListModel>> GetAllPlayersAsync()
         {
             var players = await repository.AllReadOnly<Player>()
@@ -117,5 +145,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .FirstOrDefaultAsync();
             return player;
         }
+
+
     }
 }

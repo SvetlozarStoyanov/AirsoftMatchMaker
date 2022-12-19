@@ -28,6 +28,8 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns></returns>
         Task RemoveFromPlayerRoleAsync(string userId);
 
+        Task<decimal> GetPlayersAvailableCreditsAsync(string userId);
+
         /// <summary>
         /// Returns all players
         /// </summary>
@@ -40,7 +42,6 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="id"></param>
         /// <returns><see cref="PlayerViewModel"/></returns>
         Task<PlayerViewModel> GetPlayerByIdAsync(int id);
-
 
 
     }
