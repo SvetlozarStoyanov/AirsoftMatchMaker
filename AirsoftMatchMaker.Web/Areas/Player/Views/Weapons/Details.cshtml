@@ -1,15 +1,23 @@
-﻿@model WeaponViewModel
+﻿@using AirsoftMatchMaker.Core.Contracts;
+@using AirsoftMatchMaker.Web.Extensions;
+@inject IPlayerService playerService
+@model WeaponViewModel
 
 @{
     string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Weapons/{Model.WeaponType}.jpg";
     ViewBag.Title = "Weapon Details";
+
+    var userCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
+
 }
 
 
 
+<input id="userCredits" value="@userCredits" hidden />
 
-<h1 class="text-center mt-6 mb-6">@Model.Name</h1>
-<article class="mt-6 mb-6 bg-dark bg-opacity-25 border border-white">
+<h1 class="text-center mt-5 mb-5">@Model.Name</h1>
+
+<article class="mt-3 mb-3 bg-dark bg-opacity-25 border border-white">
     <div class="text-center">
         <p>
             <h4>
@@ -51,22 +59,23 @@
             </h4>
         </p>
     </div>
-    <div class="container mt-6 mb-6">
-        <div class="text-center mt-6 mb-6">
+    <div class="container mt-3 mb-3">
+        <div class="text-center mt-3 mb-3">
             <img class="" style="width: 20rem;"
                  src="@img" alt="Weapon Image">
 
-            <div class="text-center mt-6 mb-6">
+            <div class="text-center mt-3 mb-3">
                 <p style="font-size:40px;">
                     @Model.Description
                 </p>
             </div>
-            <div class="mt-6 mb-6 text-center">
+            <div class="mt-3 mb-3 text-center">
                 <p>
                     <h4>
                         Price:
                         <b>
                             @Model.Price credits
+                            <input id="price" value="@Model.Price" hidden/>
                         </b>
                     </h4>
                 </p>
@@ -74,3 +83,28 @@
         </div>
     </div>
 </article>
+<div class="text-center mt-3 mb-3">
+    <button id="buyBtn" type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#buyModal">
+        <i class="bi bi-cart4"> </i>
+        Buy
+    </button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <partial name="_BuyPartial" model="ViewBag.BuyWeaponListModel" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/Areas/Player/Views/Weapons/canBuyWeapon.js"></script>

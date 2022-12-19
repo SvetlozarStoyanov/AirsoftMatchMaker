@@ -1,0 +1,22 @@
+﻿@model WeaponListModel
+
+
+
+<div class="container">
+    <div class="row">
+        <h3 class="text-center mt-3 mb-3 ">@Model.Name</h3>
+        <h4 class="text-center mt-3 mb-3">
+            <b>
+                @Model.Price credits
+            </b>
+        </h4>
+        <form asp-area="Player" asp-controller="Weapons" asp-action="Buy" asp-route-id="@Model.Id" method="post">
+            <div class="text-center mt-3 mb-3">
+                <button class="btn btn-success btn-lg" type="submit">
+                    <i class="bi bi-cart4"> </i>
+                    Buy
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
