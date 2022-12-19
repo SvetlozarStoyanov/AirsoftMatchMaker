@@ -33,6 +33,13 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<bool> UserCanSellWeaponAsync(string userId, int weaponId);
 
         /// <summary>
+        /// Checks if <see cref="Weapon"/> is currently being sold by a <see cref="Vendor"/>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> WeaponIsForSaleAsync(int id);
+
+        /// <summary>
         /// If  user does not have enough credits returns false 
         /// (if user is player his upcoming games entry fee is also calculated)
         /// ,otherwise returns true.
@@ -69,13 +76,18 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<WeaponViewModel> GetWeaponByIdAsync(int id);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="WeaponListModel"/> for buying weapon</returns>
+        Task<WeaponListModel> GetWeaponListModelForBuyAsync(int id);
+        /// <summary>
         /// Adds weapon to inventory of buyer, subtracting the weapon's price from his credits and adding them to the seller's balance
         /// </summary>
         /// <param name="buyerId"></param>
-        /// <param name="vendorId"></param>
         /// <param name="weaponId"></param>
         /// <returns></returns>
-        Task BuyWeaponAsync(string buyerId, int vendorId, int weaponId);
+        Task BuyWeaponAsync(string buyerId, int weaponId);
 
         /// <summary>
         /// Creates appropriate <see cref="WeaponCreateModel model"/> according to the <see cref="WeaponType weaponType"/>

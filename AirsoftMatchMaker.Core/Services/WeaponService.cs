@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Common.Constants;
 using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.Clothes;
 using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.Weapons;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
@@ -53,6 +54,11 @@ namespace AirsoftMatchMaker.Core.Services
                 return false;
             return true;
         }
+        public async Task<bool> WeaponIsForSaleAsync(int id)
+        {
+            var weapon = await repository.GetByIdAsync<Weapon>(id);
+            return weapon.VendorId != null;
+        }
 
         public async Task<bool> UserHasEnoughCreditsAsync(string userId, int weaponId)
         {
@@ -87,6 +93,7 @@ namespace AirsoftMatchMaker.Core.Services
             return true;
         }
 
+        
 
 
         public async Task<WeaponsQueryModel> GetAllWeaponsAsync(
@@ -190,7 +197,21 @@ namespace AirsoftMatchMaker.Core.Services
             return weapon;
         }
 
-        public async Task BuyWeaponAsync(string buyerId, int vendorId, int weaponId)
+        public async Task<WeaponListModel> GetWeaponListModelForBuyAsync(int id)
+        {
+            var weapon = await repository.AllReadOnly<Weapon>()
+                .Where(c => c.Id == id)
+                .Select(c => new WeaponListModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Price = c.Price
+                })
+                .FirstOrDefaultAsync();
+            return weapon;
+        }
+
+        public async Task BuyWeaponAsync(string buyerId, int weaponId)
         {
             var buyer = await repository.All<Player>()
                 .Where(p => p.UserId == buyerId)
@@ -200,28 +221,13 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(p => p.Team)
                 .ThenInclude(p => p.GamesAsTeamBlue)
                 .FirstOrDefaultAsync();
-            if (buyer == null)
-            {
-                return;
-            }
+            var weapon = await repository.GetByIdAsync<Weapon>(weaponId);
+
             var vendor = await repository.All<Vendor>()
-                .Where(v => v.Id == vendorId)
+                .Where(v => v.Id == weapon.VendorId)
                 .Include(v => v.User)
                 .FirstOrDefaultAsync();
-            if (vendor == null)
-            {
-                return;
-            }
-            var weapon = await repository.GetByIdAsync<Weapon>(weaponId);
-            if (weapon == null)
-            {
-                return;
-            }
 
-            if (buyer.User.Credits < weapon.Price)
-            {
-                return;
-            }
             buyer.User.Credits -= weapon.Price;
             vendor.User.Credits += weapon.Price;
             buyer.Weapons.Add(weapon);
