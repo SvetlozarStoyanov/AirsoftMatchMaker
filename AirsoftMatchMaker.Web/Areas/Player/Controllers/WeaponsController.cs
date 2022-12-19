@@ -40,18 +40,31 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var model = await weaponService.GetWeaponByIdAsync(id);
-            if (model == null)
+            if (!(await weaponService.WeaponExistsAsync(id)))
             {
-                TempData.Add("error", "There is no weapon with that id!");
+                TempData.Add("error", "Weapon does not exist");
                 return RedirectToAction(nameof(Index));
             }
+            var model = await weaponService.GetWeaponByIdAsync(id);
+            ViewBag.BuyWeaponListModel = await weaponService.GetWeaponListModelForBuyAsync(id);
             return View(model);
         }
 
-        [HttpGet]
+
+        [HttpPost]
         public async Task<IActionResult> Buy(int id)
         {
+            
+            if (!(await weaponService.WeaponExistsAsync(id)))
+            {
+                TempData.Add("error", "Weapon does not exist");
+                return RedirectToAction(nameof(Index));
+            }
+            if (!(await weaponService.WeaponIsForSaleAsync(id)))
+            {
+                TempData.Add("error", "Weapon is not for sale!");
+                return RedirectToAction(nameof(Index));
+            }
             if (!(await weaponService.UserCanBuyWeaponAsync(User.Id(), id)))
             {
                 TempData["error"] = "You cannot buy weapons you imported!";
@@ -62,19 +75,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
                 TempData["error"] = "You do not have enough credits!";
                 return RedirectToAction(nameof(Index));
             }
-            var model = await weaponService.GetWeaponByIdAsync(id);
-            if (model == null)
-            {
-                TempData.Add("error", "There is no weapon with that id!");
-                return RedirectToAction(nameof(Index));
-            }
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Buy(int weaponid, int vendorId)
-        {
-            await weaponService.BuyWeaponAsync(User.Id(), vendorId, weaponid);
+            await weaponService.BuyWeaponAsync(User.Id(), id);
             return RedirectToAction(nameof(Index));
         }
     }

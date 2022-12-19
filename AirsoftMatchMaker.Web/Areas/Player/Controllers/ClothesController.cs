@@ -44,16 +44,22 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
                 TempData["error"] = $"Clothing with {id} id does not exist!";
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.BuyClothingListModel = await clothingService.GetClothingListModelForBuyAsync(id);
             var model = await clothingService.GetClothingByIdAsync(id);
             return View(model);
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Buy(int id)
         {
             if (!(await clothingService.ClothingExistsAsync(id)))
             {
-                TempData["error"] = $"Clothing with {id} id does not exist!";
+                TempData["error"] = $"Clothing does not exist!";
+                return RedirectToAction(nameof(Index));
+            }
+            if (!(await clothingService.ClothingIsForSaleAsync(id)))
+            {
+                TempData["error"] = $"Clothing is not for sale!";
                 return RedirectToAction(nameof(Index));
             }
             if (!(await clothingService.UserCanBuyClothingAsync(User.Id(), id)))
@@ -66,14 +72,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
                 TempData["error"] = $"You do not have enough credits to buy this item!";
                 return RedirectToAction(nameof(Index));
             }
-            var model = await clothingService.GetClothingByIdAsync(id);
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Buy(int clothingId, int vendorId)
-        {
-            await clothingService.BuyClothingAsync(User.Id(), vendorId, clothingId);
+            await clothingService.BuyClothingAsync(User.Id(), id);
             return RedirectToAction(nameof(Index));
         }
     }

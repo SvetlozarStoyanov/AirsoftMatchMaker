@@ -38,10 +38,12 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         {
             if (!(await ammoBoxService.AmmoBoxExistsAsync(id)))
             {
-                TempData["error"] = $"Ammo box with {id} id does not exist!";
+                TempData["error"] = $"Ammo box  does not exist!";
                 return RedirectToAction(nameof(Index));
             }
             var model = await ammoBoxService.GetAmmoBoxByIdAsync(id);
+            ViewBag.BuyAmmoBoxModel = await ammoBoxService.GetAmmoBoxToBuyByIdAsync(id);
+
             return View(model);
         }
 
@@ -50,7 +52,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         {
             if (!(await ammoBoxService.AmmoBoxExistsAsync(id)))
             {
-                TempData["error"] = $"Ammo box with {id} id does not exist!";
+                TempData["error"] = $"Ammo box  does not exist!";
                 return RedirectToAction(nameof(Index));
             }
             if (!(await ammoBoxService.UserCanBuyAmmoBoxAsync(User.Id(), id)))
@@ -65,6 +67,16 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         [HttpPost]
         public async Task<IActionResult> Buy(AmmoBoxBuyModel model)
         {
+            if (!(await ammoBoxService.AmmoBoxExistsAsync(model.Id)))
+            {
+                TempData["error"] = $"Ammo box  does not exist!";
+                return RedirectToAction(nameof(Index));
+            }
+            if (!(await ammoBoxService.UserCanBuyAmmoBoxAsync(User.Id(), model.Id)))
+            {
+                TempData["error"] = $"You cannot buy ammo boxes you imported!";
+                return RedirectToAction(nameof(Index));
+            }
             if (!(await ammoBoxService.UserHasEnoughCreditsAsync(User.Id(), model.Id, model.QuantityToBuy)))
             {
                 TempData["error"] = $"You do not have enough credits!";
