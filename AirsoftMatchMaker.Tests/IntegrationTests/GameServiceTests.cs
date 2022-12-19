@@ -936,7 +936,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
             });
 
             await repository.SaveChangesAsync();
-            var model = await gameService.GetMatchmakersOrganisedGamesAsync(
+            var model = await gameService.GetAllGamesForAdminAndMatchmakerAsync(
                 1,
                 MatchmakerGameStatus.Finalized,
                 GameSorting.Newest,
@@ -944,7 +944,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 1);
 
             Assert.That(model.Games.Count(), Is.EqualTo(2));
-            model = await gameService.GetMatchmakersOrganisedGamesAsync(
+            model = await gameService.GetAllGamesForAdminAndMatchmakerAsync(
                 1,
                 MatchmakerGameStatus.Upcoming,
                 GameSorting.Newest,
@@ -952,7 +952,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 1);
 
             Assert.That(model.Games.Count(), Is.EqualTo(1));
-            model = await gameService.GetMatchmakersOrganisedGamesAsync(
+            model = await gameService.GetAllGamesForAdminAndMatchmakerAsync(
                2,
                null,
                GameSorting.Newest,

@@ -77,8 +77,24 @@
       "PackagePath": "staticwebassets\\img\\Default\\Weapons\\SubmachineGun.jpg"
     },
     {
-      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Player\\Views\\AmmoBoxes\\calculateAmmBoxesFinalPrice.js",
-      "PackagePath": "staticwebassets\\js\\Areas\\Player\\Views\\AmmoBoxes\\calculateAmmBoxesFinalPrice.js"
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Player\\Views\\AmmoBoxes\\calculateAmmoBoxesFinalPrice.js",
+      "PackagePath": "staticwebassets\\js\\Areas\\Player\\Views\\AmmoBoxes\\calculateAmmoBoxesFinalPrice.js"
+    },
+    {
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Player\\Views\\AmmoBoxes\\calculateAmmoBoxesFinalPriceModal.js",
+      "PackagePath": "staticwebassets\\js\\Areas\\Player\\Views\\AmmoBoxes\\calculateAmmoBoxesFinalPriceModal.js"
+    },
+    {
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Player\\Views\\AmmoBoxes\\canBuyAmmoBox.js",
+      "PackagePath": "staticwebassets\\js\\Areas\\Player\\Views\\AmmoBoxes\\canBuyAmmoBox.js"
+    },
+    {
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Player\\Views\\Clothes\\canBuyClothing.js",
+      "PackagePath": "staticwebassets\\js\\Areas\\Player\\Views\\Clothes\\canBuyClothing.js"
+    },
+    {
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Player\\Views\\Weapons\\canBuyWeapon.js",
+      "PackagePath": "staticwebassets\\js\\Areas\\Player\\Views\\Weapons\\canBuyWeapon.js"
     },
     {
       "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\AmmoBoxes\\calculateFinalImportPrice.js",

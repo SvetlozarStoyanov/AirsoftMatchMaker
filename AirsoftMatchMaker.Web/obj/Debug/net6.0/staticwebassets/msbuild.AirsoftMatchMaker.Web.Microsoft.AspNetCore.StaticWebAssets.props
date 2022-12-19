@@ -304,12 +304,12 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\img\Default\Weapons\SubmachineGun.jpg))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\AmmoBoxes\calculateAmmBoxesFinalPrice.js))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\AmmoBoxes\calculateAmmoBoxesFinalPrice.js))">
       <SourceType>Package</SourceType>
       <SourceId>AirsoftMatchMaker.Web</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/AirsoftMatchMaker.Web</BasePath>
-      <RelativePath>js/Areas/Player/Views/AmmoBoxes/calculateAmmBoxesFinalPrice.js</RelativePath>
+      <RelativePath>js/Areas/Player/Views/AmmoBoxes/calculateAmmoBoxesFinalPrice.js</RelativePath>
       <AssetKind>All</AssetKind>
       <AssetMode>All</AssetMode>
       <AssetRole>Primary</AssetRole>
@@ -318,7 +318,71 @@
       <AssetTraitValue></AssetTraitValue>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\AmmoBoxes\calculateAmmBoxesFinalPrice.js))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\AmmoBoxes\calculateAmmoBoxesFinalPrice.js))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\AmmoBoxes\calculateAmmoBoxesFinalPriceModal.js))">
+      <SourceType>Package</SourceType>
+      <SourceId>AirsoftMatchMaker.Web</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AirsoftMatchMaker.Web</BasePath>
+      <RelativePath>js/Areas/Player/Views/AmmoBoxes/calculateAmmoBoxesFinalPriceModal.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\AmmoBoxes\calculateAmmoBoxesFinalPriceModal.js))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\AmmoBoxes\canBuyAmmoBox.js))">
+      <SourceType>Package</SourceType>
+      <SourceId>AirsoftMatchMaker.Web</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AirsoftMatchMaker.Web</BasePath>
+      <RelativePath>js/Areas/Player/Views/AmmoBoxes/canBuyAmmoBox.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\AmmoBoxes\canBuyAmmoBox.js))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\Clothes\canBuyClothing.js))">
+      <SourceType>Package</SourceType>
+      <SourceId>AirsoftMatchMaker.Web</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AirsoftMatchMaker.Web</BasePath>
+      <RelativePath>js/Areas/Player/Views/Clothes/canBuyClothing.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\Clothes\canBuyClothing.js))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\Weapons\canBuyWeapon.js))">
+      <SourceType>Package</SourceType>
+      <SourceId>AirsoftMatchMaker.Web</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AirsoftMatchMaker.Web</BasePath>
+      <RelativePath>js/Areas/Player/Views/Weapons/canBuyWeapon.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Player\Views\Weapons\canBuyWeapon.js))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\js\Areas\Vendor\Views\AmmoBoxes\calculateFinalImportPrice.js))">
       <SourceType>Package</SourceType>
