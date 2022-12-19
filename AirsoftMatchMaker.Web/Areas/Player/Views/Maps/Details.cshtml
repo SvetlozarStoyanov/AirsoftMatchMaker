@@ -1,66 +1,64 @@
-﻿@using System.Text.RegularExpressions;
-@model MapViewModel
+﻿@model MapViewModel
 
 @{
+    string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Maps/{Model.Terrain}.jpg";
     ViewBag.Title = "Map Details";
 }
-
-<h2 class="text-center">@ViewBag.Title</h2>
-
-
-<div class="container" style="display:inline">
-    <div class="row">
-        @*   <div class="col-4">
-        <img class="card-img-top" style="width: 20rem;"
-        src="@Model.ImageUrl" alt="House Image">
-        </div>*@
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.Name</p>
-            @*<p>Located in: <b>@Model.Address</b></p>*@
-            <p>
-                Description: @Model.Description
-            </p>
-            <p>
-                GameMode:
+<h1 class="text-center mt-5 mb-5">@Model.Name</h1>
+<article class="mt-3 mb-3 bg-dark bg-opacity-25 border border-white">
+    <div class="text-center">
+        <p>
+            <h4>
+                Size:
+                <b>@string.Join(" ", Regex.Matches(Model.Mapsize.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
+            </h4>
+        </p>
+        <p>
+            <h4>
+                Game mode:
                 <b>
-                    <a class="btn btn-primary btn-info" asp-area="Player" asp-controller="GameModes" asp-action="Details" asp-route-id="@Model.GameModeId"> @Model.GameModeName</a>
+                    @Model.GameModeName
                 </b>
-            </p>
-
-            <p>
-                Terrain:
-                <b>
-                    <b>@string.Join(" ", Regex.Matches(Model.Terrain.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
-                </b>
-            </p>
-            <p>
+            </h4>
+        </p>
+        <p>
+            <h4>
+                Terrain type:
+                <b>@string.Join(" ", Regex.Matches(Model.Terrain.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
+            </h4>
+        </p>
+        <p>
+            <h4>
                 Average engagement distance:
                 <b>
-                    <b>@string.Join(" ", Regex.Matches(Model.AverageEngagementDistance.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
+                    @Model.AverageEngagementDistance
                 </b>
-            </p>
-            <p>
-                Map Size:
-                <b>
-                    <b>@string.Join(" ", Regex.Matches(Model.Mapsize.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b>
-                </b>
-            </p>
-            <h2>Games</h2>
-            <div class="container">
-                @foreach (var game in Model.Games)
-                {
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <a class="btn btn-secondary" asp-area="Player" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
-                                <h5 class="card-title">@game.Name</h5>
-                            </a>
-                            <h6 class="card-text">@game.Result</h6>
-                            <h6>@game.Date</h6>
-                        </div>
-                    </div>
-                }
+            </h4>
+        </p>
+    </div>
+    <div class="container mt-3 mb-3">
+        <div class="text-center mt-3 mb-3">
+            <img class="" style="width: 20rem;"
+                 src="@img" alt="Weapon Image">
+
+            <div class="text-center mt-6 mb-6">
+                <p style="font-size:40px;">
+                    @Model.Description
+                </p>
             </div>
+            <section class="text-center mt-3 mb-3">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGames" aria-expanded="false" aria-controls="collapseGames">
+                    <h5>Games with on this map: @Model.Games.Count </h5>
+                </button>
+                <div class="collapse" id="collapseGames">
+                    <div class="row">
+                        @foreach (var game in Model.Games)
+                        {
+                            <partial name="_GameMinPartial" model="@game" />
+                        }
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
-</div>
-</div>
+</article>
