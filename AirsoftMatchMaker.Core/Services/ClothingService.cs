@@ -50,6 +50,13 @@ namespace AirsoftMatchMaker.Core.Services
 
             return true;
         }
+
+        public async Task<bool> ClothingIsForSaleAsync(int id)
+        {
+            var clothing = await repository.GetByIdAsync<Clothing>(id);
+            return clothing.VendorId != null;
+        }
+
         public async Task<bool> UserHasEnoughCreditsAsync(string userId, int clothingId)
         {
             var player = await repository.AllReadOnly<Player>()
@@ -160,33 +167,31 @@ namespace AirsoftMatchMaker.Core.Services
             return clothing;
         }
 
-        public async Task BuyClothingAsync(string buyerId, int vendorId, int clothingId)
+        public async Task<ClothingListModel> GetClothingListModelForBuyAsync(int id)
+        {
+            var clothing = await repository.AllReadOnly<Clothing>()
+                .Where(c => c.Id == id)
+                .Select(c => new ClothingListModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Price = c.Price
+                })
+                .FirstOrDefaultAsync();
+            return clothing;
+        }
+
+        public async Task BuyClothingAsync(string buyerId, int clothingId)
         {
             var buyer = await repository.All<Player>()
                 .Where(p => p.UserId == buyerId)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync();
-            if (buyer == null)
-            {
-                return;
-            }
+            var clothing = await repository.GetByIdAsync<Clothing>(clothingId);
             var vendor = await repository.All<Vendor>()
-                .Where(v => v.Id == vendorId)
+                .Where(v => v.Id == clothing.VendorId)
                 .Include(v => v.User)
                 .FirstOrDefaultAsync();
-            if (vendor == null)
-            {
-                return;
-            }
-            var clothing = await repository.GetByIdAsync<Clothing>(clothingId);
-            if (clothing == null)
-            {
-                return;
-            }
-            if (buyer.User.Credits < clothing.Price)
-            {
-                return;
-            }
             buyer.User.Credits -= clothing.Price;
             vendor.User.Credits += clothing.Price;
             buyer.Clothes.Add(clothing);

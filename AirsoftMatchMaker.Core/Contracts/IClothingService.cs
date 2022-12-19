@@ -33,6 +33,13 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<bool> UserCanSellClothingAsync(string userId, int clothingId);
 
         /// <summary>
+        /// Checks if <see cref="Clothing"/> is currently being sold by a <see cref="Vendor"/>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> ClothingIsForSaleAsync(int id);
+
+        /// <summary>
         /// If the user does not have enough credits returns false 
         /// (if user is a player his upcoming games entry fee is also calculated)
         /// ,otherwise returns true.
@@ -41,7 +48,6 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="clothingId"></param>
         /// <returns><see cref="bool"/></returns>
         Task<bool> UserHasEnoughCreditsAsync(string userId, int clothingId);
-
 
         /// <summary>
         /// Returns <see cref="ClothesQueryModel"/> filled with clothes which match the given criteria.
@@ -68,13 +74,20 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<ClothingViewModel> GetClothingByIdAsync(int id);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="ClothingListModel"/> for buying clothing</returns>
+        Task<ClothingListModel> GetClothingListModelForBuyAsync(int id);
+
+
+        /// <summary>
         /// Adds clothing to inventory of buyer , subtracting the clothing's price from his credits and adding them to the seller's balance
         /// </summary>
         /// <param name="buyerId"></param>
-        /// <param name="vendorId"></param>
         /// <param name="clothingId"></param>
         /// <returns></returns>
-        Task BuyClothingAsync(string buyerId, int vendorId, int clothingId);
+        Task BuyClothingAsync(string buyerId, int clothingId);
 
         /// <summary>
         /// Creates a <see cref="Clothing clothing"/> from <see cref="ClothingCreateModel model"/>
