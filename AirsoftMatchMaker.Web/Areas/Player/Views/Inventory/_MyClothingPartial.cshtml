@@ -1,8 +1,7 @@
 ﻿@model ClothingListModel
 
 @{
-    string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Weapons/{Model.ClothingColor}.jpg";
-    string altImg = $"/img/Default/Weapons/{Model.ClothingColor}.jpg";
+    string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Clothes/{Model.ClothingColor}.jpg";
 }
 <div class="col-md-4 mt-3">
     <div class="card mb-3">
