@@ -175,22 +175,10 @@ namespace AirsoftMatchMaker.Core.Services
                 .Where(p => p.UserId == playerUserId)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync();
-            if (player == null || player.User.Credits < model.Price * model.QuantityToBuy)
-            {
-                return;
-            }
             var vendor = await repository.All<Vendor>()
                 .Where(v => v.Id == model.VendorId)
                 .Include(v => v.User)
                 .FirstOrDefaultAsync();
-            if (player.UserId == vendor.UserId)
-            {
-                return;
-            }
-            if (vendor == null)
-            {
-                return;
-            }
             player.User.Credits -= model.Price * model.QuantityToBuy;
             vendor.User.Credits += model.Price * model.QuantityToBuy;
             player.Ammo += model.AmmoAmount * model.QuantityToBuy;
