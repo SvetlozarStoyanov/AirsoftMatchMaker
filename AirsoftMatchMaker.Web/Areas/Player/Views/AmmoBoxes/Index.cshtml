@@ -1,6 +1,11 @@
-﻿@model AmmoBoxesQueryModel
+﻿@using AirsoftMatchMaker.Core.Contracts;
+@using AirsoftMatchMaker.Web.Extensions;
+@inject IPlayerService playerService
+@model AmmoBoxesQueryModel
 @{
     ViewBag.Title = "Ammo Boxes";
+
+    var userCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
 
     var previousPage = Model.CurrentPage - 1;
     if (previousPage < 1)
@@ -13,6 +18,9 @@
     var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
           !Model.AmmoBoxes.Any();
 }
+
+<input id="userCredits" value="@userCredits" hidden />
+
 <form method="get">
     <div class="row mt-6 mb-6">
         <div class="d-flex justify-content-between">
@@ -79,9 +87,17 @@
 else
 {
     <div class="row">
-        @foreach (var clothing in Model.AmmoBoxes)
+        @foreach (var ammoBox in Model.AmmoBoxes)
         {
-            <partial name="_AmmoBoxPartial" model="@clothing" />
+            if (ammoBox.Price < userCredits)
+            {
+                ViewBag.CanBuy = true;
+            }
+            else
+            {
+                ViewBag.CanBuy = false;
+            }
+            <partial name="_AmmoBoxPartial" model="@ammoBox" />
         }
     </div>
 }
