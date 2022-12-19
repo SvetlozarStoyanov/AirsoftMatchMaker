@@ -104,7 +104,7 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
             {
                 model.MatchmakerId = await matchmakerService.GetMatchmakerIdAsync(User.Id());
             }
-            var queryResult = await gameService.GetMatchmakersOrganisedGamesAsync(
+            var queryResult = await gameService.GetAllGamesForAdminAndMatchmakerAsync(
                 model.MatchmakerId,
                 model.MatchmakerGameStatus,
                 model.Sorting,
