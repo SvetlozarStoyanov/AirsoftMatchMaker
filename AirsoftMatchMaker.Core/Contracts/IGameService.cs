@@ -103,8 +103,8 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="IEnumerable{T}"/></returns>
         Task<IEnumerable<GameListModel>> GetPlayersLastFinishedAndFirstUpcomingGameAsync(string userId);
 
-        Task<GamesMatchmakerQueryModel> GetMatchmakersOrganisedGamesAsync(
-            int matchmakerId,
+        Task<GamesMatchmakerQueryModel> GetAllGamesForAdminAndMatchmakerAsync(
+            int? matchmakerId,
             MatchmakerGameStatus? status,
             GameSorting sorting,
             int gamesPerPage = 6,

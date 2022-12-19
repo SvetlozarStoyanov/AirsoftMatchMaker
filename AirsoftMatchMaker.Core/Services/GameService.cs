@@ -440,14 +440,14 @@ namespace AirsoftMatchMaker.Core.Services
             return playerGames;
         }
 
-        public async Task<GamesMatchmakerQueryModel> GetMatchmakersOrganisedGamesAsync(int matchmakerId,
+        public async Task<GamesMatchmakerQueryModel> GetAllGamesForAdminAndMatchmakerAsync(
+            int? matchmakerId,
             MatchmakerGameStatus? status,
             GameSorting sorting,
             int gamesPerPage = 6,
             int currentPage = 1)
         {
             var games = await repository.AllReadOnly<Game>()
-            .Where(g => g.MatchmakerId == matchmakerId)
             .Include(g => g.TeamRed)
             .Include(g => g.TeamBlue)
             .Include(g => g.GameMode)
@@ -455,6 +455,10 @@ namespace AirsoftMatchMaker.Core.Services
             .Include(g => g.Matchmaker)
             .ThenInclude(mm => mm.User)
             .ToListAsync();
+            if (matchmakerId != null)
+            {
+                games = games.Where(g => g.MatchmakerId == matchmakerId).ToList();
+            }
             if (status != null)
             {
                 switch (status)
