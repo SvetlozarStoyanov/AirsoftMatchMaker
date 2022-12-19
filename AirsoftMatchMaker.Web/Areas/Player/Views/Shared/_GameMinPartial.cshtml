@@ -11,17 +11,10 @@
                 <h6><b>@Model.Date</b></h6>
             </div>
             <br />
-            <a asp-controller="Games" asp-action="Details" asp-route-id="@Model.Id"
+            <a asp-area="Player" asp-controller="Games" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-primary">
                 Details
             </a>
-            @if (Model.GameStatus == GameStatus.Upcoming)
-            {
-                <a asp-controller="Bets" asp-action="Create" asp-route-id="@Model.Id"
-               class="btn btn-warning">
-                    Bet
-                </a>
-            }
         </div>
     </div>
 </div>
