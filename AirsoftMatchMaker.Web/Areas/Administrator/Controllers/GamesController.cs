@@ -24,21 +24,18 @@ namespace AirsoftMatchMaker.Web.Areas.Administrator.Controllers
             this.gameModeService = gameModeService;
         }
 
-        public async Task<IActionResult> Index([FromQuery] GamesQueryModel model)
+        public async Task<IActionResult> Index([FromQuery] GamesMatchmakerQueryModel model)
         {
-            var queryResult = await gameService.GetAllGamesAsync(
-                model.TeamName,
-                model.GameModeName,
-                model.GameStatus,
+            var queryResult = await gameService.GetAllGamesForAdminAndMatchmakerAsync(
+                null,
+                model.MatchmakerGameStatus,
                 model.Sorting,
                 model.GamesPerPage,
-                model.CurrentPage
-                );
+                model.CurrentPage);
+
             model.Games = queryResult.Games;
             model.GamesCount = queryResult.GamesCount;
-            model.GameStatuses = queryResult.GameStatuses;
-            model.GameModeNames = queryResult.GameModeNames;
-            model.TeamNames = queryResult.TeamNames;
+            model.MatchmakerGameStatuses = queryResult.MatchmakerGameStatuses;
             model.SortingOptions = queryResult.SortingOptions;
             return View(model);
         }
