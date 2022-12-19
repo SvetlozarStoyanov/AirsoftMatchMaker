@@ -1,4 +1,5 @@
-﻿using AirsoftMatchMaker.Core.Models.Maps;
+﻿using AirsoftMatchMaker.Core.Models.Enums;
+using AirsoftMatchMaker.Core.Models.Maps;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 
 namespace AirsoftMatchMaker.Core.Contracts
@@ -13,11 +14,14 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns></returns>
         Task<bool> MapAlreadyExists(string mapName);
 
-        /// <summary>
-        /// Returns all maps
-        /// </summary>
-        /// <returns><see cref="IEnumerable{T}"/></returns>
-        Task<IEnumerable<MapListModel>> GetAllMapsAsync();
+
+        Task<MapsQueryModel> GetAllMapsAsync(
+            string? searchTerm = null,
+            string? gameModeName = null,
+            MapSorting sorting = MapSorting.GamesPlayedDescending,
+            int mapsPerPage = 6,
+            int currentPage = 1
+            );
 
         /// <summary>
         /// 
@@ -26,10 +30,17 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="MapViewModel"/></returns>
         Task<MapViewModel> GetMapByIdAsync(int id);
 
-
+        /// <summary>
+        /// Creates a <see cref="MapCreateModel"/> and fills collections with required information
+        /// </summary>
+        /// <returns><see cref="MapCreateModel"/></returns>
         Task<MapCreateModel> CreateMapCreateModelAsync();
 
-
+        /// <summary>
+        /// Creates a <see cref="Map"/> from <see cref="MapCreateModel"/> and adds it to the database
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task CreateMapAsync(MapCreateModel model);
     }
 }

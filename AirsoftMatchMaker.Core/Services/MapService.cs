@@ -1,10 +1,12 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Maps;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace AirsoftMatchMaker.Core.Services
 {
@@ -22,11 +24,46 @@ namespace AirsoftMatchMaker.Core.Services
                 .AnyAsync(m => m.Name == mapName);
         }
 
-        public async Task<IEnumerable<MapListModel>> GetAllMapsAsync()
+        public async Task<MapsQueryModel> GetAllMapsAsync(
+            string? searchTerm = null,
+            string? gameModeName = null,
+            MapSorting sorting = MapSorting.GamesPlayedDescending,
+            int mapsPerPage = 6,
+            int currentPage = 1
+            )
         {
             var maps = await repository.AllReadOnly<Map>()
                 .Include(m => m.GameMode)
                 .Include(m => m.Games)
+                .ToListAsync();
+            if (!string.IsNullOrWhiteSpace(gameModeName))
+            {
+                maps = maps.Where(m => m.GameMode.Name.ToLower() == gameModeName.ToLower()).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                maps = maps.Where(m => m.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
+
+            }
+            switch (sorting)
+            {
+                case MapSorting.Newest:
+                    maps = maps.OrderByDescending(m => m.Id).ToList();
+                    break;
+                case MapSorting.Oldest:
+                    maps = maps.OrderBy(m => m.Id).ToList();
+                    break;
+                case MapSorting.GamesPlayedAscending:
+                    maps = maps.OrderBy(m => m.Games.Count).ToList();
+                    break;
+                case MapSorting.GamesPlayedDescending:
+                    maps = maps.OrderByDescending(m => m.Games.Count).ToList();
+                    break;
+
+            }
+            var filteredMaps = maps
+                .Skip((currentPage - 1) * mapsPerPage)
+                .Take(mapsPerPage)
                 .Select(m => new MapListModel()
                 {
                     Id = m.Id,
@@ -39,8 +76,28 @@ namespace AirsoftMatchMaker.Core.Services
                     GameModeName = m.GameMode.Name,
                     GamesPlayed = m.Games.Count
                 })
+                .ToList();
+            var model =await CreateMapsQueryModel();
+            model.MapsCount = maps.Count;
+            model.Maps = filteredMaps;
+
+            return model;
+        }
+
+        private async Task<MapsQueryModel> CreateMapsQueryModel()
+        {
+            var model = new MapsQueryModel();
+            var modelGameModeNames = new List<string>() 
+            {
+                "All"
+            };
+            var gameModeNames = await repository.AllReadOnly<GameMode>()
+                .Select(gm => gm.Name)
                 .ToListAsync();
-            return maps;
+            modelGameModeNames.AddRange(gameModeNames);
+            model.GameModeNames = modelGameModeNames;
+            model.SortingOptions = Enum.GetValues<MapSorting>().ToList();
+            return model;
         }
 
         public async Task<MapViewModel> GetMapByIdAsync(int id)
@@ -111,7 +168,7 @@ namespace AirsoftMatchMaker.Core.Services
                 ImageUrl = model.ImageUrl,
                 Terrain = model.TerrainType,
                 Mapsize = model.Mapsize,
-                AverageEngagementDistance= model.AverageEngagementDistance,
+                AverageEngagementDistance = model.AverageEngagementDistance,
                 GameModeId = model.GameModeId,
             };
             await repository.AddAsync<Map>(map);
