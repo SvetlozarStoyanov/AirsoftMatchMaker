@@ -2,9 +2,10 @@
 
 @{
     string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Clothes/{Model.ClothingColor}.jpg";
-    string altImg = $"/img/Default/Clothes/{Model.ClothingColor}.jpg";
-    //string temp = "style="width: 200px; height: 200px; "";
+    var modalId = $"buyModal{Model.Id}";
+    var modalLabel = $"buyModal{Model.Id}Label";
 }
+
 <div class="col-md-4 mt-3">
     <div class="card mb-3">
         <div class="text-center">
@@ -20,11 +21,39 @@
                 <i class="bi bi-info"></i>
                 Details
             </a>
-            <a asp-area="Player" asp-controller="Clothes" asp-action="Buy" asp-route-id="@Model.Id"
-               class="btn btn-success">
-                <i class="bi bi-cart4"></i>
-                Buy
-            </a>
+            @if (ViewBag.CanBuy)
+            {
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#@modalId">
+                    <i class="bi bi-cart4"> </i>
+                    Buy
+                </button>
+            }
+            else
+            {
+                <!-- Button trigger modal -->
+                <button disabled type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#@modalId">
+                    <i class="bi bi-cart4"> </i>
+                    Buy
+                </button>
+            }
+
+            <!-- Modal -->
+            <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="@modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <partial name="_BuyPartial" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

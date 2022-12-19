@@ -1,12 +1,12 @@
 ﻿@model AmmoBoxListModel
 
 @*@{
-    string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Clothes/{Model.ClothingColor}.jpg";
+    string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/AmmoBoxes/{Model.}.jpg";
 }*@
 <div class="col-md-4 mt-3">
     <div class="card mb-3">
-@*        <div class="text-center">
-            <img style="height:250px;" class="card-img-top" src="@img" alt="Clothing Image">
+        @*        <div class="text-center">
+        <img style="height:250px;" class="card-img-top" src="@img" alt="Clothing Image">
         </div>*@
         <div class="card-body text-center">
             <h4 class="text-center">@Model.Name</h4>
@@ -20,11 +20,21 @@
                 <i class="bi bi-info"></i>
                 Details
             </a>
-            <a asp-area="Player" asp-controller="AmmoBoxes" asp-action="Buy" asp-route-id="@Model.Id"
+            @if (ViewBag.CanBuy)
+            {
+                <a asp-area="Player" asp-controller="AmmoBoxes" asp-action="Buy" asp-route-id="@Model.Id"
                class="btn btn-success">
-                <i class="bi bi-cart4"></i>
-                Buy
-            </a>
+                    <i class="bi bi-cart4"></i>
+                    Buy
+                </a>
+            }
+            else
+            {
+                <button class="btn btn-success" disabled>
+                    <i class="bi bi-cart4"></i>
+                    Buy
+                </button>
+            }
         </div>
     </div>
 </div>
