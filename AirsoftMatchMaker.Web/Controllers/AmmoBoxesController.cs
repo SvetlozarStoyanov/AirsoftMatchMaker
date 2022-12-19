@@ -42,18 +42,5 @@ namespace AirsoftMatchMaker.Web.Controllers
             TempData.Add("error", $"Ammo box with {id} id does not exist!");
             return RedirectToAction(nameof(Index));
         }
-        [HttpGet]
-        public async Task<IActionResult> Buy(int id)
-        {
-            var model = await ammoBoxService.GetAmmoBoxToBuyByIdAsync(id);
-            return View(model);
-        }
-        [HttpPost]
-        [Authorize(Roles = "Player")]
-        public async Task<IActionResult> Buy(AmmoBoxBuyModel model)
-        {
-            await ammoBoxService.BuyAmmoBoxAsync(User.Id(), model);
-            return RedirectToAction(nameof(Index));
-        }
     }
 }

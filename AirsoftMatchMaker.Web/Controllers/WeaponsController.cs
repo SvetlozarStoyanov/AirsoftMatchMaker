@@ -44,23 +44,5 @@ namespace AirsoftMatchMaker.Web.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Buy(int id)
-        {
-            var model = await weaponService.GetWeaponByIdAsync(id);
-            if (model == null)
-            {
-                TempData.Add("error", "There is no weapon with that id!");
-                return RedirectToAction(nameof(Index));
-            }
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Buy(int weaponid, int vendorId)
-        {
-            await weaponService.BuyWeaponAsync(User.Id(), vendorId, weaponid);
-            return RedirectToAction(nameof(Index));
-        }
     }
 }
