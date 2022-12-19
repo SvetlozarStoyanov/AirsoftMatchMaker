@@ -1,65 +1,58 @@
-﻿@using System.Text.RegularExpressions;
+﻿@using AirsoftMatchMaker.Core.Contracts;
+@using AirsoftMatchMaker.Web.Extensions;
+@inject IPlayerService playerService
 @model AmmoBoxBuyModel
 
 @{
     ViewBag.Title = "Buy ammo";
+    var userCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
 }
 
+
+<input id="userCredits" value="@userCredits"  hidden/>
 <h2 class="text-center">@ViewBag.Title</h2>
 
 
-<div class="container" style="display:inline">
-    <div class="row">
+<div class="row text-center">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
 
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.Name</p>
-            <form asp-controller="AmmoBoxes" asp-action="Buy" method="post">
-                <input asp-for="VendorId" hidden />
-                <div class="form-group">
-                    <label  asp-for="AmmoAmount">Ammo in one box</label>
-                    <input id="ammoAmountInitial" asp-for="AmmoAmount" hidden />
-                    <input asp-for="AmmoAmount" class="form-control" disabled />
-                </div>
-                <div class="form-group">
-                    <label asp-for="Price">Price per box </label>
-                    <input id="price" asp-for="Price" class="form-control" disabled />
-                    <input asp-for="Price" hidden />
+        <p style="font-size:25px;">@Model.Name</p>
+        <form asp-area="Player" asp-controller="AmmoBoxes" asp-action="Buy" method="post">
+            <input asp-for="VendorId" hidden />
+            <div class="form-group">
+                <label asp-for="AmmoAmount">Ammo in one box</label>
+                <input id="ammoAmountInitial" asp-for="AmmoAmount" hidden />
+                <input asp-for="AmmoAmount" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="Price">Price per box </label>
+                <input id="pricePerUnit" asp-for="Price" class="form-control" disabled />
+                <input asp-for="Price" hidden />
 
-                </div>
-
-                @if (Model.VendorName != null)
-                {
-                    <p>
-                        Vendor:
-                        <b>
-                            <a class="btn btn-primary btn-info" asp-area="Player" asp-controller="Vendors" asp-action="Details" asp-route-id="@Model.VendorId"> @Model.VendorName</a>
-                        </b>
-                    </p>
-                }
-                <div class="form-group">
-                    <label asp-for="QuantityToBuy">Select quantity to buy</label>
-                    <select id="quantityToBuy" asp-for="QuantityToBuy" class="form-control">
-                        @for (int i = 1; i <= Model.Quantity; i++)
-                        {
-                            <option value="@i">@i</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Ammo that will be received</label>
-                    <input id="ammoAmountFinal" class="form-control" disabled />
-                </div>
-                <div class="form-group">
-                    <label asp-for="FinalPrice">Final Price</label>
-                    <input id="finalPriceForUi" asp-for="FinalPrice" class="form-control" disabled />
-                    <input id="finalPriceForSubmit" asp-for="FinalPrice" hidden />
-                </div>
-                <div class="text-center">
-                    <button class="btn btn-success">Buy</button>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuantityToBuy">Select quantity to buy</label>
+                <select id="quantityToBuy" asp-for="QuantityToBuy" class="form-control">
+                    @for (int i = 1; i <= Model.Quantity; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Ammo that will be received</label>
+                <input id="ammoAmountFinal" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="FinalPrice">Final Price</label>
+                <input id="finalPriceForUi" asp-for="FinalPrice" class="form-control" disabled />
+                <input id="finalPriceForSubmit" asp-for="FinalPrice" hidden />
+            </div>
+            <div class="text-center mt-3 mb-3">
+                <button id="buyBtn" class="btn btn-success">Buy</button>
+            </div>
+        </form>
     </div>
 </div>
 
-<script src="~/js/Areas/Player/Views/AmmoBoxes/calculateAmmBoxesFinalPrice.js"></script>
+<script src="~/js/Areas/Player/Views/AmmoBoxes/calculateAmmoBoxesFinalPrice.js"></script>
