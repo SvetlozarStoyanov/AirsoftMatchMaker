@@ -207,10 +207,6 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(v => v.Clothes)
                 .FirstOrDefaultAsync();
 
-            if (vendor == null)
-            {
-                return;
-            }
             var clothing = new Clothing()
             {
                 Name = model.Name,

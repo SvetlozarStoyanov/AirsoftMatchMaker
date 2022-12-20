@@ -197,10 +197,6 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(v => v.AmmoBoxes)
                 .FirstOrDefaultAsync();
 
-            if (vendor == null)
-            {
-                return;
-            }
             var ammoBox = new AmmoBox()
             {
                 Name = model.Name,
@@ -236,15 +232,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Where(v => v.UserId == vendorUserId)
                 .Include(v => v.User)
                 .FirstOrDefaultAsync();
-            if (vendor.Id != model.VendorId)
-            {
-                return;
-            }
             var ammoBox = await repository.GetByIdAsync<AmmoBox>(model.Id);
-            if (ammoBox == null)
-            {
-                return;
-            }
             vendor.User.Credits -= model.FinalImportPrice;
             ammoBox.Quantity += model.QuantityAdded;
             await repository.SaveChangesAsync();
