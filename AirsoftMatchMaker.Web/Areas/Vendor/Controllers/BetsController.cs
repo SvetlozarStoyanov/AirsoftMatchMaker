@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Bets;
+using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,12 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
     public class BetsController : Controller
     {
         private readonly IBetService betService;
+        private readonly IGameService gameService;
 
-        public BetsController(IBetService betService)
+        public BetsController(IBetService betService, IGameService gameService)
         {
             this.betService = betService;
+            this.gameService = gameService;
         }
 
         public IActionResult Index()
@@ -24,6 +27,17 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
 
         public async Task<IActionResult> Create(int gameId)
         {
+            if (!(await gameService.GameExistsAsync(gameId)))
+            {
+                TempData["error"] = "Game does not exist";
+                return RedirectToAction("Index", "Games");
+
+            }
+            if (await betService.IsUserMatchmakerAsync(User.Id()))
+            {
+                TempData["error"] = "Users who are/were in matchmaker role cannot bet!";
+                return RedirectToAction("Index", "Games");
+            }
             if (await betService.IsGameFinishedAsync(gameId))
             {
                 TempData["error"] = "Game has already concluded!";

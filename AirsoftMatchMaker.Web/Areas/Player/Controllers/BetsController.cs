@@ -11,19 +11,29 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
     public class BetsController : Controller
     {
         private readonly IBetService betService;
+        private readonly IPlayerService playerService;
+        private readonly IGameService gameService;
 
-        public BetsController(IBetService betService)
+        public BetsController(IBetService betService, IPlayerService playerService, IGameService gameService)
         {
             this.betService = betService;
+            this.playerService = playerService;
+            this.gameService = gameService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         public async Task<IActionResult> Create(int gameId)
         {
+            if (!(await gameService.GameExistsAsync(gameId)))
+            {
+                TempData["error"] = "Game does not exist";
+                return RedirectToAction("Index", "Games");
+            }
+            if (await betService.IsUserMatchmakerAsync(User.Id()))
+            {
+                TempData["error"] = "Users who are/were in matchmaker role cannot bet!";
+                return RedirectToAction("Index", "Games");
+            }
             if (await betService.IsGameFinishedAsync(gameId))
             {
                 TempData["error"] = "Game has already concluded!";
@@ -45,11 +55,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
                 return RedirectToAction("Index", "Games");
             }
             var model = await betService.CreateBetCreateModelAsync(User.Id(), gameId);
-            if (model == null)
-            {
-                TempData["error"] = "Cannot create bet!";
-                return RedirectToAction("Index", "Games");
-            }
+            model.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
             return View(model);
         }
 

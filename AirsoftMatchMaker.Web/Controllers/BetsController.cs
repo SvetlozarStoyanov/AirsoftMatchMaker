@@ -10,10 +10,12 @@ namespace AirsoftMatchMaker.Web.Controllers
     public class BetsController : Controller
     {
         private readonly IBetService betService;
+        private readonly IGameService gameService;
 
-        public BetsController(IBetService betService)
+        public BetsController(IBetService betService, IGameService gameService)
         {
             this.betService = betService;
+            this.gameService = gameService;
         }
 
         public IActionResult Index()
@@ -23,6 +25,12 @@ namespace AirsoftMatchMaker.Web.Controllers
 
         public async Task<IActionResult> Create(int gameId)
         {
+            if (!(await gameService.GameExistsAsync(gameId)))
+            {
+                TempData["error"] = "Game does not exist";
+                return RedirectToAction("Index", "Games");
+
+            }
             if (await betService.IsUserMatchmakerAsync(User.Id()))
             {
                 TempData["error"] = "Users who are/were in matchmaker role cannot bet!";
@@ -86,7 +94,7 @@ namespace AirsoftMatchMaker.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int betId,int gameId)
+        public async Task<IActionResult> Delete(int betId, int gameId)
         {
             if (!(await betService.BetExistsAsync(betId)))
             {
