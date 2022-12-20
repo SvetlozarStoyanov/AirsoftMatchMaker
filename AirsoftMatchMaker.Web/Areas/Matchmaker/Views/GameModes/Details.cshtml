@@ -1,87 +1,53 @@
-﻿@using System.Text.RegularExpressions;
-@model GameModeViewModel
+﻿@model GameModeViewModel
 
 @{
     ViewBag.Title = "Game Mode Details";
 }
-
-<h2 class="text-center">@ViewBag.Title</h2>
-
-
-<div class="container" style="display:inline">
-    <div class="row">
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.Name</p>
-
-            <p>
-                Description: @Model.Description
-            </p>
-            <p>
-                Points required to win:
+<h1 class="text-center mt-6 mb-6">@Model.Name</h1>
+<article class="mt-6 mb-6 bg-dark bg-opacity-25 border border-white">
+    <div class="text-center">
+        <p>
+            <h4>
+                Points to win:
                 <b>
-                    @Model.PointsToWin points
+                    @Model.PointsToWin
                 </b>
+            </h4>
+        </p>
+    </div>
+    <div class="container mt-6 mb-6">
+
+        <div class="text-center mt-6 mb-6">
+            <p style="font-size:40px;">
+                @Model.Description
             </p>
-
-            @*          <div class="form-inline">
-            @if (this.User.Identity.IsAuthenticated)
-            {
-            <a class="btn btn-warning" asp-controller="Houses" asp-action="Edit"
-            asp-route-id="@Model.Id">Edit</a>
-            <a class="ml-2 btn btn-danger" asp-controller="Houses" asp-action="Delete"
-            asp-route-id="@Model.Id">Delete</a>
-            @if (!Model.IsRented)
-            {
-            <form class="ml-2" asp-controller="Houses"
-            asp-action="Rent" asp-route-id="@Model.Id" method="post">
-            <input class="btn btn-primary" type="submit" value="Rent" />
-            </form>
-            }
-            else
-            {
-            <form class="ml-2" asp-controller="Houses" asp-action="Leave"
-            asp-route-id="@Model.Id" method="post">
-            <input class="btn btn-primary" type="submit" value="Leave" />
-            </form>
-            }
-            }
-            </div>*@
-
-            <div class="container">
-                <h2>Maps which feature this game mode: </h2>
+        </div>
+    </div>
+    <section class="text-center mt-6 mb-6">
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMaps" aria-expanded="false" aria-controls="collapseMaps">
+            <h5>Maps featuring this gamemode: @Model.Maps.Count </h5>
+        </button>
+        <div class="collapse" id="collapseMaps">
+            <div class="row">
                 @foreach (var map in Model.Maps)
                 {
-                    <a class="btn" asp-area="Matchmaker" asp-controller="Maps" asp-action="Details" asp-route-id="@map.Id">
-
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">@map.Name</h5>
-                                @if (map.ImageUrl != null)
-                                {
-                                    <img class="w-25" src="@map.ImageUrl" />
-                                }
-                                <p class="card-text"></p>
-                            </div>
-                        </div>
-                    </a>
-                }
-            </div>
-            <div class="container">
-                <h2>Games with this game mode</h2>
-                @foreach (var game in Model.Games)
-                {
-                    <a class="btn" asp-controller="Games" asp-action="Details" asp-route-id="@game.Id">
-
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">@game.Name</h5>
-                                <p class="card-text"></p>
-                            </div>
-                        </div>
-                    </a>
+                    <partial name="_MapMinPartial" model="@map" />
                 }
             </div>
         </div>
-    </div>
-</div>
-</div>
+    </section>
+    <hr />
+    <section class="text-center mt-6 mb-6">
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGames" aria-expanded="false" aria-controls="collapseGames">
+            <h5>Games with this gamemode: @Model.Games.Count </h5>
+        </button>
+        <div class="collapse" id="collapseGames">
+            <div class="row">
+                @foreach (var game in Model.Games)
+                {
+                    <partial name="_GameMinPartial" model="@game" />
+                }
+            </div>
+        </div>
+    </section>
+</article>
