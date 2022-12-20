@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Core.Models.Teams;
@@ -6,7 +7,9 @@ using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Numerics;
+using System.Xml.Linq;
 
 namespace AirsoftMatchMaker.Core.Services
 {
@@ -16,6 +19,11 @@ namespace AirsoftMatchMaker.Core.Services
         public TeamService(IRepository repository)
         {
             this.repository = repository;
+        }
+
+        public async Task<bool> TeamExistsAsync(int id)
+        {
+            return await repository.GetByIdAsync<Team>(id) != null;
         }
 
         public async Task<bool> DoesUserHaveTeamAsync(string userId)
@@ -34,10 +42,45 @@ namespace AirsoftMatchMaker.Core.Services
                 .AnyAsync(t => t.Name.ToLower() == name.ToLower());
         }
 
-        public async Task<IEnumerable<TeamListModel>> GetAllTeamsAsync()
+        public async Task<TeamsQueryModel> GetAllTeamsAsync(
+            string? searchTerm = null,
+            TeamSorting sorting = TeamSorting.Newest,
+            int teamsPerPage = 6,
+            int currentPage = 1
+            )
         {
             var teams = await repository.AllReadOnly<Team>()
                 .Include(t => t.Players)
+                .ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                teams = teams.Where(t => t.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
+            }
+            switch (sorting)
+            {
+                case TeamSorting.Newest:
+                    teams = teams.OrderByDescending(t => t.Id).ToList();
+                    break;
+                case TeamSorting.Oldest:
+                    teams = teams.OrderBy(t => t.Id).ToList();
+                    break;
+                case TeamSorting.PlayerCountAscending:
+                    teams = teams.OrderBy(t => t.Players.Count).ToList();
+                    break;
+                case TeamSorting.PlayerCountDescending:
+                    teams = teams.OrderByDescending(t => t.Players.Count).ToList();
+
+                    break;
+                case TeamSorting.Wins:
+                    teams = teams.OrderByDescending(t => t.Wins).ToList();
+                    break;
+                default:
+                    break;
+            }
+            var filteredTeams = teams
+                .Skip((currentPage - 1) * teamsPerPage)
+                .Take(teamsPerPage)
                 .Select(t => new TeamListModel()
                 {
                     Id = t.Id,
@@ -47,9 +90,14 @@ namespace AirsoftMatchMaker.Core.Services
                     PlayersCount = t.Players.Count(p => p.IsActive),
                     AverageSkillPoints = t.Players.Count != 0 ? (int)(t.Players.Where(p => p.IsActive).Average(p => p.SkillPoints)) : 0,
                 })
-                .ToListAsync();
-            return teams;
+            .ToList();
+            TeamsQueryModel model = CreateTeamsQueryModel();
+            model.TeamsCount = teams.Count;
+            model.Teams = filteredTeams;
+            return model;
         }
+
+       
 
         public async Task<TeamViewModel> GetTeamByIdAsync(int id)
         {
@@ -157,6 +205,14 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.SaveChangesAsync();
         }
 
+
+        private TeamsQueryModel CreateTeamsQueryModel()
+        {
+            var model = new TeamsQueryModel();
+            model.SortingOptions = Enum.GetValues<TeamSorting>().ToList();
+            return model;
+        }
+
         private static SkillLevel DetermineAverageSkillLevel(double skillPoints)
         {
             SkillLevel skillLevel = SkillLevel.Beginner;
@@ -174,5 +230,7 @@ namespace AirsoftMatchMaker.Core.Services
             }
             return skillLevel;
         }
+        
+
     }
 }

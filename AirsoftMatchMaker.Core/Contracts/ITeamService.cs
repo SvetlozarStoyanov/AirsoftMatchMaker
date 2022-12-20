@@ -1,4 +1,5 @@
-﻿using AirsoftMatchMaker.Core.Models.Teams;
+﻿using AirsoftMatchMaker.Core.Models.Enums;
+using AirsoftMatchMaker.Core.Models.Teams;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 
 namespace AirsoftMatchMaker.Core.Contracts
@@ -7,19 +8,33 @@ namespace AirsoftMatchMaker.Core.Contracts
     {
 
         /// <summary>
+        /// Returns true if <see cref="Team"/> with <paramref name="id"/> exists, returns false otherwise
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> TeamExistsAsync(int id);
+
+        /// <summary>
         /// Returns true if user has a team, false otherwise.
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns><see cref="bool"/></returns>
+        /// <returns><see cref="bool"/><see cref="bool"/></returns>
         Task<bool> DoesUserHaveTeamAsync(string userId);
 
+        /// <summary>
+        /// Returns true if <see cref="Team"/> with <paramref name="name"/> exists, returns false otherwise
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns><see cref="bool"/></returns>
         Task<bool> DoesTeamWithSameNameExistAsync(string name);
 
-        /// <summary>
-        /// Returns all Teams
-        /// </summary>
-        /// <returns><see cref="IEnumerable{T}"/></returns>
-        Task<IEnumerable<TeamListModel>> GetAllTeamsAsync();
+
+        Task<TeamsQueryModel> GetAllTeamsAsync(
+            string? searchTerm = null,
+            TeamSorting sorting = TeamSorting.Newest,
+            int teamsPerPage = 6,
+            int currentPage = 1
+            );
 
         /// <summary>
         /// Returns Team by Id
