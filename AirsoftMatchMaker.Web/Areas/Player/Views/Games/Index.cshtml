@@ -132,6 +132,15 @@ else
     <div class="row">
         @foreach (var game in Model.Games)
         {
+            if (ViewBag.UserCredits < 1 || (ViewBag.UserTeamId == game.TeamRedId || ViewBag.UserTeamId == game.TeamBlueId))
+            {
+                ViewBag.UserCanBet = false;
+            }
+            else
+            {
+                ViewBag.UserCanBet = true;
+            }
+
             <partial name="_GamePartial" model="game" />
         }
     </div>
