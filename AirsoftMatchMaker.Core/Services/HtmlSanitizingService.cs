@@ -27,8 +27,10 @@ namespace AirsoftMatchMaker.Core.Services
             return obj;
         }
 
-        public string SanitizeStringProperty(string stringProperty)
+        public string SanitizeStringProperty(string? stringProperty)
         {
+            if (stringProperty == null)
+                return null;
             return sanitizer.Sanitize(stringProperty);
         }
     }
