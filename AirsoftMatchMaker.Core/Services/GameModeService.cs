@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.GameModes;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Maps;
@@ -25,9 +26,46 @@ namespace AirsoftMatchMaker.Core.Services
                 .AnyAsync(gm => gm.Name == gameModeName);
         }
 
-        public async Task<IEnumerable<GameModeListModel>> GetAllGameModesAsync()
+        public async Task<GameModesQueryModel> GetAllGameModesAsync(
+            string? searchTerm = null,
+            GameModeSorting sorting = GameModeSorting.Newest,
+            int gameModesPerPage = 6,
+            int currentPage = 1
+            )
         {
             var gameModes = await repository.AllReadOnly<GameMode>()
+                .Include(gm => gm.Maps)
+                .Include(gm => gm.Games)
+                .ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                gameModes = gameModes.Where(gm => gm.Name.ToLower().Contains(searchTerm.ToLower()) || gm.Description.ToLower().Contains(searchTerm.ToLower())).ToList();
+            }
+            switch (sorting)
+            {
+                case GameModeSorting.Newest:
+                    gameModes = gameModes.OrderByDescending(gm => gm.Id).ToList();
+                    break;
+                case GameModeSorting.Oldest:
+                    gameModes = gameModes.OrderBy(gm => gm.Id).ToList();
+                    break;
+                case GameModeSorting.GamesPlayedAscending:
+                    gameModes = gameModes.OrderBy(gm => gm.Games.Count).ToList();
+                    break;
+                case GameModeSorting.GamesPlayedDescending:
+                    gameModes = gameModes.OrderByDescending(gm => gm.Games.Count).ToList();
+                    break;
+                case GameModeSorting.MapCountAscending:
+                    gameModes = gameModes.OrderBy(gm => gm.Maps.Count).ToList();
+                    break;
+                case GameModeSorting.MapCountDescending:
+                    gameModes = gameModes.OrderByDescending(gm => gm.Maps.Count).ToList();
+                    break;
+            }
+            var filteredGameModes = gameModes
+                .Skip((currentPage - 1) * gameModesPerPage)
+                .Take(gameModesPerPage)
                 .Select(gm => new GameModeListModel()
                 {
                     Id = gm.Id,
@@ -36,8 +74,18 @@ namespace AirsoftMatchMaker.Core.Services
                     MapsCount = gm.Maps.Count(),
                     PointsToWin = gm.PointsToWin
                 })
-                .ToListAsync();
-            return gameModes;
+                .ToList();
+            GameModesQueryModel model = CreateGameModesQueryModel();
+            model.GameModes = filteredGameModes;
+            model.GameModesCount = gameModes.Count;
+            return model;
+        }
+
+        private GameModesQueryModel CreateGameModesQueryModel()
+        {
+            var model = new GameModesQueryModel();
+            model.SortingOptions = Enum.GetValues<GameModeSorting>().ToList();
+            return model;
         }
 
         public async Task<GameModeViewModel> GetGameModeByIdAsync(int id)

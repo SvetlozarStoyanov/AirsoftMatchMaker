@@ -1,4 +1,5 @@
-﻿using AirsoftMatchMaker.Core.Models.GameModes;
+﻿using AirsoftMatchMaker.Core.Models.Enums;
+using AirsoftMatchMaker.Core.Models.GameModes;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 
 
@@ -17,7 +18,12 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// Returns all game modes
         /// </summary>
         /// <returns><see cref="IEnumerable{T}"/></returns>
-        Task<IEnumerable<GameModeListModel>> GetAllGameModesAsync();
+        Task<GameModesQueryModel> GetAllGameModesAsync(
+            string? searchTerm = null,
+            GameModeSorting sorting = GameModeSorting.Newest,
+            int gameModesPerPage = 6,
+            int currentPage = 1
+            );
 
         /// <summary>
         /// Returns game mode by id
