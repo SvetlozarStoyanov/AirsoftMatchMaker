@@ -18,11 +18,21 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
             this.htmlSanitizingService = htmlSanitizingService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] GameModesQueryModel model)
         {
-            var model = await gameModeService.GetAllGameModesAsync();
+            model.SearchTerm = htmlSanitizingService.SanitizeStringProperty(model.SearchTerm);
+            var queryResult = await gameModeService.GetAllGameModesAsync(
+                model.SearchTerm,
+                model.Sorting,
+                model.GameModesPerPage,
+                model.CurrentPage
+                );
+            model.GameModes = queryResult.GameModes;
+            model.SortingOptions = queryResult.SortingOptions;
+            model.GameModesCount = queryResult.GameModesCount;
             return View(model);
         }
+
         public async Task<IActionResult> Details(int id)
         {
             var model = await gameModeService.GetGameModeByIdAsync(id);
