@@ -9,7 +9,7 @@
         <div class="text-center">
             <img style="height:250px;" class="card-img-top" src="@img" alt="Weapon Image">
         </div>
-        <div class="card-body text-center ">
+        <div class="card-body text-center text-white">
             <h4 class="text-center">@Model.Name</h4>
             <h6>Terrain: <b>@string.Join(" ", Regex.Matches(Model.Terrain.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b></h6>
             <h6>Gamemode: <b>@Model.GameModeName </b></h6>

@@ -11,7 +11,7 @@
         <div class="text-center">
             <img style="height:250px;" class="card-img-top" src="@img" alt="Clothing Image">
         </div>
-        <div class="card-body text-center">
+        <div class="card-body text-center text-white">
             <h4 class="text-center">@Model.Name</h4>
             <h6>Color: <b>@string.Join(" ", Regex.Matches(Model.ClothingColor.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b></h6>
             <h6>Price: <b>@Model.Price credits</b></h6>
