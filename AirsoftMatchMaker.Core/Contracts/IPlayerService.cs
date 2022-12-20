@@ -1,6 +1,7 @@
 ﻿using AirsoftMatchMaker.Core.Models.PlayerClasses;
 using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Infrastructure.Data.Enums;
 
 namespace AirsoftMatchMaker.Core.Contracts
 {
@@ -28,7 +29,22 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns></returns>
         Task RemoveFromPlayerRoleAsync(string userId);
 
+        /// <summary>
+        /// Returns <see cref="Player"/> <see cref="User.Credits"/> , if player is in a <see cref="Team"/> 
+        /// it takes account of <see cref="GameStatus.Upcoming"/> games and subtracts their entry fee from
+        /// credits
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns><see cref="decimal"/></returns>
         Task<decimal> GetPlayersAvailableCreditsAsync(string userId);
+
+        /// <summary>
+        /// Returns <see cref="Player.TeamId"/> if player is in team, otherwise returns null
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns><see cref="int"/> or null</returns>
+        Task<int?> GetPlayersTeamIdAsync(string userId);
+
 
         /// <summary>
         /// Returns all players

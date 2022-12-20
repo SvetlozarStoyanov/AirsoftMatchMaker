@@ -36,7 +36,6 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task GrantPlayerRoleAsync(string userId)
         {
-
             var player = await repository.All<Player>().FirstOrDefaultAsync(p => p.UserId == userId);
             if (player != null)
             {
@@ -82,7 +81,7 @@ namespace AirsoftMatchMaker.Core.Services
                 if (upcomingGames.Count() > 0)
                 {
                     credits -= upcomingGames.Sum(g => g.EntryFee);
-                    if (credits < 0 )
+                    if (credits < 0)
                     {
                         credits = 0;
                     }
@@ -90,7 +89,13 @@ namespace AirsoftMatchMaker.Core.Services
             }
             return credits;
         }
-
+        public async Task<int?> GetPlayersTeamIdAsync(string userId)
+        {
+            var player = await repository.AllReadOnly<Player>()
+                            .Where(p => p.UserId == userId)
+                            .FirstOrDefaultAsync();
+            return player.TeamId;
+        }
         public async Task<IEnumerable<PlayerListModel>> GetAllPlayersAsync()
         {
             var players = await repository.AllReadOnly<Player>()
