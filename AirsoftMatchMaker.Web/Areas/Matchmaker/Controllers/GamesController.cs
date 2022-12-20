@@ -55,7 +55,7 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
             var model = await gameService.GetGameByIdAsync(id);
             ViewBag.Map = await mapService.GetMapByIdAsync(model.Map.Id);
             ViewBag.GameMode = await gameModeService.GetGameModeByIdAsync(model.Map.GameModeId);
-            if (await gameService.GameCanBeFinalisedByMatchmakerAsync(User.Id(), id) && await gameService.GameIsFinishedButNotFinalisedAsync(id))
+            if (await gameService.GameCanBeFinalisedAsync(User.Id(), id) && await gameService.GameIsFinishedButNotFinalisedAsync(id))
             {
                 ViewBag.FinaliseGameModel = await gameService.CreateGameFinaliseModelAsync(id);
             }
@@ -127,7 +127,7 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
                 return RedirectToAction(nameof(Mine));
 
             }
-            if (!(await gameService.GameCanBeFinalisedByMatchmakerAsync(User.Id(), id)))
+            if (!(await gameService.GameCanBeFinalisedAsync(User.Id(), id)))
             {
                 TempData["error"] = "Game can only by finalised by its creator!";
                 return RedirectToAction(nameof(Mine));
