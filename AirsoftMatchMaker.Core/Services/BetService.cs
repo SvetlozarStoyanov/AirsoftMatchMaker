@@ -93,10 +93,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(g => g.TeamRed)
                 .Include(g => g.TeamBlue)
                 .FirstOrDefaultAsync();
-            if (user == null || game == null || game.GameStatus == GameStatus.Finished)
-            {
-                return null;
-            }
+            
             var model = new BetCreateModel()
             {
                 UserId = userId,
