@@ -31,7 +31,7 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <param name="userId"></param>
         /// <param name="gameId"></param>
         /// <returns><see cref="bool"/></returns>
-        Task<bool> GameCanBeFinalisedByMatchmakerAsync(string userId, int gameId);
+        Task<bool> GameCanBeFinalisedAsync(string userId, int gameId);
 
         /// <summary>
         /// Returns true if <see cref="Game"/> is finished but it has no <see cref="Game.Result"/> yet, otherwise returns false
