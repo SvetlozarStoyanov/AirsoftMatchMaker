@@ -43,7 +43,7 @@ namespace AirsoftMatchMaker.Core.Services
             return Math.Abs(teamRedPlayersCount - teamBluePlayersCount) <= 2;
         }
 
-        public async Task<bool> GameCanBeFinalisedByMatchmakerAsync(string userId, int gameId)
+        public async Task<bool> GameCanBeFinalisedAsync(string userId, int gameId)
         {
             var game = await repository.AllReadOnly<Game>()
                 .Where(g => g.Id == gameId)
