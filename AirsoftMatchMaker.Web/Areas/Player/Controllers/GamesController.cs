@@ -1,6 +1,7 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Services;
+using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +14,14 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         private readonly IGameService gameService;
         private readonly IMapService mapService;
         private readonly IGameModeService gameModeService;
+        private readonly IPlayerService playerService;
 
-        public GamesController(IGameService gameService, IMapService mapService, IGameModeService gameModeService)
+        public GamesController(IGameService gameService, IMapService mapService, IGameModeService gameModeService, IPlayerService playerService)
         {
             this.gameService = gameService;
             this.mapService = mapService;
             this.gameModeService = gameModeService;
+            this.playerService = playerService;
         }
 
         public async Task<IActionResult> Index([FromQuery] GamesQueryModel model)
@@ -37,6 +40,8 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             model.GameModeNames = queryResult.GameModeNames;
             model.TeamNames = queryResult.TeamNames;
             model.SortingOptions = queryResult.SortingOptions;
+            ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
+            ViewBag.UserTeamId = await playerService.GetPlayersTeamIdAsync(User.Id());
             return View(model);
         }
 
@@ -55,6 +60,8 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             }
             ViewBag.Map = await mapService.GetMapByIdAsync(model.Map.Id);
             ViewBag.GameMode = await gameModeService.GetGameModeByIdAsync(model.Map.GameModeId);
+            ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
+            ViewBag.UserTeamId = await playerService.GetPlayersTeamIdAsync(User.Id());
             return View(model);
         }
     }
