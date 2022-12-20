@@ -337,14 +337,20 @@ namespace AirsoftMatchMaker.Core.Services
                 TeamBlueOdds = 0,
                 OddsAreUpdated = false
             };
+            matchmaker.OrganisedGames.Add(game);
+            await repository.SaveChangesAsync();
+            var gameId = await repository.AllReadOnly<Game>()
+                .OrderByDescending(g => g.Id)
+                .Select(g => g.Id)
+                .FirstOrDefaultAsync();
             var container = new GameBetCreditsContainer()
             {
-                GameId = game.Id,
+                GameId = gameId,
                 BetsArePaidOut = false
             };
-            matchmaker.OrganisedGames.Add(game);
             await repository.AddAsync<GameBetCreditsContainer>(container);
             await repository.SaveChangesAsync();
+
         }
 
         public async Task<IEnumerable<GameListModel>> GetUpcomingGamesByDateAsync()
@@ -548,7 +554,7 @@ namespace AirsoftMatchMaker.Core.Services
 
             var teamRed = game.TeamRed;
 
-       
+
             var teamRedPlayers = await repository.All<Player>()
                 .Where(p => p.TeamId.HasValue && p.TeamId == teamRed.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
                 .Include(p => p.User)
