@@ -13,11 +13,13 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
     {
         private readonly IWeaponService weaponService;
         private readonly IHtmlSanitizingService htmlSanitizingService;
+        private readonly IPlayerService playerService;
 
-        public WeaponsController(IWeaponService weaponService, IHtmlSanitizingService htmlSanitizingService)
+        public WeaponsController(IWeaponService weaponService, IHtmlSanitizingService htmlSanitizingService, IPlayerService playerService)
         {
             this.weaponService = weaponService;
             this.htmlSanitizingService = htmlSanitizingService;
+            this.playerService = playerService;
         }
 
         public async Task<IActionResult> Index([FromQuery] WeaponsQueryModel model)
@@ -35,6 +37,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             model.SortingOptions = queryResult.SortingOptions;
             model.WeaponsCount = queryResult.WeaponsCount;
             model.Weapons = queryResult.Weapons;
+            ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
             return View(model);
         }
 
@@ -47,6 +50,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             }
             var model = await weaponService.GetWeaponByIdAsync(id);
             ViewBag.BuyWeaponListModel = await weaponService.GetWeaponListModelForBuyAsync(id);
+            ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
             return View(model);
         }
 

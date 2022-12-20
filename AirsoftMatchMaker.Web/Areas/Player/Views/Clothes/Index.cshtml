@@ -1,13 +1,7 @@
-﻿@using AirsoftMatchMaker.Core.Contracts;
-@using AirsoftMatchMaker.Web.Extensions;
-@inject IPlayerService playerService
-@model ClothesQueryModel
+﻿@model ClothesQueryModel
 
 @{
     ViewBag.Title = "Clothes";
-    var userCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
-
-
 
     var previousPage = Model.CurrentPage - 1;
 
@@ -21,7 +15,7 @@
     var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
           !Model.Clothes.Any();
 }
-<input id="userCredits" value="@userCredits" hidden />
+
 <form method="get">
     <div class="row mt-6 mb-6">
         <div class="d-flex justify-content-between">
@@ -107,7 +101,7 @@ else
     <div class="row">
         @foreach (var clothing in Model.Clothes)
         {
-            @if (userCredits > clothing.Price)
+            @if (ViewBag.UserCredits > clothing.Price)
             {
                 ViewBag.CanBuy = true;
             }

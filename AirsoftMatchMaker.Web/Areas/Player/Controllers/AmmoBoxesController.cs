@@ -13,10 +13,12 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
     {
         private readonly IAmmoBoxService ammoBoxService;
         private readonly IHtmlSanitizingService htmlSanitizingService;
-        public AmmoBoxesController(IAmmoBoxService ammoBoxService, IHtmlSanitizingService htmlSanitizingService)
+        private readonly IPlayerService playerService;
+        public AmmoBoxesController(IAmmoBoxService ammoBoxService, IHtmlSanitizingService htmlSanitizingService, IPlayerService playerService)
         {
             this.ammoBoxService = ammoBoxService;
             this.htmlSanitizingService = htmlSanitizingService;
+            this.playerService = playerService;
         }
 
         public async Task<IActionResult> Index([FromQuery] AmmoBoxesQueryModel model)
@@ -31,6 +33,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             model.AmmoBoxes = queryResult.AmmoBoxes;
             model.AmmoBoxesCount = queryResult.AmmoBoxesCount;
             model.SortingOptions = queryResult.SortingOptions;
+            ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
             return View(model);
         }
 
@@ -43,6 +46,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             }
             var model = await ammoBoxService.GetAmmoBoxByIdAsync(id);
             ViewBag.BuyAmmoBoxModel = await ammoBoxService.GetAmmoBoxToBuyByIdAsync(id);
+            ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
 
             return View(model);
         }
@@ -61,6 +65,8 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
                 return RedirectToAction(nameof(Index));
             }
             var model = await ammoBoxService.GetAmmoBoxToBuyByIdAsync(id);
+            ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
+
             return View(model);
         }
 

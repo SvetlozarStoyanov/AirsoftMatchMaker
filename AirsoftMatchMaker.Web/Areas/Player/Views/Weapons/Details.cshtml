@@ -1,19 +1,13 @@
-﻿@using AirsoftMatchMaker.Core.Contracts;
-@using AirsoftMatchMaker.Web.Extensions;
-@inject IPlayerService playerService
-@model WeaponViewModel
+﻿@model WeaponViewModel
 
 @{
     string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Weapons/{Model.WeaponType}.jpg";
     ViewBag.Title = "Weapon Details";
-
-    var userCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
-
 }
 
 
 
-<input id="userCredits" value="@userCredits" hidden />
+<input id="userCredits" value="@ViewBag.UserCredits" hidden />
 
 <h1 class="text-center mt-5 mb-5">@Model.Name</h1>
 
@@ -61,7 +55,7 @@
     </div>
     <div class="container mt-3 mb-3">
         <div class="text-center mt-3 mb-3">
-            <img class="" style="width: 20rem;"
+            <img style="width: 20rem;"
                  src="@img" alt="Weapon Image">
 
             <div class="text-center mt-3 mb-3">

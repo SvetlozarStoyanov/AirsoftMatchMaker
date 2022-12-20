@@ -1,15 +1,11 @@
-﻿@using AirsoftMatchMaker.Core.Contracts;
-@using AirsoftMatchMaker.Web.Extensions;
-@inject IPlayerService playerService
-@model AmmoBoxBuyModel
+﻿@model AmmoBoxBuyModel
 
 @{
     ViewBag.Title = "Buy ammo";
-    var userCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
 }
 
 
-<input id="userCredits" value="@userCredits"  hidden/>
+<input id="userCredits" value="@ViewBag.UserCredits"  hidden/>
 <h2 class="text-center">@ViewBag.Title</h2>
 
 

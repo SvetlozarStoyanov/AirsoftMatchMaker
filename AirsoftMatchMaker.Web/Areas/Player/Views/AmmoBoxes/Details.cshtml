@@ -1,18 +1,13 @@
-﻿@using AirsoftMatchMaker.Core.Contracts;
-@using AirsoftMatchMaker.Web.Extensions;
-@inject IPlayerService playerService
-@model AmmoBoxViewModel
+﻿@model AmmoBoxViewModel
 
 @{
     //string img = @Model.ImageUrl != null ? @Model.ImageUrl : $"/img/Default/Clothes/{Model.ClothingColor}.jpg";
-    var userCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
-    ViewBag.UserCredits = userCredits;
     ViewBag.Title = "Ammo Box Details";
 }
 
 
 
-<input id="userCredits" value="@userCredits" hidden />
+<input id="userCredits" value="@ViewBag.UserCredits" hidden />
 <h1 class="text-center mt-6 mb-6">@Model.Name</h1>
 <article class="mt-6 mb-6 bg-dark bg-opacity-25 border border-white">
     <div class="text-center">

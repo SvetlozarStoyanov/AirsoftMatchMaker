@@ -13,10 +13,12 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
     {
         private readonly IClothingService clothingService;
         private readonly IHtmlSanitizingService htmlSanitizingService;
-        public ClothesController(IClothingService clothingService, IHtmlSanitizingService htmlSanitizingService)
+        private readonly IPlayerService playerService;
+        public ClothesController(IClothingService clothingService, IHtmlSanitizingService htmlSanitizingService, IPlayerService playerService)
         {
             this.clothingService = clothingService;
             this.htmlSanitizingService = htmlSanitizingService;
+            this.playerService = playerService;
         }
 
         public async Task<IActionResult> Index([FromQuery] ClothesQueryModel model)
@@ -34,6 +36,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             model.Colors = queryResult.Colors;
             model.SortingOptions = queryResult.SortingOptions;
             model.ClothesCount = queryResult.ClothesCount;
+            ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
             return View(model);
         }
 
@@ -45,6 +48,8 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.BuyClothingListModel = await clothingService.GetClothingListModelForBuyAsync(id);
+            ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
+
             var model = await clothingService.GetClothingByIdAsync(id);
             return View(model);
         }
