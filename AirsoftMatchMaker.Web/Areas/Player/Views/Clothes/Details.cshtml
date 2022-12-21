@@ -35,7 +35,7 @@
                         Price:
                         <b>
                             @Model.Price credits
-                            <input id="price" value="@Model.Price" hidden/>
+                            <input id="price" value="@Model.Price" hidden />
                         </b>
                     </h4>
                 </p>
@@ -43,28 +43,32 @@
         </div>
     </div>
 </article>
-<div class="text-center mt-3 mb-3">
-    <button id="buyBtn" type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#buyModal">
-        <i class="bi bi-cart4"> </i>
-        Buy
-    </button>
-</div>
+@if (Model.VendorId != null)
+{
 
-<!-- Modal -->
-<div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <partial name="_BuyPartial" model="ViewBag.BuyClothingListModel" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <div class="text-center mt-3 mb-3">
+        <button id="buyBtn" type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#buyModal">
+            <i class="bi bi-cart4"> </i>
+            Buy
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <partial name="_BuyPartial" model="ViewBag.BuyClothingListModel" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
 
 <script src="~/js/Areas/Player/Views/Clothes/canBuyClothing.js"></script>
