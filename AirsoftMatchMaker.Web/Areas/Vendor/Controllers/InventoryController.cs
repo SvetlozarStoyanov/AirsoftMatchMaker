@@ -12,14 +12,20 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
     {
 
         private readonly IInventoryService inventoryService;
-        public InventoryController(IInventoryService inventoryService)
+        private readonly IUserService userService;
+        private readonly IVendorService vendorService;
+        public InventoryController(IInventoryService inventoryService, IUserService userService, IVendorService vendorService)
         {
             this.inventoryService = inventoryService;
+            this.userService = userService;
+            this.vendorService = vendorService;
         }
 
         public async Task<IActionResult> Index()
         {
             var model = await inventoryService.GetVendorItemsAsync(User.Id());
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
+            ViewBag.VendorId = await vendorService.GetVendorIdAsync(User.Id());
             return View(model);
         }
         public async Task<IActionResult> PlayerItems()

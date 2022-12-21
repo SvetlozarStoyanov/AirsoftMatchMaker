@@ -13,12 +13,14 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         private readonly IAmmoBoxService ammoBoxService;
         private readonly IVendorService vendorService;
         private readonly IHtmlSanitizingService htmlSanitizingService;
+        private readonly IUserService userService;
 
-        public AmmoBoxesController(IAmmoBoxService ammoBoxService, IVendorService vendorService, IHtmlSanitizingService htmlSanitizingService)
+        public AmmoBoxesController(IAmmoBoxService ammoBoxService, IVendorService vendorService, IHtmlSanitizingService htmlSanitizingService, IUserService userService)
         {
             this.ammoBoxService = ammoBoxService;
             this.vendorService = vendorService;
             this.htmlSanitizingService = htmlSanitizingService;
+            this.userService = userService;
         }
 
         public async Task<IActionResult> Index([FromQuery] AmmoBoxesQueryModel model)
@@ -33,36 +35,35 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
             model.AmmoBoxes = queryResult.AmmoBoxes;
             model.AmmoBoxesCount = queryResult.AmmoBoxesCount;
             model.SortingOptions = queryResult.SortingOptions;
+
+            ViewBag.VendorId = await vendorService.GetVendorIdAsync(User.Id());
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
+
             return View(model);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var model = await ammoBoxService.GetAmmoBoxByIdAsync(id);
-            if (model != null)
+            if (!(await ammoBoxService.AmmoBoxExistsAsync(id)))
             {
-                return View(model);
+                TempData.Add("error", $"Ammo box does not exist!");
+
+                return RedirectToAction(nameof(Index));
             }
-            TempData.Add("error", $"Ammo box with {id} id does not exist!");
-            return RedirectToAction(nameof(Index));
-        }
-        [HttpGet]
-        public async Task<IActionResult> Buy(int id)
-        {
-            var model = await ammoBoxService.GetAmmoBoxToBuyByIdAsync(id);
+            var model = await ammoBoxService.GetAmmoBoxByIdAsync(id);
+            ViewBag.VendorId = await vendorService.GetVendorIdAsync(User.Id());
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
+
             return View(model);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Buy(AmmoBoxBuyModel model)
-        {
-            await ammoBoxService.BuyAmmoBoxAsync(User.Id(), model);
-            return RedirectToAction(nameof(Index));
+
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             var model = new AmmoBoxCreateModel();
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
+
             return View(model);
         }
 
@@ -86,7 +87,7 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
                 return View(model);
             }
 
-            await ammoBoxService.CreateAmmoBoxAsync(User.Id(),model);
+            await ammoBoxService.CreateAmmoBoxAsync(User.Id(), model);
             return RedirectToAction(nameof(Index));
         }
 
@@ -94,6 +95,13 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         public async Task<IActionResult> Restock(int id)
         {
             var model = await ammoBoxService.GetAmmoBoxForRestockByIdAsync(id);
+            ViewBag.VendorId = await vendorService.GetVendorIdAsync(User.Id());
+            if (model.VendorId != ViewBag.VendorId)
+            {
+                TempData["error"] = "You cannot restock this item!";
+                return RedirectToAction(nameof(Index));
+            }
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
             return View(model);
         }
 
