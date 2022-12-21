@@ -14,11 +14,13 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         private readonly IClothingService clothingService;
         private readonly IVendorService vendorService;
         private readonly IHtmlSanitizingService htmlSanitizingService;
-        public ClothesController(IClothingService clothingService, IVendorService vendorService, IHtmlSanitizingService htmlSanitizingService)
+        private readonly IUserService userService;
+        public ClothesController(IClothingService clothingService, IVendorService vendorService, IHtmlSanitizingService htmlSanitizingService, IUserService userService)
         {
             this.clothingService = clothingService;
             this.vendorService = vendorService;
             this.htmlSanitizingService = htmlSanitizingService;
+            this.userService = userService;
         }
 
         public async Task<IActionResult> Index([FromQuery] ClothesQueryModel model)
@@ -36,6 +38,7 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
             model.Colors = queryResult.Colors;
             model.SortingOptions = queryResult.SortingOptions;
             model.ClothesCount = queryResult.ClothesCount;
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
             return View(model);
         }
 
@@ -47,6 +50,8 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
                 TempData["error"] = $"Clothing with {id} id does not exist!";
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
+
             return View(model);
         }
 
@@ -89,12 +94,14 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new ClothingCreateModel()
             {
                 Colors = Enum.GetValues<ClothingColor>()
             };
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
+
             return View(model);
         }
 

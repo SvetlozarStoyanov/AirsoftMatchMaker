@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Weapons;
+using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -14,12 +15,14 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         private readonly IWeaponService weaponService;
         private readonly IVendorService vendorService;
         private readonly IHtmlSanitizingService htmlSanitizingService;
+        private readonly IUserService userService;
 
-        public WeaponsController(IWeaponService weaponService, IVendorService vendorService, IHtmlSanitizingService htmlSanitizingService)
+        public WeaponsController(IWeaponService weaponService, IVendorService vendorService, IHtmlSanitizingService htmlSanitizingService, IUserService userService)
         {
             this.weaponService = weaponService;
             this.vendorService = vendorService;
             this.htmlSanitizingService = htmlSanitizingService;
+            this.userService = userService;
         }
 
         public async Task<IActionResult> Index([FromQuery] WeaponsQueryModel model)
@@ -37,6 +40,8 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
             model.SortingOptions = queryResult.SortingOptions;
             model.WeaponsCount = queryResult.WeaponsCount;
             model.Weapons = queryResult.Weapons;
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
+
             return View(model);
         }
 
@@ -48,6 +53,8 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
                 TempData.Add("error", "There is no weapon with that id!");
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
+
             return View(model);
         }
 
@@ -107,6 +114,8 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
                 return View(selectModel);
             }
             var createModel = weaponService.CreateWeaponCreateModelByWeaponType(selectModel.WeaponType);
+            ViewBag.UserCredits = await userService.GetUserCreditsAsync(User.Id());
+
             return View(createModel);
         }
         [HttpPost]
