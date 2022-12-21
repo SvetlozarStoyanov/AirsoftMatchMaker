@@ -12,6 +12,9 @@
     var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
           !Model.Weapons.Any();
 }
+<h2 class="text-center mt-3 mb-3">
+    @ViewBag.Title
+</h2>
 <form method="get">
     <div class="row mt-3 mb-3">
         <div class="d-flex justify-content-between">
@@ -104,19 +107,29 @@
         </div>
     </div>
 </form>
-<div class="text-center mt-3 mb-3">
-    <a asp-area="Vendor" asp-controller="Weapons" asp-action="SelectWeaponType" class="btn btn-lg btn-primary mt-6 mb-6">
-        Import
-        <i class="bi bi-plus-circle"></i>
-    </a>
+<div class="text-center">
+    @if (ViewBag.UserCredits > 0)
+    {
+        <a class="btn btn-primary btn-lg" asp-area="Vendor" asp-controller="Weapons" asp-action="SelectWeaponType">
+            Import
+            <i class="bi bi-plus-circle"></i>
+        </a>
+    }
+    else
+    {
+        <button class="btn btn-primary btn-lg" disabled>
+            Import
+            <i class="bi bi-plus-circle"></i>
+        </button>
+    }
 </div>
 @if (Model.Weapons.Count() == 0)
 {
-    <h2 class="text-center">No weapons meet the current criteria!</h2>
+    <h2 class="text-center mt-3 mb-3">No weapons meet the current criteria!</h2>
 }
 else
 {
-    <div class="row">
+    <div class="row mt-3 mb-3">
         @foreach (var weapon in Model.Weapons)
         {
             <partial name="_WeaponPartial" model="@weapon" />

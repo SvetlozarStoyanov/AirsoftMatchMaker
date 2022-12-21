@@ -1,8 +1,9 @@
-﻿@using System.Text.RegularExpressions;
-@model ClothingCreateModel
-
-<h2 class="text-center">Import Clothing</h2>
-
+﻿@model ClothingCreateModel
+@{
+    ViewBag.Title = "Import Clothing";
+}
+<h2 class="text-center">@ViewBag.Title</h2>
+<input id="userCredits" value="@ViewBag.UserCredits" hidden />
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
         <form asp-area="Vendor" asp-controller="Clothes" asp-action="Create" method="post">
@@ -22,11 +23,6 @@
                 <span asp-validation-for="ImageUrl" class="small text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Price"></label>
-                <input id="price" asp-for="Price" class="form-control">
-                <span asp-validation-for="Price" class="small text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="ClothingColor">Color</label>
                 <select asp-for="ClothingColor" class="form-control">
                     @foreach (var color in Model.Colors)
@@ -36,18 +32,23 @@
                 </select>
             </div>
             <div class="form-group">
+                <label asp-for="Price"></label>
+                <input id="price" asp-for="Price" class="form-control">
+                <span asp-validation-for="Price" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="FinalImportPrice">Import Price</label>
-                <input id="finalImportPriceForUI" asp-for="FinalImportPrice" class="form-control" disabled>
+                <input id="finalImportPriceForUi" asp-for="FinalImportPrice" class="form-control" disabled>
                 <input id="finalImportPriceForSubmit" asp-for="FinalImportPrice" class="form-control" hidden>
                 <span asp-validation-for="FinalImportPrice" class="small text-danger"></span>
             </div>
             <div class="text-center">
-                <input class="btn btn-primary mt-3" type="submit" value="Import" />
+                <button id="submitFormBtn" class="btn btn-primary mt-3" type="submit">Import</button>
             </div>
         </form>
     </div>
 </div>
-<script src="~/js/Areas/Vendor/Views/Clothes/calculateFinalImportPrice.js"></script>
+<script src="~/js/Areas/Vendor/Views/Clothes/calculateImportPrice.js"></script>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

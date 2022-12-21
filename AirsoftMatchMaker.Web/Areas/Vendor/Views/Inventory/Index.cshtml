@@ -1,9 +1,13 @@
 ﻿@model InventoryVendorIndexModel
+@{
+    ViewBag.Title = "My items";
+}
+<h2 class="text-center mt-3 mb-3">@ViewBag.Title</h2>
+
 <div class="text-center">
     <a class="btn btn-primary" asp-area="Vendor" asp-controller="Inventory" asp-action="PlayerItems">My player items</a>
 </div>
 
-<h2 class="text-center">Items</h2>
 <hr style="height:8px;border:16px thick;color:white" />
 <div class="container">
     <div>

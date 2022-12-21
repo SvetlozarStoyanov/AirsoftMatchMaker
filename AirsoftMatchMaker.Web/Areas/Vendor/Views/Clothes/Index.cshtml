@@ -13,8 +13,11 @@
     var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
           !Model.Clothes.Any();
 }
+<h2 class="text-center mt-3 mb-3">
+    @ViewBag.Title
+</h2>
 <form method="get">
-    <div class="row mt-6 mb-6">
+    <div class="row mt-3 mb-3">
         <div class="d-flex justify-content-between">
             <div class="form-group">
                 <label asp-for="ClothingColor">Colour</label>
@@ -90,18 +93,28 @@
     </div>
 </form>
 <div class="text-center">
-    <a asp-area="Vendor" asp-controller="Weapons" asp-action="SelectWeaponType" class="btn btn-lg btn-primary mt-6 mb-6">
-        Import
-        <i class="bi bi-plus-circle"></i>
-    </a>
+    @if (ViewBag.UserCredits > 0)
+    {
+        <a class="btn btn-primary btn-lg" asp-area="Vendor" asp-controller="Clothes" asp-action="Create">
+            Import
+            <i class="bi bi-plus-circle"></i>
+        </a>
+    }
+    else
+    {
+        <button class="btn btn-primary btn-lg" disabled>
+            Import
+            <i class="bi bi-plus-circle"></i>
+        </button>
+    }
 </div>
 @if (Model.Clothes.Count() == 0)
 {
-    <h2 class="text-center">No clothes meet the current criteria!</h2>
+    <h2 class="text-center mt-3 mb-3">No clothes meet the current criteria!</h2>
 }
 else
 {
-    <div class="row">
+    <div class="row mt-3 mb-3">
         @foreach (var clothing in Model.Clothes)
         {
             <partial name="_ClothingPartial" model="@clothing" />

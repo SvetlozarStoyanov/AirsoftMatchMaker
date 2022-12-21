@@ -1,76 +1,56 @@
-﻿@using System.Text.RegularExpressions;
-@model AmmoBoxRestockModel
+﻿@model AmmoBoxRestockModel
 
 @{
-    ViewBag.Title = "Ammo Box Details";
+    ViewBag.Title = $"Restock {Model.Name}";
 }
 
-<h2 class="text-center">@ViewBag.Title</h2>
+<h2 class="text-center mt-3 mb-3">@ViewBag.Title</h2>
 
+<input id="userCredits" value="@ViewBag.UserCredits" hidden />
 
-<div class="container" style="display:inline">
-    <div class="row">
-
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.Name</p>
-            <form asp-area="Vendor" asp-controller="AmmoBoxes" asp-action="Restock" method="post">
-                <div class="form-group">
-                    <label asp-for="Name">
-                        Name:
-                        <b>
-                            @Model.Name
-                        </b>
-                    </label>
-                    <input asp-for="Name" class="form-control" hidden />
-                </div>
-                <div class="form-group">
-                    <label asp-for="AmmoAmount">
-                        Ammo Amount:
-                        <b>
-                            @Model.AmmoAmount
-                        </b>
-                    </label>
-                    <input asp-for="AmmoAmount" class="form-control" hidden />
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Price">
-                        Price per box:
-                        <b>
-                            @Model.Price credits
-                        </b>
-                    </label>
-                    <input id="price" asp-for="Price" class="form-control" hidden />
-                </div>
-                <div class="form-group">
-                    <label asp-for="Quantity">
-                        Current Quantity:
-                        <b>
-                            @Model.Quantity boxes
-                        </b>
-                    </label>
-                    <input asp-for="Quantity" class="form-control" hidden />
-                </div>
-                <input asp-for="VendorId" class="form-control" hidden />
-                <div class="form-group">
-                    <label asp-for="QuantityAdded">Select quantity to buy</label>
-                    <select id="addedQuantity" asp-for="QuantityAdded">
-                        @for (int i = 1; i <= 1000 - Model.Quantity; i++)
-                        {
-                            <option value="@i">@i</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="FinalImportPrice">Final Price</label>
-                    <input id="finalImportPriceForUI" asp-for="FinalImportPrice" class="form-control" disabled />
-                    <input id="finalImportPriceForSubmit" asp-for="FinalImportPrice" class="form-control" hidden />
-                </div>
-
-                <button class="btn btn-success">Restock</button>
-            </form>
-        </div>
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form asp-area="Vendor" asp-controller="AmmoBoxes" asp-action="Restock" method="post">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" disabled />
+                <input asp-for="Name" hidden />
+            </div>
+            <div class="form-group">
+                <label asp-for="AmmoAmount">Ammo amount</label>
+                <input asp-for="AmmoAmount" class="form-control" disabled />
+                <input asp-for="AmmoAmount" hidden />
+            </div>
+            <div class="form-group">
+                <label asp-for="Price">Price per box</label>
+                <input asp-for="Price" class="form-control" disabled />
+                <input id="price" asp-for="Price" hidden />
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity">Current Quantity</label>
+                <input asp-for="Quantity" class="form-control" disabled />
+                <input asp-for="Quantity" class="form-control" hidden />
+            </div>
+            <input asp-for="VendorId" class="form-control" hidden />
+            <div class="form-group">
+                <label asp-for="QuantityAdded">Select quantity to buy</label>
+                <select id="addedQuantity" class="form-control" asp-for="QuantityAdded">
+                    @for (int i = 1; i <= 1000 - Model.Quantity; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="FinalImportPrice">Final Price</label>
+                <input id="finalImportPriceForUi" asp-for="FinalImportPrice" class="form-control" disabled />
+                <input id="finalImportPriceForSubmit" asp-for="FinalImportPrice" class="form-control" hidden />
+            </div>
+            <div class="text-center mt-3 mb-3">
+                <button id="submitFormBtn" type="submit" class="btn btn-success btn-lg">Restock</button>
+            </div>
+        </form>
     </div>
 </div>
 
-<script src="~/js/Areas//Vendor/Views/AmmoBoxes/calculateFinalImportPrice.js"></script>
+<script src="~/js/Areas//Vendor/Views/AmmoBoxes/calculateImportPrice.js"></script>

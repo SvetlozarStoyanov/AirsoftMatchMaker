@@ -1,6 +1,9 @@
 ﻿@model AmmoBoxCreateModel
-
-<h2 class="text-center">Import AmmoBoxes</h2>
+@{
+    ViewBag.Title = "Import Ammo boxes";
+}
+<h2 class="text-center">@ViewBag.Title</h2>
+<input id="userCredits" value="@ViewBag.UserCredits" hidden/>
 
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
@@ -27,15 +30,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="FinalImportPrice">Final price</label>
-                <input id="finalImportPriceForUI" asp-for="FinalImportPrice" class="form-control" disabled>
+                <input id="finalImportPriceForUi" asp-for="FinalImportPrice" class="form-control" disabled>
                 <input id="finalImportPriceForSubmit" asp-for="FinalImportPrice" class="form-control" hidden>
                 <span asp-validation-for="FinalImportPrice" class="small text-danger"></span>
             </div>
             <div class="text-center">
-                <input class="btn btn-primary mt-3" type="submit" value="Save" />
+                <button id="submitFormBtn" type="submit" class="btn btn-primary mt-3">Import</button>
             </div>
         </form>
     </div>
 </div>
 
-<script src="~/js/Areas/Vendor/Views/AmmoBoxes/calculateFinalImportPrice.js"></script>
+<script src="~/js/Areas/Vendor/Views/AmmoBoxes/calculateImportPrice.js"></script>
