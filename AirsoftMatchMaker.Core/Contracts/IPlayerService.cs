@@ -1,4 +1,4 @@
-﻿using AirsoftMatchMaker.Core.Models.PlayerClasses;
+﻿using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
@@ -8,11 +8,20 @@ namespace AirsoftMatchMaker.Core.Contracts
     public interface IPlayerService
     {
         /// <summary>
+        /// Returns true if <see cref="Player"/> with <paramref name="userId"/> exists, false otherwise.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<bool> PlayerExistsAsync(int id);
+        /// <summary>
         /// Returns false if <see cref="Player"/> is in team which has an upcoming <see cref="Game"/>, otherwise returns true.
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<bool> CanUserLeavePlayerRole(string userId);
+
+
+        Task<int?> GetPlayersTeamIdAsync(int id);
 
         /// <summary>
         /// Checks for player with given userId and marks them as active, 
@@ -46,11 +55,13 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<int?> GetPlayersTeamIdAsync(string userId);
 
 
-        /// <summary>
-        /// Returns all players
-        /// </summary>
-        /// <returns><see cref="IEnumerable{typeof(PlayerListModel)}"/></returns>
-        Task<IEnumerable<PlayerListModel>> GetAllPlayersAsync();
+
+        Task<PlayersQueryModel> GetAllPlayersAsync(
+            string? searchTerm = null,
+            PlayerSorting sorting = PlayerSorting.Oldest,
+            int playersPerPage = 12,
+            int currentPage = 1
+            );
 
         /// <summary>
         /// Returns player with given id

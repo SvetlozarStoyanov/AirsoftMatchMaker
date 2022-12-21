@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Clothes;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.PlayerClasses;
 using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Core.Models.Weapons;
@@ -18,6 +19,12 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
+
+        public async Task<bool> PlayerExistsAsync(int id)
+        {
+            var player = await repository.GetByIdAsync<Player>(id);
+            return player != null;
+        }
         public async Task<bool> CanUserLeavePlayerRole(string userId)
         {
             var player = await repository.AllReadOnly<Player>()
@@ -32,6 +39,12 @@ namespace AirsoftMatchMaker.Core.Services
             if (player.Team.GamesAsTeamRed.Any(g => g.GameStatus == GameStatus.Upcoming) || player.Team.GamesAsTeamBlue.Any(g => g.GameStatus == GameStatus.Upcoming))
                 return false;
             return true;
+        }
+
+        public async Task<int?> GetPlayersTeamIdAsync(int id)
+        {
+            var player = await repository.GetByIdAsync<Player>(id);
+            return player.TeamId;
         }
 
         public async Task GrantPlayerRoleAsync(string userId)
@@ -96,13 +109,41 @@ namespace AirsoftMatchMaker.Core.Services
                             .FirstOrDefaultAsync();
             return player.TeamId;
         }
-        public async Task<IEnumerable<PlayerListModel>> GetAllPlayersAsync()
+        public async Task<PlayersQueryModel> GetAllPlayersAsync(
+            string? searchTerm = null,
+            PlayerSorting sorting = PlayerSorting.Oldest,
+            int playersPerPage = 12,
+            int currentPage = 1
+            )
         {
             var players = await repository.AllReadOnly<Player>()
                 .Where(p => p.IsActive == true)
                 .Include(p => p.User)
                 .Include(p => p.Team)
                 .Include(p => p.Weapons)
+                .ToListAsync();
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                players = players.Where(p => p.User.UserName.ToLower().Contains(searchTerm.ToLower())).ToList();
+            }
+            switch (sorting)
+            {
+                case PlayerSorting.Newest:
+                    players = players.OrderByDescending(p => p.Id).ToList();
+                    break;
+                case PlayerSorting.Oldest:
+                    players = players.OrderBy(p => p.Id).ToList();
+                    break;
+                case PlayerSorting.SkillLevelAscending:
+                    players = players.OrderBy(p => p.SkillPoints).ToList();
+                    break;
+                case PlayerSorting.SkillLevelDescending:
+                    players = players.OrderByDescending(p => p.SkillPoints).ToList();
+                    break;
+            }
+            var filteredPlayers = players
+                .Skip((currentPage - 1) * playersPerPage)
+                .Take(playersPerPage)
                 .Select(p => new PlayerListModel()
                 {
                     Id = p.Id,
@@ -111,11 +152,14 @@ namespace AirsoftMatchMaker.Core.Services
                     TeamName = p.TeamId != null ? p.Team.Name : "none",
                     WeaponsCount = p.Weapons.Count()
                 })
-                .OrderByDescending(p => p.SkillLevel)
-                .ThenBy(p => p.UserName)
-                .ToListAsync();
-            return players;
+                .ToList();
+            PlayersQueryModel model = CreatePlayersQueryModel();
+            model.PlayersCount = players.Count;
+            model.Players = filteredPlayers;
+            return model;
         }
+
+       
 
         public async Task<PlayerViewModel> GetPlayerByIdAsync(int id)
         {
@@ -144,13 +188,22 @@ namespace AirsoftMatchMaker.Core.Services
                     {
                         Id = w.Id,
                         Name = w.Name,
-                        ImageUrl = w.ImageUrl
+                        ImageUrl = w.ImageUrl,
+                        WeaponType = w.WeaponType,
+                        PreferedEngagementDistance = w.PreferedEngagementDistance
                     }).ToList()
                 })
                 .FirstOrDefaultAsync();
             return player;
         }
 
+        private PlayersQueryModel CreatePlayersQueryModel()
+        {
+            var model = new PlayersQueryModel();
+            model.SortingOptions = Enum.GetValues<PlayerSorting>().ToList();
+            return model;
+        }
 
+        
     }
 }
