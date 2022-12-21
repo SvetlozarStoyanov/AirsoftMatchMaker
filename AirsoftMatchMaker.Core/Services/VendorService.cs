@@ -17,6 +17,25 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
+
+        public async Task<bool> CheckIfVendorHasEnoughCreditsAsync(string vendorUserId, decimal finalPrice)
+        {
+            var user = await repository.GetByIdAsync<User>(vendorUserId);
+            if (user.Credits < finalPrice)
+                return false;
+            return true;
+        }
+
+        public async Task<int> GetVendorIdAsync(string userId)
+        {
+            var vendorId = await repository.AllReadOnly<Vendor>()
+                .Where(v => v.UserId == userId)
+                .Select(v => v.Id)
+                .FirstOrDefaultAsync();
+
+            return vendorId;
+        }
+
         public async Task GrantVendorRoleAsync(string userId)
         {
             var vendor = await repository.All<Vendor>().FirstOrDefaultAsync(v => v.UserId == userId);
@@ -112,13 +131,6 @@ namespace AirsoftMatchMaker.Core.Services
                 .FirstOrDefaultAsync();
             return vendor;
         }
-        public async Task<bool> CheckIfVendorHasEnoughCreditsAsync(string vendorUserId, decimal finalPrice)
-        {
-            var user = await repository.GetByIdAsync<User>(vendorUserId);
-            if (user.Credits < finalPrice)
-                return false;
-            return true;
-        }
-
+      
     }
 }
