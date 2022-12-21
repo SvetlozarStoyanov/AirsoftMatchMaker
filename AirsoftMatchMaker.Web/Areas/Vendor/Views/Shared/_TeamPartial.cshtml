@@ -8,7 +8,7 @@
             <h6><b>@Model.Wins wins</b></h6>
             <h6><b>@Model.PlayersCount players</b></h6>
             <br />
-            <a asp-controller="Teams" asp-action="Details" asp-route-id="@Model.Id"
+            <a asp-area="Vendor" asp-controller="Teams" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-primary">
                 Details
             </a>

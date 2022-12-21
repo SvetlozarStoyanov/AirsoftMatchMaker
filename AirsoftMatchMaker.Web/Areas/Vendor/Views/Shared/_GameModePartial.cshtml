@@ -9,7 +9,7 @@
             <h6>Points to win <b>@Model.PointsToWin</b></h6>
             <h6>Maps with this game mode:<b>@Model.MapsCount</b></h6>
             <br />
-            <a asp-controller="GameModes" asp-action="Details" asp-route-id="@Model.Id"
+            <a asp-area="Vendor" asp-controller="GameModes" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-primary">
                 Details
             </a>

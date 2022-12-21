@@ -6,19 +6,19 @@
     public enum MapSorting
     {
         /// <summary>
-        /// Orders maps by Id descending
+        /// Orders items by Id descending
         /// </summary>
         Newest,
         /// <summary>
-        /// Orders maps by Id ascending
+        /// Orders items by Id ascending
         /// </summary>
         Oldest,
         /// <summary>
-        /// Orders maps by number of games played ascending
+        /// Orders items by number of games played ascending
         /// </summary>
         GamesPlayedAscending,
         /// <summary>
-        /// Orders maps by number of games played descending
+        /// Orders items by number of games played descending
         /// </summary>
         GamesPlayedDescending,
     }

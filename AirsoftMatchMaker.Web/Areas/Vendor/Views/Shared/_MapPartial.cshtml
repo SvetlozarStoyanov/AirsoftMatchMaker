@@ -14,7 +14,7 @@
             <h6>Terrain: <b>@string.Join(" ", Regex.Matches(Model.Terrain.ToString(), "[A-Z][a-z]*").Select(m => m.Value).ToArray())</b></h6>
             <h6>Gamemode: <b>@Model.GameModeName </b></h6>
             <br />
-            <a asp-controller="Maps" asp-action="Details" asp-route-id="@Model.Id"
+            <a asp-area="Vendor" asp-controller="Maps" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-primary">
                 <i class="bi bi-info"></i>
                 Details
