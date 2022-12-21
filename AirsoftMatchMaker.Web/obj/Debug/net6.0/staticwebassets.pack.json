@@ -97,16 +97,16 @@
       "PackagePath": "staticwebassets\\js\\Areas\\Player\\Views\\Weapons\\canBuyWeapon.js"
     },
     {
-      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\AmmoBoxes\\calculateFinalImportPrice.js",
-      "PackagePath": "staticwebassets\\js\\Areas\\Vendor\\Views\\AmmoBoxes\\calculateFinalImportPrice.js"
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\AmmoBoxes\\calculateImportPrice.js",
+      "PackagePath": "staticwebassets\\js\\Areas\\Vendor\\Views\\AmmoBoxes\\calculateImportPrice.js"
     },
     {
-      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\Clothes\\calculateFinalImportPrice.js",
-      "PackagePath": "staticwebassets\\js\\Areas\\Vendor\\Views\\Clothes\\calculateFinalImportPrice.js"
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\Clothes\\calculateImportPrice.js",
+      "PackagePath": "staticwebassets\\js\\Areas\\Vendor\\Views\\Clothes\\calculateImportPrice.js"
     },
     {
-      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\Weapons\\calculateFinalImportPrice.js",
-      "PackagePath": "staticwebassets\\js\\Areas\\Vendor\\Views\\Weapons\\calculateFinalImportPrice.js"
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\Weapons\\calculateImportPrice.js",
+      "PackagePath": "staticwebassets\\js\\Areas\\Vendor\\Views\\Weapons\\calculateImportPrice.js"
     },
     {
       "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Common\\collapseArrow.js",

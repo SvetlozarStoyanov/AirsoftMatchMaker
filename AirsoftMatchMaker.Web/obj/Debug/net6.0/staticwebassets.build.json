@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "IrRQgwNH27fPVDxlotdEz7+F31x1IYB7nKIinLS32NU=",
+  "Hash": "Ug3u5HuYUvNAR2xekAqzW+jdHE9Uu9Fo2oVopNv8zo8=",
   "Source": "AirsoftMatchMaker.Web",
   "BasePath": "_content/AirsoftMatchMaker.Web",
   "Mode": "Default",
@@ -1462,12 +1462,12 @@
       "OriginalItemSpec": "wwwroot\\js\\Areas\\Player\\Views\\Weapons\\canBuyWeapon.js"
     },
     {
-      "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\AmmoBoxes\\calculateFinalImportPrice.js",
+      "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\AmmoBoxes\\calculateImportPrice.js",
       "SourceId": "AirsoftMatchMaker.Web",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\",
       "BasePath": "_content/AirsoftMatchMaker.Web",
-      "RelativePath": "js/Areas/Vendor/Views/AmmoBoxes/calculateFinalImportPrice.js",
+      "RelativePath": "js/Areas/Vendor/Views/AmmoBoxes/calculateImportPrice.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1476,15 +1476,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\Areas\\Vendor\\Views\\AmmoBoxes\\calculateFinalImportPrice.js"
+      "OriginalItemSpec": "wwwroot\\js\\Areas\\Vendor\\Views\\AmmoBoxes\\calculateImportPrice.js"
     },
     {
-      "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\Clothes\\calculateFinalImportPrice.js",
+      "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\Clothes\\calculateImportPrice.js",
       "SourceId": "AirsoftMatchMaker.Web",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\",
       "BasePath": "_content/AirsoftMatchMaker.Web",
-      "RelativePath": "js/Areas/Vendor/Views/Clothes/calculateFinalImportPrice.js",
+      "RelativePath": "js/Areas/Vendor/Views/Clothes/calculateImportPrice.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1493,15 +1493,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\Areas\\Vendor\\Views\\Clothes\\calculateFinalImportPrice.js"
+      "OriginalItemSpec": "wwwroot\\js\\Areas\\Vendor\\Views\\Clothes\\calculateImportPrice.js"
     },
     {
-      "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\Weapons\\calculateFinalImportPrice.js",
+      "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Areas\\Vendor\\Views\\Weapons\\calculateImportPrice.js",
       "SourceId": "AirsoftMatchMaker.Web",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\",
       "BasePath": "_content/AirsoftMatchMaker.Web",
-      "RelativePath": "js/Areas/Vendor/Views/Weapons/calculateFinalImportPrice.js",
+      "RelativePath": "js/Areas/Vendor/Views/Weapons/calculateImportPrice.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1510,7 +1510,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\Areas\\Vendor\\Views\\Weapons\\calculateFinalImportPrice.js"
+      "OriginalItemSpec": "wwwroot\\js\\Areas\\Vendor\\Views\\Weapons\\calculateImportPrice.js"
     },
     {
       "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Common\\collapseArrow.js",
