@@ -76,6 +76,7 @@ namespace AirsoftMatchMaker.Core.Services
                         Name = ab.Name,
                         Amount = ab.Amount,
                         Quantity = ab.Quantity,
+                        VendorId= vendor.Id,
                         Price = ab.Price
                     })
                     .ToList();
