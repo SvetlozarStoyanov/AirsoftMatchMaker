@@ -15,6 +15,13 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
+        public async Task<decimal> GetUserCreditsAsync(string userId)
+        {
+            var user = await repository.GetByIdAsync<User>(userId);
+
+            return user.Credits;
+        }
+
         public async Task<UserViewModel> GetCurrentUserProfileAsync(string userId)
         {
             var user = await repository.AllReadOnly<User>()
@@ -28,5 +35,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .FirstOrDefaultAsync();
             return user;
         }
+
+        
     }
 }
