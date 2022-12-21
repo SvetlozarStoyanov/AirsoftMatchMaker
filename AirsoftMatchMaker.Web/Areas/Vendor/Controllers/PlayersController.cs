@@ -1,15 +1,14 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Core.Models.RoleRequests;
-using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
+namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
 {
-    [Area("Matchmaker")]
-    [Authorize(Roles = "Matchmaker")]
+    [Area("Vendor")]
+    [Authorize(Roles ="Vendor")]
     public class PlayersController : Controller
     {
         private readonly IPlayerService playerService;

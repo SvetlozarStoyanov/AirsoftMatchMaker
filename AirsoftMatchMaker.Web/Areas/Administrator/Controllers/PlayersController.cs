@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Core.Models.RoleRequests;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -13,11 +14,15 @@ namespace AirsoftMatchMaker.Web.Areas.Administrator.Controllers
     {
         private readonly UserManager<User> userManager;
         private readonly IPlayerService playerService;
+        private readonly IHtmlSanitizingService htmlSanitizingService;
+        private readonly ITeamService teamService;
 
-        public PlayersController(UserManager<User> userManager, IPlayerService playerService)
+        public PlayersController(UserManager<User> userManager, IPlayerService playerService, IHtmlSanitizingService htmlSanitizingService, ITeamService teamService)
         {
             this.userManager = userManager;
             this.playerService = playerService;
+            this.htmlSanitizingService = htmlSanitizingService;
+            this.teamService = teamService;
         }
         public async Task<IActionResult> GrantPlayerRole(string userId, int roleRequestId)
         {
@@ -52,19 +57,34 @@ namespace AirsoftMatchMaker.Web.Areas.Administrator.Controllers
             };
             return RedirectToAction("RemoveFromRole", "RoleRequests", model);
         }
-        public async Task<IActionResult> Index()
+
+        public async Task<IActionResult> Index([FromQuery] PlayersQueryModel model)
         {
-            var model = await playerService.GetAllPlayersAsync();
+            model.SearchTerm = htmlSanitizingService.SanitizeStringProperty(model.SearchTerm);
+            var queryResult = await playerService.GetAllPlayersAsync(
+                model.SearchTerm,
+                model.Sorting,
+                model.PlayersPerPage,
+                model.CurrentPage);
+            model.PlayersCount = queryResult.PlayersCount;
+            model.Players = queryResult.Players;
+            model.SortingOptions = queryResult.SortingOptions;
             return View(model);
         }
+
         public async Task<IActionResult> Details(int id)
         {
-            var model = await playerService.GetPlayerByIdAsync(id);
-            if (model == null)
+            if (!(await playerService.PlayerExistsAsync(id)))
             {
-                TempData.Add("error", $"Player with {id} id does not exist!");
+                TempData.Add("error", $"Player does not exist!");
                 return RedirectToAction(nameof(Index));
             }
+            var model = await playerService.GetPlayerByIdAsync(id);
+            var teamId = await playerService.GetPlayersTeamIdAsync(id);
+            if (teamId.HasValue)
+                ViewBag.PlayerTeam = await teamService.GetTeamByIdAsync(teamId.Value);
+            else
+                ViewBag.PlayerTeam = null;
             return View(model);
         }
 

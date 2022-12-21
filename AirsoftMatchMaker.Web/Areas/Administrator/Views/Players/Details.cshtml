@@ -1,107 +1,28 @@
-﻿@using System.Text.RegularExpressions;
-@model PlayerViewModel
+﻿@model PlayerViewModel
 
 @{
     ViewBag.Title = "Player Details";
 }
-
-<h2 class="text-center">@ViewBag.Title</h2>
-
-
-<div class="container" style="display:inline">
-    <div class="row">
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;">@Model.UserName</p>
-            <p>
+<h1 class="text-center mt-3 mb-3">@Model.UserName</h1>
+<article class="mt-3 mb-3 bg-white bg-opacity-25 border border-dark">
+    <div class="text-center">
+        <p>
+            <h4>
                 Skill Level:
-                <b>@Model.SkillLevel.ToString()</b>
-            </p>
-            <p>
+                <b>
+                    @Model.SkillLevel
+                </b>
+            </h4>
+        </p>
+
+
+        <p>
+            <h4>
                 Class:
-                <b>@Model.PlayerClassName</b>
-            </p>
-            @if (Model.TeamId != null)
-            {
-                <p>
-                    Team:
-                    <a class="btn btn-primary" asp-controller="Teams" asp-action="Details" asp-route-id="@Model.TeamId"><b>@Model.TeamName</b></a>
-                </p>
-            }
-            else
-            {
-                <p>
-                    Team:
-                    <b>
-                        Not in team
-                    </b>
-                </p>
-            }
-            @*          <div class="form-inline">
-            @if (this.User.Identity.IsAuthenticated)
-            {
-            <a class="btn btn-warning" asp-controller="Houses" asp-action="Edit"
-            asp-route-id="@Model.Id">Edit</a>
-            <a class="ml-2 btn btn-danger" asp-controller="Houses" asp-action="Delete"
-            asp-route-id="@Model.Id">Delete</a>
-            @if (!Model.IsRented)
-            {
-            <form class="ml-2" asp-controller="Houses"
-            asp-action="Rent" asp-route-id="@Model.Id" method="post">
-            <input class="btn btn-primary" type="submit" value="Rent" />
-            </form>
-            }
-            else
-            {
-            <form class="ml-2" asp-controller="Houses" asp-action="Leave"
-            asp-route-id="@Model.Id" method="post">
-            <input class="btn btn-primary" type="submit" value="Leave" />
-            </form>
-            }
-            }
-            </div>*@
-
-            <div class="container">
-                <h2>Clothes</h2>
-                @foreach (var clothing in Model.Clothes)
-                {
-                    <a class="btn" asp-controller="Clothes" asp-action="Details" asp-route-id="@clothing.Id">
-
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">@clothing.Name</h5>
-                                @if (clothing.ImageUrl != null)
-                                {
-                                    <img class="w-25" src="@clothing.ImageUrl" />
-                                }
-                                <p class="card-text"></p>
-                            </div>
-                        </div>
-                    </a>
-                }
-            </div>
-            <div class="container">
-                <h2>Weapons</h2>
-                @foreach (var weapon in Model.Weapons)
-                {
-                    <a class="btn" asp-controller="Weapons" asp-action="Details" asp-route-id="@weapon.Id">
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">@weapon.Name</h5>
-                                @if (weapon.ImageUrl != null)
-                                {
-                                    <img class="w-25" src="@weapon.ImageUrl" />
-                                }
-                                @*else
-                            {
-                            <img src=""  />
-                            }*@
-                                <p class="card-text"></p>
-                            </div>
-                        </div>
-                    </a>
-                }
-            </div>
-        </div>
+                <b>
+                    @Model.PlayerClassName
+                </b>
+            </h4>
+        </p>
     </div>
-</div>
-</div>
+</article>
