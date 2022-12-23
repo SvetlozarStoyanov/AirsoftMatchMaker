@@ -1,3 +1,4 @@
+using AirsoftMatchMaker.Core.Common.Constants;
 using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data;
@@ -8,10 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AirsoftMatchMaker.Tests.UnitTests
 {
-    public class ClothingServiceTests
+    public class WeaponServiceTests
     {
         private IRepository repository;
-        private IClothingService clothingService;
+        private IWeaponService weaponService;
         private AirsoftMatchmakerDbContext context;
 
         [SetUp]
@@ -28,17 +29,17 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             context.Database.EnsureCreated();
 
             repository = new Repository(context);
-            clothingService = new ClothingService(repository);
+            weaponService = new WeaponService(repository);
 
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await repository.AddRangeAsync<Weapon>(new List<Weapon>()
             {
-                new Clothing()
+                new Weapon()
                 {
                     Id = 1,
-                    Name = "Green outfit",
-                    Description = "Hard to spot in forest.",
+                    Name = "Glock 18",
+                    Description = "Automatic pistol",
                     ImageUrl = null,
-                    ClothingColor = ClothingColor.Green,
+                    WeaponType = WeaponType.Pistol,
                     Price = 50,
                     PlayerId = 2
                 },
@@ -49,23 +50,23 @@ namespace AirsoftMatchMaker.Tests.UnitTests
 
 
 
-      
+
 
         [Test]
         public async Task Test_ClothingExistsAsync_ReturnsTrueWhenAmmoBoxExists()
         {
-            var result = await clothingService.ClothingExistsAsync(1);
+            var result = await weaponService.WeaponExistsAsync(1);
             Assert.That(result, Is.EqualTo(true));
         }
 
         [Test]
         public async Task Test_ClothingExistsAsync_ReturnsFalseWhenClothingDoesNotExist()
         {
-            var result = await clothingService.ClothingExistsAsync(30);
+            var result = await weaponService.WeaponExistsAsync(30);
             Assert.That(result, Is.EqualTo(false));
         }
         [Test]
-        public async Task Test_UserCanBuyClothingAsync_ReturnsTrueWhenUserCanBuyClothing()
+        public async Task Test_UserCanBuyWeaponAsync_ReturnsTrueWhenUserCanBuyWeapon()
         {
             await repository.AddRangeAsync<User>(new List<User>()
             {
@@ -104,27 +105,27 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 Id = 1,
                 UserId = "77388c0c-698c-4df9-9ad9-cef29116b666"
             });
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await repository.AddRangeAsync<Weapon>(new List<Weapon>()
             {
-                new Clothing()
+                new Weapon()
                 {
                     Id = 2,
-                    Name = "Green outfit",
+                    Name = "Glock 17",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
-                    ClothingColor = ClothingColor.Green,
+                    WeaponType = WeaponType.Pistol,
                     Price = 50,
                     VendorId = 1
                 },
             });
             await repository.SaveChangesAsync();
 
-            var result = await clothingService.UserCanBuyClothingAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 2);
+            var result = await weaponService.UserCanBuyWeaponAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 2);
             Assert.That(result, Is.EqualTo(true));
         }
 
         [Test]
-        public async Task Test_UserCanBuyClothingAsync_ReturnsFalseWhenUserCannotBuyClothing()
+        public async Task Test_UserCanBuyWeaponAsync_ReturnsFalseWhenUserCannotBuyWeapon()
         {
             await repository.AddRangeAsync<User>(new List<User>()
             {
@@ -173,49 +174,47 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = true
             });
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await repository.AddRangeAsync<Weapon>(new List<Weapon>()
             {
-                new Clothing()
+               new Weapon()
                 {
                     Id = 2,
-                    Name = "Green outfit",
+                    Name = "Glock 17",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
-                    ClothingColor = ClothingColor.Green,
+                    WeaponType = WeaponType.Pistol,
                     Price = 50,
                     VendorId = 1
                 },
             });
             await repository.SaveChangesAsync();
 
-            var result = await clothingService.UserCanBuyClothingAsync("77388c0c-698c-4df9-9ad9-cef29116b666", 2);
+            var result = await weaponService.UserCanBuyWeaponAsync("77388c0c-698c-4df9-9ad9-cef29116b666", 2);
             Assert.That(result, Is.EqualTo(false));
         }
 
         [Test]
-        public async Task Test_UserCanSellClothingAsync_ReturnsTrueWhenUserCanSellClothing()
+        public async Task Test_UserCanSellWeaponAsync_ReturnsTrueWhenUserCanSellWeapon()
         {
             await repository.AddRangeAsync<User>(new List<User>()
             {
                 new User
                 {
-
-                Id = "202efe8b-7748-49ca-834c-fd1c37978ab2",
-                UserName = "Ivan",
-                NormalizedUserName = "IVAN",
-                Email = "Ivan@gmail.com",
-                NormalizedEmail = "IVAN@GMAIL.COM",
-                Credits = 200
+                    Id = "202efe8b-7748-49ca-834c-fd1c37978ab2",
+                    UserName = "Ivan",
+                    NormalizedUserName = "IVAN",
+                    Email = "Ivan@gmail.com",
+                    NormalizedEmail = "IVAN@GMAIL.COM",
+                    Credits = 200
                 },
                 new User
                 {
-
-                Id = "77388c0c-698c-4df9-9ad9-cef29116b666",
-                UserName = "Vendor",
-                NormalizedUserName = "VENDOR",
-                Email = "Vendor@gmail.com",
-                NormalizedEmail = "VENDOR@GMAIL.COM",
-                Credits = 200
+                    Id = "77388c0c-698c-4df9-9ad9-cef29116b666",
+                    UserName = "Vendor",
+                    NormalizedUserName = "VENDOR",
+                    Email = "Vendor@gmail.com",
+                    NormalizedEmail = "VENDOR@GMAIL.COM",
+                    Credits = 200
                 },
             });
             await repository.AddAsync<Player>(new Player()
@@ -242,27 +241,27 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 UserId = "77388c0c-698c-4df9-9ad9-cef29116b666",
                 IsActive = true
             });
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await repository.AddRangeAsync<Weapon>(new List<Weapon>()
             {
-                new Clothing()
+                 new Weapon()
                 {
                     Id = 2,
-                    Name = "Green outfit",
+                    Name = "Glock 17",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
-                    ClothingColor = ClothingColor.Green,
+                    WeaponType = WeaponType.Pistol,
                     Price = 50,
                     PlayerId = 2
                 },
             });
             await repository.SaveChangesAsync();
 
-            var result = await clothingService.UserCanSellClothingAsync("77388c0c-698c-4df9-9ad9-cef29116b666", 2);
+            var result = await weaponService.UserCanSellWeaponAsync("77388c0c-698c-4df9-9ad9-cef29116b666", 2);
             Assert.That(result, Is.EqualTo(true));
         }
 
         [Test]
-        public async Task Test_UserCanSellClothingAsync_ReturnsFalseWhenUserCannotSellClothing()
+        public async Task Test_UserCanSellWeaponAsync_ReturnsFalseWhenUserCannotSellWeapon()
         {
             await repository.AddRangeAsync<User>(new List<User>()
             {
@@ -311,71 +310,71 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 UserId = "77388c0c-698c-4df9-9ad9-cef29116b666",
                 IsActive = true
             });
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await repository.AddRangeAsync<Weapon>(new List<Weapon>()
             {
-                new Clothing()
+                 new Weapon()
                 {
                     Id = 2,
-                    Name = "Green outfit",
+                    Name = "Glock 17",
                     Description = "Hard to spot in forest.",
                     ImageUrl = null,
-                    ClothingColor = ClothingColor.Green,
-                    Price = 50,
-                    PlayerId = 1
-                },
-            });
-            await repository.SaveChangesAsync();
-
-            var result = await clothingService.UserCanSellClothingAsync("77388c0c-698c-4df9-9ad9-cef29116b666", 2);
-            Assert.That(result, Is.EqualTo(false));
-        }
-
-        [Test]
-        public async Task Test_IsClothingForSaleAsync_ReturnsTrueWhenClothingIsForSale()
-        {
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
-            {
-                new Clothing()
-                {
-                    Id = 2,
-                    Name = "Green outfit",
-                    Description = "Hard to spot in forest.",
-                    ImageUrl = null,
-                    ClothingColor = ClothingColor.Green,
+                    WeaponType = WeaponType.Pistol,
                     Price = 50,
                     VendorId = 1
                 },
             });
             await repository.SaveChangesAsync();
-            var result = await clothingService.ClothingIsForSaleAsync(2);
+
+            var result = await weaponService.UserCanSellWeaponAsync("77388c0c-698c-4df9-9ad9-cef29116b666", 2);
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public async Task Test_IsWeaponForSaleAsync_ReturnsTrueWhenWeaponIsForSale()
+        {
+            await repository.AddRangeAsync<Weapon>(new List<Weapon>()
+            {
+                 new Weapon()
+                {
+                    Id = 2,
+                    Name = "Glock 17",
+                    Description = "Hard to spot in forest.",
+                    ImageUrl = null,
+                    WeaponType = WeaponType.Pistol,
+                    Price = 50,
+                    VendorId = 1
+                },
+            });
+            await repository.SaveChangesAsync();
+            var result = await weaponService.WeaponIsForSaleAsync(2);
             Assert.That(result, Is.EqualTo(true));
         }
 
         [Test]
-        public async Task Test_IsClothingForSaleAsync_ReturnsFalseWhenClothingIsNotForSale()
+        public async Task Test_IsWeaponForSaleAsync_ReturnsFalseWhenWeaponIsNotForSale()
         {
 
-            var result = await clothingService.ClothingIsForSaleAsync(1);
+            var result = await weaponService.WeaponIsForSaleAsync(1);
             Assert.That(result, Is.EqualTo(false));
         }
 
         [Test]
         public async Task Test_GetClothingListModelForBuyAsync_ReturnsModelCorrectly()
         {
-            var resultModel = await clothingService.GetClothingListModelForBuyAsync(1);
-            Assert.That(resultModel.Name, Is.EqualTo("Green outfit"));
+            var resultModel = await weaponService.GetWeaponListModelForBuyAsync(1);
+            Assert.That(resultModel.Name, Is.EqualTo("Glock 18"));
             Assert.That(resultModel.Id, Is.EqualTo(1));
-            Assert.That(resultModel.ClothingColor, Is.EqualTo(ClothingColor.Green));
+            Assert.That(resultModel.WeaponType, Is.EqualTo(WeaponType.Pistol));
             Assert.That(resultModel.Price, Is.EqualTo(50));
         }
 
         [Test]
         public async Task Test_CreateClothingSellModelAsync_ReturnsModelCorrectly()
         {
-            var resultModel = await clothingService.CreateClothingSellModelAsync(1);
-            Assert.That(resultModel.Name, Is.EqualTo("Green outfit"));
+            var resultModel = await weaponService.CreateWeaponSellModelAsync(1);
+            Assert.That(resultModel.Name, Is.EqualTo("Glock 18"));
             Assert.That(resultModel.Id, Is.EqualTo(1));
-            Assert.That(resultModel.ClothingColor, Is.EqualTo(ClothingColor.Green));
+            Assert.That(resultModel.WeaponType, Is.EqualTo(WeaponType.Pistol));
             Assert.That(resultModel.Price, Is.EqualTo(50));
             Assert.That(resultModel.OldPrice, Is.EqualTo(50));
         }
@@ -425,12 +424,26 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 IsActive = false
             });
             await repository.SaveChangesAsync();
-            var gameModel = await clothingService.GetClothingByIdAsync(1);
+            var gameModel = await weaponService.GetWeaponByIdAsync(1);
             Assert.That(gameModel.Id, Is.EqualTo(1));
             Assert.That(gameModel.PlayerId, Is.EqualTo(2));
             Assert.That(gameModel.PlayerName, Is.EqualTo("Vendor"));
         }
 
+        [Test]
+        public async Task Test_CreateWeaponCreateModelByWeaponType_CreatesCorrectModel()
+        {
+            var model = weaponService.CreateWeaponCreateModelByWeaponType(WeaponType.Pistol);
+
+            Assert.That(model.MaxFireRate, Is.EqualTo(WeaponConstants.PistolMaxFireRate));
+            Assert.That(model.MinFireRate, Is.EqualTo(WeaponConstants.PistolMinFireRate));
+            Assert.That(model.MinAverageAmmoExpended, Is.EqualTo(WeaponConstants.PistolMinAverageAmmoExpended));
+            Assert.That(model.MaxAverageAmmoExpended, Is.EqualTo(WeaponConstants.PistolMaxAverageAmmoExpended));
+            Assert.That(model.MinFireRate, Is.EqualTo(WeaponConstants.PistolMinFireRate));
+            Assert.That(model.MaxFireRate, Is.EqualTo(WeaponConstants.PistolMaxFireRate));
+            Assert.That(model.MaxFeetPerSecond, Is.EqualTo(WeaponConstants.PistolMaxFeetPerSecond));
+            Assert.That(model.MinFeetPerSecond, Is.EqualTo(WeaponConstants.PistolMinFeetPerSecond));
+        }
 
         [TearDown]
         public void TearDown()

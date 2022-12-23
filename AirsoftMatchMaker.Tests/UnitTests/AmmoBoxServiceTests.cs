@@ -4,6 +4,7 @@ using AirsoftMatchMaker.Infrastructure.Data;
 using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace AirsoftMatchMaker.Tests.UnitTests
 {
@@ -67,6 +68,150 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             var result = await ammoBoxService.AmmoBoxExistsAsync(30);
             Assert.That(result, Is.EqualTo(false));
         }
+
+        [Test]
+        public async Task Test_UserCanBuyAmmoBoxAsync_ReturnsTrueWhenUserCanBuyBox()
+        {
+            await repository.AddRangeAsync<User>(new List<User>()
+            {
+                new User
+                {
+
+                Id = "202efe8b-7748-49ca-834c-fd1c37978ab2",
+                UserName = "Ivan",
+                NormalizedUserName = "IVAN",
+                Email = "Ivan@gmail.com",
+                NormalizedEmail = "IVAN@GMAIL.COM",
+                Credits = 200
+                },
+                   new User
+                {
+
+                Id = "77388c0c-698c-4df9-9ad9-cef29116b666\"",
+                UserName = "Vendor",
+                NormalizedUserName = "VENDOR",
+                Email = "Vendor@gmail.com",
+                NormalizedEmail = "VENDOR@GMAIL.COM",
+                Credits = 200
+                },
+            });
+            await repository.AddAsync<Player>(new Player()
+            {
+                Id = 1,
+                Ammo = 200,
+                UserId = "202efe8b-7748-49ca-834c-fd1c37978ab2",
+                TeamId = 1,
+                PlayerClassId = 1,
+                IsActive = true
+            });
+            await repository.AddAsync<Vendor>(new Vendor()
+                {
+                    Id = 1,
+                    UserId = "77388c0c-698c-4df9-9ad9-cef29116b666"
+                });
+            await repository.SaveChangesAsync();
+
+            var result = await ammoBoxService.UserCanBuyAmmoBoxAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 1);
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public async Task Test_UserCanBuyAmmoBoxAsync_ReturnsFalseWhenUserCannotBuyBox()
+        {
+            await repository.AddRangeAsync<User>(new List<User>()
+            {
+                new User
+                {
+
+                Id = "202efe8b-7748-49ca-834c-fd1c37978ab2",
+                UserName = "Ivan",
+                NormalizedUserName = "IVAN",
+                Email = "Ivan@gmail.com",
+                NormalizedEmail = "IVAN@GMAIL.COM",
+                Credits = 200
+                },
+            });
+            await repository.AddAsync<Player>(new Player()
+            {
+                Id = 1,
+                Ammo = 200,
+                UserId = "202efe8b-7748-49ca-834c-fd1c37978ab2",
+                TeamId = 1,
+                PlayerClassId = 1,
+                IsActive = false
+            });
+            await repository.AddAsync<Vendor>(new Vendor()
+            {
+                Id = 1,
+                UserId = "202efe8b-7748-49ca-834c-fd1c37978ab2"
+            });
+            await repository.SaveChangesAsync();
+
+            var result = await ammoBoxService.UserCanBuyAmmoBoxAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 1);
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public async Task Test_UserHasEnoughCreditsAsync_ReturnsTrueWhenUserHasEnoughCredits()
+        {
+            await repository.AddAsync<User>(new User()
+            {
+                Id = "202efe8b-7748-49ca-834c-fd1c37978ab2",
+                UserName = "Ivan",
+                NormalizedUserName = "IVAN",
+                Email = "Ivan@gmail.com",
+                NormalizedEmail = "IVAN@GMAIL.COM",
+                Credits = 200
+            });
+            await repository.AddAsync<Player>(new Player()
+            {
+                Id = 1,
+                Ammo = 200,
+                UserId = "202efe8b-7748-49ca-834c-fd1c37978ab2",
+                TeamId = 1,
+                PlayerClassId = 1
+            });
+            await repository.AddAsync<Team>(new Team()
+            {
+                Id = 1,
+                Name = "Test1",
+            });
+            await repository.SaveChangesAsync();
+            var result = await ammoBoxService.UserHasEnoughCreditsAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 1, 2);
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public async Task Test_UserHasEnoughCreditsAsync_ReturnsFalseWhenUserDoesNotHaveEnoughCredits()
+        {
+            await repository.AddAsync<User>(new User()
+            {
+                Id = "202efe8b-7748-49ca-834c-fd1c37978ab2",
+                UserName = "Ivan",
+                NormalizedUserName = "IVAN",
+                Email = "Ivan@gmail.com",
+                NormalizedEmail = "IVAN@GMAIL.COM",
+                Credits = 20
+            });
+            await repository.AddAsync<Player>(new Player()
+            {
+                Id = 1,
+                Ammo = 200,
+                UserId = "202efe8b-7748-49ca-834c-fd1c37978ab2",
+                TeamId = 1,
+                PlayerClassId = 1
+            });
+            await repository.AddAsync<Team>(new Team()
+            {
+                Id = 1,
+                Name = "Test1",
+            });
+            await repository.SaveChangesAsync();
+            var result = await ammoBoxService.UserHasEnoughCreditsAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 1, 3);
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+
 
         [Test]
         public async Task Test_GetAmmoBoxToBuyByIdAsync_ReturnsModelCorrectly()
