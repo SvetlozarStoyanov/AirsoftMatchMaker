@@ -18,13 +18,9 @@ namespace AirsoftMatchMaker.Web.Areas.Administrator.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Games", new { area = "Administrator" });
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

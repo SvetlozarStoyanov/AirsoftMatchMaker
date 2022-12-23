@@ -1,4 +1,5 @@
-﻿using AirsoftMatchMaker.Web.Models;
+﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -11,20 +12,17 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IGameService gameService)
         {
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+
+            return RedirectToAction("Mine", "Games", new { area = "Matchmaker" });
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
