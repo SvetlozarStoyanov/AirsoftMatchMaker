@@ -83,19 +83,43 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
         {
             if (!(await betService.BetExistsAsync(id)))
             {
-                TempData["error"] = "Bet does not exist";
+                TempData["error"] = "Bet does not exist!";
+                return RedirectToAction(nameof(Mine));
+            }
+            if (!(await betService.UserCanAccessBetAsync(User.Id(), id)))
+            {
+                TempData["error"] = "Cannot access bet!";
                 return RedirectToAction(nameof(Mine));
             }
             var model = await betService.GetBetByIdAsync(id);
-            if (model.UserId != User.Id())
-            {
-                TempData.Add("error", "Cannot access that bet!");
-                return RedirectToAction(nameof(Mine));
-            }
             return View(model);
         }
 
         [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!(await betService.BetExistsAsync(id)))
+            {
+                TempData["error"] = "Bet does not exist";
+                return RedirectToAction(nameof(Mine));
+            }
+            if (!(await betService.UserCanAccessBetAsync(User.Id(), id)))
+            {
+                TempData["error"] = "Cannot access bet!";
+                return RedirectToAction(nameof(Mine));
+            }
+            var gameId = await betService.GetGameIdByBetAsync(id);
+            if (await betService.IsGameFinishedAsync(gameId))
+            {
+                TempData["error"] = "Cannot cancel bet! Game is already finished.";
+                return RedirectToAction(nameof(Mine));
+            }
+            var model = await betService.GetBetToDeleteByIdAsync(id);
+            return View(model);
+
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Delete(int betId, int gameId)
         {
             if (!(await betService.BetExistsAsync(betId)))
@@ -103,28 +127,19 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
                 TempData["error"] = "Bet does not exist";
                 return RedirectToAction(nameof(Mine));
             }
-            if (await betService.IsGameFinishedAsync(betId))
+            if (!(await betService.UserCanAccessBetAsync(User.Id(), betId)))
+            {
+                TempData["error"] = "Cannot access bet!";
+                return RedirectToAction(nameof(Mine));
+            }
+            if (await betService.IsGameFinishedAsync(gameId))
             {
                 TempData["error"] = "Cannot cancel bet! Game is already finished.";
                 return RedirectToAction(nameof(Mine));
             }
-            var model = await betService.GetBetToDeleteByIdAsync(gameId);
-            if (model.UserId != User.Id())
-            {
-                TempData["error"] = "Cannot access that bet!";
-                return RedirectToAction(nameof(Mine));
-            }
-            return View(model);
-        }
+            await betService.DeleteBetAsync(betId);
+            TempData["success"] = "Bet deleted successfully! Your credits have been refunded.";
 
-        [HttpPost]
-        public async Task<IActionResult> Delete(BetDeleteModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            await betService.DeleteBetAsync(model);
             return RedirectToAction(nameof(Mine));
         }
 
