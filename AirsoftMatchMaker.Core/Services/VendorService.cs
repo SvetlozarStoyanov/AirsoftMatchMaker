@@ -74,6 +74,7 @@ namespace AirsoftMatchMaker.Core.Services
         public async Task<IEnumerable<VendorListModel>> GetAllVendorsAsync()
         {
             var vendors = await repository.AllReadOnly<Vendor>()
+                .Where(v => v.IsActive)
                 .Include(v => v.User)
                 .Include(v => v.AmmoBoxes)
                 .Include(v => v.Weapons)
@@ -131,6 +132,6 @@ namespace AirsoftMatchMaker.Core.Services
                 .FirstOrDefaultAsync();
             return vendor;
         }
-      
+
     }
 }

@@ -63,6 +63,7 @@ namespace AirsoftMatchMaker.Core.Services
         public async Task<IEnumerable<MatchmakerListModel>> GetAllMatchmakersAsync()
         {
             var matchmakers = await repository.AllReadOnly<Matchmaker>()
+                    .Where(mm => mm.IsActive)
                     .Include(mm => mm.User)
                     .Select(mm => new MatchmakerListModel()
                     {
