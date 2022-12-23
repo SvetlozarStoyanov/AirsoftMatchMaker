@@ -19,8 +19,12 @@ namespace AirsoftMatchMaker.Core.Services
         }
 
 
-
-        public async Task<bool> DoesGameModeExistAsync(string gameModeName)
+        public async Task<bool> GameModeExistsAsync(int id)
+        {
+            var gameMode = await repository.GetByIdAsync<GameMode>(id);
+            return gameMode != null;
+        }
+        public async Task<bool> IsGameModeNameAlreadyTaken(string gameModeName)
         {
             return await repository.AllReadOnly<GameMode>()
                 .AnyAsync(gm => gm.Name == gameModeName);
@@ -81,12 +85,6 @@ namespace AirsoftMatchMaker.Core.Services
             return model;
         }
 
-        private GameModesQueryModel CreateGameModesQueryModel()
-        {
-            var model = new GameModesQueryModel();
-            model.SortingOptions = Enum.GetValues<GameModeSorting>().ToList();
-            return model;
-        }
 
         public async Task<GameModeViewModel> GetGameModeByIdAsync(int id)
         {
@@ -136,5 +134,15 @@ namespace AirsoftMatchMaker.Core.Services
             await repository.AddAsync<GameMode>(gameMode);
             await repository.SaveChangesAsync();
         }
+
+
+        private GameModesQueryModel CreateGameModesQueryModel()
+        {
+            var model = new GameModesQueryModel();
+            model.SortingOptions = Enum.GetValues<GameModeSorting>().ToList();
+            return model;
+        }
+
+
     }
 }

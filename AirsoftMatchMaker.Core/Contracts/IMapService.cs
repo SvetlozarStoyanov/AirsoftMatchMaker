@@ -7,14 +7,30 @@ namespace AirsoftMatchMaker.Core.Contracts
     public interface IMapService
     {
         /// <summary>
+        /// Returns true if <see cref="Map"/> with <paramref name="id"/> exists, false otherwise.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> MapExistsAsync(int id);
+
+        /// <summary>
         /// Returns true if <see cref="Map"/> with given exists name exists, false otherwise
         /// 
         /// </summary>
         /// <param name="mapName"></param>
         /// <returns></returns>
-        Task<bool> MapAlreadyExists(string mapName);
+        Task<bool> IsMapNameAlreadyTaken(string mapName);
 
-
+        /// <summary>
+        /// Returns <see cref="MapsQueryModel"/> which contains <see cref="IEnumerable{T}"/> 
+        /// of maps which match the given criteria
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <param name="gameModeName"></param>
+        /// <param name="sorting"></param>
+        /// <param name="mapsPerPage"></param>
+        /// <param name="currentPage"></param>
+        /// <returns></returns>
         Task<MapsQueryModel> GetAllMapsAsync(
             string? searchTerm = null,
             string? gameModeName = null,

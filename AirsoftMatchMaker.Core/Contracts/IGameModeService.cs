@@ -8,11 +8,18 @@ namespace AirsoftMatchMaker.Core.Contracts
     public interface IGameModeService
     {
         /// <summary>
+        /// Returns true if <see cref="GameMode"/> with given <paramref name="id"/> exists, false otherwise
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="bool"/></returns>
+        Task<bool> GameModeExistsAsync(int id);
+
+        /// <summary>
         /// Returns true if <see cref="GameMode"/> with given name already exists, false otherwise
         /// </summary>
         /// <param name="gameModeName"></param>
         /// <returns></returns>
-        Task<bool> DoesGameModeExistAsync(string gameModeName);
+        Task<bool> IsGameModeNameAlreadyTaken(string gameModeName);
 
         /// <summary>
         /// Returns all game modes

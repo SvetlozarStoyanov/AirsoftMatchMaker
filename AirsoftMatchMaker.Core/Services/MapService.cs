@@ -6,7 +6,6 @@ using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace AirsoftMatchMaker.Core.Services
 {
@@ -18,7 +17,14 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
-        public async Task<bool> MapAlreadyExists(string mapName)
+
+        public async Task<bool> MapExistsAsync(int id)
+        {
+            var map = await repository.GetByIdAsync<Map>(id);
+            return map != null;
+        }
+
+        public async Task<bool> IsMapNameAlreadyTaken(string mapName)
         {
             return await repository.AllReadOnly<Map>()
                 .AnyAsync(m => m.Name == mapName);
@@ -174,5 +180,7 @@ namespace AirsoftMatchMaker.Core.Services
             model.SortingOptions = Enum.GetValues<MapSorting>().ToList();
             return model;
         }
+
+
     }
 }
