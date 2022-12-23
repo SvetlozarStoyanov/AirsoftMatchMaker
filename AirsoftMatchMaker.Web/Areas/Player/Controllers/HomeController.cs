@@ -1,4 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using AirsoftMatchMaker.Web.Extensions;
 using AirsoftMatchMaker.Web.Models;
@@ -15,15 +16,19 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IGameService gameService;
         private readonly ITeamService teamService;
-        public HomeController(ILogger<HomeController> logger, IGameService gameService, ITeamService teamService)
+        private readonly IPlayerService playerService;
+        public HomeController(ILogger<HomeController> logger, IGameService gameService, ITeamService teamService, IPlayerService playerService)
         {
             _logger = logger;
             this.gameService = gameService;
             this.teamService = teamService;
+            this.playerService = playerService;
         }
 
         public async Task<IActionResult> Index()
         {
+            ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
+            ViewBag.UserTeamId = await playerService.GetPlayersTeamIdAsync(User.Id());
             if (await teamService.DoesUserHaveTeamAsync(User.Id()))
             {
                 var playerGamesmodel = await gameService.GetPlayersLastFinishedAndFirstUpcomingGameAsync(User.Id());
