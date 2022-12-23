@@ -22,20 +22,20 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     TeamRedCreditsBet = 50,
                     TeamBlueCreditsBet = 40
                 },
-                new GameBetCreditsContainer()
-                {
-                    Id = 2,
-                    GameId = 2,
-                    TeamRedCreditsBet = 0,
-                    TeamBlueCreditsBet = 0
-                },
-                new GameBetCreditsContainer()
-                {
-                    Id = 3,
-                    GameId = 3,
-                    TeamRedCreditsBet = 0,
-                    TeamBlueCreditsBet = 0
-                }
+                //new GameBetCreditsContainer()
+                //{
+                //    Id = 2,
+                //    GameId = 2,
+                //    TeamRedCreditsBet = 0,
+                //    TeamBlueCreditsBet = 0
+                //},
+                //new GameBetCreditsContainer()
+                //{
+                //    Id = 3,
+                //    GameId = 3,
+                //    TeamRedCreditsBet = 0,
+                //    TeamBlueCreditsBet = 0
+                //}
             };
             return gameBetCreditsContainers;
         }

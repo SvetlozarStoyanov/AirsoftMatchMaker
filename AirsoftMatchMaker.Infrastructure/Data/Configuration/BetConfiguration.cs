@@ -56,7 +56,6 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     Odds = -122
                 }
             };
-
             return bets;
         }
     }
