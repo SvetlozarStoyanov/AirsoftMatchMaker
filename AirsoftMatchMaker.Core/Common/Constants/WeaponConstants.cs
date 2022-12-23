@@ -1,5 +1,8 @@
 ﻿namespace AirsoftMatchMaker.Core.Common.Constants
 {
+    /// <summary>
+    /// Static class which defines weapon constants 
+    /// </summary>
     public static class WeaponConstants
     {
         public const double PistolMinFeetPerSecond = 100;

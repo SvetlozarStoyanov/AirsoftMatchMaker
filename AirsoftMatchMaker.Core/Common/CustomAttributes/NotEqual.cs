@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+/// <summary>
+/// Attribute which determines whether two field have the same value
+/// </summary>
 public class NotEqualAttribute : ValidationAttribute
 {
     private string OtherProperty { get; set; }
