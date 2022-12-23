@@ -13,6 +13,14 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns><see cref="bool"/></returns>
         Task<bool> BetExistsAsync(int id);
         /// <summary>
+        /// Returns true if <see cref="Bet.UserId"/> is equal to <paramref name="userId"/>, false otherwise
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="betId"></param>
+        /// <returns></returns>
+        Task<bool> UserCanAccessBetAsync(string userId, int betId);
+
+        /// <summary>
         /// Checks if the <see cref="User user"/> has already bet on <see cref="Game game"/> with given Id.
         /// </summary>
         /// <param name="userId"></param>
@@ -47,8 +55,15 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// Returns true if <see cref="User"/> is in matchmaker or administrator role, otherwise false
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <returns><see cref="bool"/></returns>
         Task<bool> IsUserMatchmakerAsync(string userId);
+
+        /// <summary>
+        /// Returns <see cref="Bet.GameId"/>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="int"/></returns>
+        Task<int> GetGameIdByBetAsync(int id);
 
         /// <summary>
         /// Returns all bets created by <see cref="User"/> with given id
@@ -67,7 +82,6 @@ namespace AirsoftMatchMaker.Core.Contracts
 
         /// <summary>
         /// Creates a <see cref="Bet bet "/> from given <see cref="BetCreateModel model"/> and adds it to the database
-        /// Also adjusts the betting line of the game.
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="model"></param>
@@ -90,11 +104,10 @@ namespace AirsoftMatchMaker.Core.Contracts
 
         /// <summary>
         /// Deletes a <see cref="Bet bet "/> with given id from the database
-        /// Also adjusts the betting line of the game.
         /// </summary>
-        /// <param name="betId"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        Task DeleteBetAsync(BetDeleteModel model);
+        Task DeleteBetAsync(int id);
 
         /// <summary>
         /// Pays out the profit to the bettors who correctly predicted the result of the<see cref= "Game game" /> with given id.

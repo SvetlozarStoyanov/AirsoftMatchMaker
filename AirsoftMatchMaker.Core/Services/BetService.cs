@@ -23,6 +23,11 @@ namespace AirsoftMatchMaker.Core.Services
             return bet != null;
         }
 
+        public async Task<bool> UserCanAccessBetAsync(string userId, int betId)
+        {
+            var bet = await repository.GetByIdAsync<Bet>(betId);
+            return bet.UserId == userId;
+        }
         public async Task<bool> HasUserAlreadyBetOnGameAsync(string userId, int gameId)
         {
             return await repository.AllReadOnly<Bet>()
@@ -64,6 +69,12 @@ namespace AirsoftMatchMaker.Core.Services
             return matchmaker != null;
         }
 
+        public async Task<int> GetGameIdByBetAsync(int id)
+        {
+            var bet = await repository.GetByIdAsync<Bet>(id);
+            return bet.GameId;
+        }
+
         public async Task<IEnumerable<BetListModel>> GetUserBetsAsync(string userId)
         {
             var bets = await repository.AllReadOnly<Bet>()
@@ -93,7 +104,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(g => g.TeamRed)
                 .Include(g => g.TeamBlue)
                 .FirstOrDefaultAsync();
-            
+
             var model = new BetCreateModel()
             {
                 UserId = userId,
@@ -117,17 +128,12 @@ namespace AirsoftMatchMaker.Core.Services
             var game = await repository.All<Game>()
                 .Where(g => g.Id == model.GameId)
                 .Include(g => g.TeamBlue)
-                .ThenInclude(t => t.Players)
                 .Include(g => g.TeamRed)
-                .ThenInclude(t => t.Players)
                 .Include(g => g.Bets)
                 .Include(g => g.GameBetCreditsContainer)
                 .FirstOrDefaultAsync();
 
-            if (game.TeamRed.Players.Any(p => p.UserId == userId) || game.TeamBlue.Players.Any(p => p.UserId == userId))
-            {
-                return;
-            }
+
             user.Credits -= model.CreditsPlaced;
 
             var bet = new Bet()
@@ -183,6 +189,7 @@ namespace AirsoftMatchMaker.Core.Services
                 {
                     Id = b.Id,
                     UserId = b.UserId,
+                    GameId = b.GameId,
                     GameName = b.Game.Name,
                     CreditsBet = b.CreditsBet,
                     WinningTeamId = b.WinningTeamId,
@@ -194,10 +201,10 @@ namespace AirsoftMatchMaker.Core.Services
             return bet;
         }
 
-        public async Task DeleteBetAsync(BetDeleteModel model)
+        public async Task DeleteBetAsync(int id)
         {
             var bet = await repository.All<Bet>()
-                .Where(b => b.Id == model.Id)
+                .Where(b => b.Id == id)
                 .Include(b => b.Game)
                 .ThenInclude(b => b.GameBetCreditsContainer)
                 .Include(b => b.User)
