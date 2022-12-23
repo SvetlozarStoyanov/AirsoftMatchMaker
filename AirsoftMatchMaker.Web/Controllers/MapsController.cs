@@ -35,12 +35,13 @@ namespace AirsoftMatchMaker.Web.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var model = await mapService.GetMapByIdAsync(id);
-            if (model == null)
+            if (!(await mapService.MapExistsAsync(id)))
             {
-                TempData["error"] = $"Map with {id} id does not exist!";
+                TempData["error"] = "Map does not exist!";
                 return RedirectToAction(nameof(Index));
             }
+            var model = await mapService.GetMapByIdAsync(id);
+
             return View(model);
         }
     }

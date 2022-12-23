@@ -10,7 +10,7 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// </summary>
         /// <param name="id"></param>
         /// <returns><see cref="bool"/></returns>
-        Task<bool> DoesPlayerClassExistAsync(int id);
+        Task<bool> PlayerClassExists(int id);
 
         /// <summary>
         /// Returns true if <see cref="Player"/> with given <paramref name="userId"/> is already assigned

@@ -93,7 +93,7 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// Creates appropriate <see cref="WeaponCreateModel model"/> according to the <see cref="WeaponType weaponType"/>
         /// </summary>
         /// <param name="weaponType"></param>
-        /// <returns><see cref="WeaponCreateModel model"/></returns>
+        /// <returns><see cref="WeaponCreateModel"/></returns>
         WeaponCreateModel CreateWeaponCreateModelByWeaponType(WeaponType weaponType);
 
         /// <summary>

@@ -97,8 +97,6 @@ namespace AirsoftMatchMaker.Core.Services
             return model;
         }
 
-       
-
         public async Task<TeamViewModel> GetTeamByIdAsync(int id)
         {
             var team = await repository.AllReadOnly<Team>()
@@ -162,7 +160,7 @@ namespace AirsoftMatchMaker.Core.Services
                     Wins = t.Wins,
                     Losses = t.Losses,
                     AverageSkillLevel = t.Players.Count != 0 ? DetermineAverageSkillLevel((t.Players.Where(p => p.IsActive).Average(p => p.SkillPoints))) : SkillLevel.Beginner,
-                    Players = t.Players.Where((p) => p.IsActive)
+                    Players = t.Players.Where(p => p.IsActive)
                     .Select(p => new PlayerMinModel()
                     {
                         Id = p.Id,
@@ -230,7 +228,5 @@ namespace AirsoftMatchMaker.Core.Services
             }
             return skillLevel;
         }
-        
-
     }
 }

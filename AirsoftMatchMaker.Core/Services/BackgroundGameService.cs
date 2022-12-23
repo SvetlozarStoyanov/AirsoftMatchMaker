@@ -54,7 +54,6 @@ namespace AirsoftMatchMaker.Core.Services
             var teamRedPlayers = await repository.All<Player>()
                 .Where(p => p.TeamId.HasValue && p.TeamId == teamRed.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
                 .Include(p => p.User)
-                .Include(p => p.Clothes)
                 .Include(p => p.Weapons)
                 .Include(p => p.PlayerClass)
                 .ToListAsync();
@@ -64,7 +63,6 @@ namespace AirsoftMatchMaker.Core.Services
             var teamBluePlayers = await repository.All<Player>()
                 .Where(p => p.TeamId.HasValue && p.TeamId == teamBlue.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
                 .Include(p => p.User)
-                .Include(p => p.Clothes)
                 .Include(p => p.Weapons)
                 .Include(p => p.PlayerClass)
                 .ToListAsync();

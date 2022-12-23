@@ -119,6 +119,7 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
             return View(createModel);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(WeaponCreateModel model)
         {
             if (!ModelState.IsValid)

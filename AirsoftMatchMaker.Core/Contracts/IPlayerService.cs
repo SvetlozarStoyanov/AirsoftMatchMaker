@@ -20,7 +20,11 @@ namespace AirsoftMatchMaker.Core.Contracts
         /// <returns></returns>
         Task<bool> CanUserLeavePlayerRole(string userId);
 
-
+        /// <summary>
+        /// Returns <see cref="Player.TeamId"/> if he has a <see cref="Player.Team"/>, otherwise returns null
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="int"/></returns>
         Task<int?> GetPlayersTeamIdAsync(int id);
 
         /// <summary>

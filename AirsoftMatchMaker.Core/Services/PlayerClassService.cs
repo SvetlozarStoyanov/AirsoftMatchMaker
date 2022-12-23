@@ -15,7 +15,7 @@ namespace AirsoftMatchMaker.Core.Services
             this.repository = repository;
         }
 
-        public async Task<bool> DoesPlayerClassExistAsync(int id)
+        public async Task<bool> PlayerClassExists(int id)
         {
             return await repository.GetByIdAsync<PlayerClass>(id) != null;
         }

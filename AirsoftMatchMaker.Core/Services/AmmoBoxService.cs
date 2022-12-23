@@ -29,11 +29,11 @@ namespace AirsoftMatchMaker.Core.Services
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
 
-            var weapon = await repository.AllReadOnly<AmmoBox>()
+            var ammoBox = await repository.AllReadOnly<AmmoBox>()
                 .Where(w => w.Id == ammoBoxId)
                 .Include(w => w.Vendor)
                 .FirstOrDefaultAsync();
-            if (weapon.Vendor.UserId == player.UserId)
+            if (ammoBox.Vendor.UserId == player.UserId)
                 return false;
             return true;
         }

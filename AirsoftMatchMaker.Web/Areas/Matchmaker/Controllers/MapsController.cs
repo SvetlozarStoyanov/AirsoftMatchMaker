@@ -38,12 +38,12 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var model = await mapService.GetMapByIdAsync(id);
-            if (model == null)
+            if (!(await mapService.MapExistsAsync(id)))
             {
-                TempData["error"] = $"Map with {id} id does not exist!";
+                TempData["error"] = "Map does not exist!";
                 return RedirectToAction(nameof(Index));
             }
+            var model = await mapService.GetMapByIdAsync(id);
             return View(model);
         }
 
@@ -62,7 +62,7 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
                 model = await mapService.CreateMapCreateModelAsync();
                 return View(model);
             }
-            if (await mapService.MapAlreadyExists(model.Name))
+            if (await mapService.IsMapNameAlreadyTaken(model.Name))
             {
                 TempData["error"] = $"Map with {model.Name} already exists!";
                 model = await mapService.CreateMapCreateModelAsync();
@@ -76,7 +76,7 @@ namespace AirsoftMatchMaker.Web.Areas.Matchmaker.Controllers
                 model = await mapService.CreateMapCreateModelAsync();
                 return View(model);
             }
-            if (await mapService.MapAlreadyExists(model.Name))
+            if (await mapService.IsMapNameAlreadyTaken(model.Name))
             {
                 TempData["error"] = $"Map with name {model.Name} already exists!";
                 model = await mapService.CreateMapCreateModelAsync();

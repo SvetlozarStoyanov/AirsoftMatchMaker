@@ -26,7 +26,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
        
         public async Task<IActionResult> ChangeClass(int id)
         {
-            if (!(await playerClassService.DoesPlayerClassExistAsync(id)))
+            if (!(await playerClassService.PlayerClassExists(id)))
             {
                 TempData["error"] = "Player class does not exist!";
             }

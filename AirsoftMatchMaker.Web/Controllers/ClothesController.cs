@@ -15,6 +15,7 @@ namespace AirsoftMatchMaker.Web.Controllers
             this.htmlSanitizingService = htmlSanitizingService;
         }
 
+
         public async Task<IActionResult> Index([FromQuery]ClothesQueryModel model)
         {
             model.SearchTerm = htmlSanitizingService.SanitizeStringProperty(model.SearchTerm);

@@ -32,12 +32,12 @@ namespace AirsoftMatchMaker.Web.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var model = await gameModeService.GetGameModeByIdAsync(id);
-            if (model == null)
+            if (!(await gameModeService.GameModeExistsAsync(id)))
             {
-                TempData["error"] = $"Game mode with {id} id does not exist!";
+                TempData["error"] = $"Game mode does not exist!";
                 return RedirectToAction(nameof(Index));
             }
+            var model = await gameModeService.GetGameModeByIdAsync(id);
             return View(model);
         }
     }
