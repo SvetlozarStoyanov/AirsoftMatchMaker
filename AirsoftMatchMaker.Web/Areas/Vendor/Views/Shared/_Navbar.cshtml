@@ -7,41 +7,33 @@
         </button>
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Vendor" asp-controller="Players" asp-action="Index">Players</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link active dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Players and Teams</a>
+                    <div class="dropdown-menu">
+                        <a class="nav-link" asp-area="Vendor" asp-controller="Players" asp-action="Index">Players</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-link" asp-area="Vendor" asp-controller="Teams" asp-action="Index">Teams</a>
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Vendor" asp-controller="Teams" asp-action="Index">Teams</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link active dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Shop</a>
+                    <div class="dropdown-menu">
+                        <a class="nav-link" asp-area="Vendor" asp-controller="AmmoBoxes" asp-action="Index">Ammo Boxes</a>
+                        <a class="nav-link" asp-area="Vendor" asp-controller="Clothes" asp-action="Index">Clothes</a>
+                        <a class="nav-link" asp-area="Vendor" asp-controller="Weapons" asp-action="Index">Weapons</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item active" asp-area="Vendor" asp-controller="Inventory" asp-action="Index">My items</a>
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Vendor" asp-controller="AmmoBoxes" asp-action="Index">Ammo Boxes</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link active dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Games</a>
+                    <div class="dropdown-menu">
+                        <a class="nav-link" asp-area="Vendor" asp-controller="Maps" asp-action="Index">Maps</a>
+                        <a class="nav-link" asp-area="Vendor" asp-controller="GameModes" asp-action="Index">GameModes</a>
+                        <a class="nav-link" asp-area="Vendor" asp-controller="Games" asp-action="Index">Games</a>
+
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Vendor" asp-controller="Weapons" asp-action="Index">Weapons</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Vendor" asp-controller="Clothes" asp-action="Index">Clothes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Vendor" asp-controller="Games" asp-action="Index">Games</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Vendor" asp-controller="Maps" asp-action="Index">Maps</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Vendor" asp-controller="GameModes" asp-action="Index">GameModes</a>
-                </li>
-              
-                @*<li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Separated link</a>
-                </div>
-                </li>*@
             </ul>
             <partial name="_LoginPartial" />
         </div>

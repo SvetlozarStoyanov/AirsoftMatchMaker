@@ -7,34 +7,27 @@
         </button>
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Matchmaker" asp-controller="Players" asp-action="Index">Players</a>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Players and teams</a>
+                    <div class="dropdown-menu">
+                        <a class="nav-link" asp-area="Matchmaker" asp-controller="Players" asp-action="Index">Players</a>
+                        <a class="nav-link" asp-area="Matchmaker" asp-controller="Teams" asp-action="Index">Teams</a>
+                        <div class="dropdown-divider"></div>
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Matchmaker" asp-controller="Matchmakers" asp-action="Index">Matchmakers</a>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Games</a>
+                    <div class="dropdown-menu">
+                        <a class="nav-link" asp-area="Matchmaker" asp-controller="Maps" asp-action="Index">Maps</a>
+                        <a class="nav-link" asp-area="Matchmaker" asp-controller="GameModes" asp-action="Index">Game Modes</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-link" asp-area="Matchmaker" asp-controller="Games" asp-action="Index">Games</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" asp-area="Matchmaker" asp-controller="Games" asp-action="Mine">My games</a>
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Matchmaker" asp-controller="Teams" asp-action="Index">Teams</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Matchmaker" asp-controller="Maps" asp-action="Index">Maps</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Matchmaker" asp-controller="Games" asp-action="Index">Games</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Matchmaker" asp-controller="GameModes" asp-action="Index">Game Modes</a>
-                </li>
-                @*        <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Separated link</a>
-                </div>
-                </li>*@
             </ul>
             <partial name="_LoginPartial" />
         </div>
