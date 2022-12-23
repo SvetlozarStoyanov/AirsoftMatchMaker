@@ -1,6 +1,6 @@
 ﻿@model GamesMatchmakerQueryModel
 @{
-    ViewBag.Title = "Games";
+    ViewBag.Title = "My Games";
 
     var previousPage = Model.CurrentPage - 1;
     if (previousPage < 1)
@@ -13,9 +13,9 @@
     var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
           !Model.Games.Any();
 }
-<h2 class="text-center mt-6 mb-6">@ViewBag.Title</h2>
+<h2 class="text-center mt-3 mb-3">@ViewBag.Title</h2>
 <form method="get">
-    <div class="row mt-6 mb-6">
+    <div class="row mt-3 mb-3">
         <div class="d-flex justify-content-between">
             <div class="form-group">
                 <label asp-for="MatchmakerGameStatus">Status</label>
@@ -84,7 +84,7 @@
         </div>
     </div>
 </form>
-<div class="text-center">
+<div class="text-center mt-3 mb-3">
     <a asp-area="Matchmaker" asp-controller="Games" asp-action="SelectGameDate" class="btn btn-lg btn-primary mt-6 mb-6">
         Create
         <i class="bi bi-plus-circle"></i>
@@ -93,11 +93,11 @@
 
 @if (Model.GamesCount == 0)
 {
-    <h2 class="text-center">No games found!</h2>
+    <h2 class="text-center mt-3 mb-3">No games found!</h2>
 }
 else
 {
-    <div class="row">
+    <div class="row mt-3 mb-3">
         @foreach (var game in Model.Games)
         {
             <partial name="_MyGamePartial" model="game" />
