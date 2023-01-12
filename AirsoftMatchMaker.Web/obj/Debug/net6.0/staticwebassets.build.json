@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Ug3u5HuYUvNAR2xekAqzW+jdHE9Uu9Fo2oVopNv8zo8=",
+  "Hash": "HA/XQxze+z/O1S+NyvKwmFxorggQZtbHDUL7sVmWFmo=",
   "Source": "AirsoftMatchMaker.Web",
   "BasePath": "_content/AirsoftMatchMaker.Web",
   "Mode": "Default",
@@ -1528,6 +1528,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Common\\collapseArrow.js"
+    },
+    {
+      "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Common\\finaliseGameModal.js",
+      "SourceId": "AirsoftMatchMaker.Web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\",
+      "BasePath": "_content/AirsoftMatchMaker.Web",
+      "RelativePath": "js/Common/finaliseGameModal.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Common\\finaliseGameModal.js"
     },
     {
       "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\site.js",

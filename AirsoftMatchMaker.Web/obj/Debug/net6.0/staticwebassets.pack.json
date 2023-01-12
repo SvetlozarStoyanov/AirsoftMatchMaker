@@ -113,6 +113,10 @@
       "PackagePath": "staticwebassets\\js\\Common\\collapseArrow.js"
     },
     {
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Common\\finaliseGameModal.js",
+      "PackagePath": "staticwebassets\\js\\Common\\finaliseGameModal.js"
+    },
+    {
       "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
