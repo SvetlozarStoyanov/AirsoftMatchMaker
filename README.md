@@ -34,7 +34,7 @@ Bets are paid out after a game is finished.
 
 
 For demo purposes each user's password is password and special requirements for passwords have been disabled.
-Views, unit tests and site documentation are still unfinished.
+Unit tests and site documentation are unfinished.
 
 !!!! On first startup delete existing migrations and add new migration default project should be AirsoftMatchMaker.Infrastructure
 
