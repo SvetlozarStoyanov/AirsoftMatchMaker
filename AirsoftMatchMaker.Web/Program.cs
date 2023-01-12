@@ -1,5 +1,6 @@
 using AirsoftMatchMaker.Infrastructure.Data;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +22,10 @@ builder.Services.AddDefaultIdentity<User>(options =>
 })
     .AddRoles<Role>()
     .AddEntityFrameworkStores<AirsoftMatchmakerDbContext>();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+});
 
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
