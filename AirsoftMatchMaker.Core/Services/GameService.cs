@@ -73,10 +73,13 @@ namespace AirsoftMatchMaker.Core.Services
             int gamesPerPage = 6,
             int currentPage = 1)
         {
-            var allGames = await repository.AllReadOnly<Game>()
-                .ToListAsync();
+            //var allGames = await repository.AllReadOnly<Game>()
+            //    .ToListAsync();
             var games = await repository.AllReadOnly<Game>()
-                .Where(g => (!g.GameBetCreditsContainer.BetsArePaidOut && g.GameStatus == GameStatus.Upcoming) || (g.GameBetCreditsContainer.BetsArePaidOut && g.GameStatus == GameStatus.Finished))
+                .Where(g =>
+                ((!g.GameBetCreditsContainer.BetsArePaidOut && g.GameStatus == GameStatus.Upcoming)
+                || (g.GameBetCreditsContainer.BetsArePaidOut && g.GameStatus == GameStatus.Finished))
+                && (g.TeamRedOdds != 0 && g.TeamBlueOdds != 0))
                 .Include(g => g.TeamRed)
                 .Include(g => g.TeamBlue)
                 .Include(g => g.GameMode)
@@ -356,7 +359,7 @@ namespace AirsoftMatchMaker.Core.Services
         public async Task<IEnumerable<GameListModel>> GetUpcomingGamesByDateAsync()
         {
             var games = await repository.AllReadOnly<Game>()
-               .Where(g => g.GameStatus != GameStatus.Finished)
+               .Where(g => g.GameStatus != GameStatus.Finished && (g.TeamRedOdds != 0 && g.TeamBlueOdds != 0))
                .Include(g => g.TeamRed)
                .Include(g => g.TeamBlue)
                .Include(g => g.Matchmaker)
