@@ -5,28 +5,33 @@
     <div class="form-group">
         <label asp-for="GameModeMaxPoints">Max Points</label>
         <input asp-for="GameModeMaxPoints" class="form-control" disabled />
-        <input asp-for="GameModeMaxPoints" hidden />
+        <input asp-for="GameModeMaxPoints" id="maxPoints" value="@Model.GameModeMaxPoints" hidden />
         <span asp-validation-for="GameModeMaxPoints" class="small text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="TeamRedPoints">Red team Points</label>
-        <input class="form-control" type="number" data-val="true" data-val-range="Points must be within the given limit" data-val-range-max="@Model.GameModeMaxPoints" data-val-range-min="0" data-val-required="Required!" id="TeamRedPoints" name="TeamRedPoints" value="0">
+        <input class="form-control" type="number" data-val="true" data-val-range="Points must be within the given limit" data-val-range-max="@Model.GameModeMaxPoints" data-val-range-min="0" data-val-required="Required!" id="teamRedPoints" name="TeamRedPoints" value="0">
         <span asp-validation-for="TeamRedPoints" class="small text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="TeamBluePoints">Blue team Points</label>
-        <input class="form-control" type="number" data-val="true" data-val-range="Points must be within the given limit" data-val-range-max="@Model.GameModeMaxPoints" data-val-range-min="0" data-val-required="Required!" id="TeamBluePoints" name="TeamBluePoints" value="0">
+        <input class="form-control" type="number" data-val="true" data-val-range="Points must be within the given limit" data-val-range-max="@Model.GameModeMaxPoints" data-val-range-min="0" data-val-required="Required!" id="teamBluePoints" name="TeamBluePoints" value="0">
         <span asp-validation-for="TeamBluePoints" class="small text-danger"></span>
     </div>
+    <div class="text-center d-none" id="errorBox">
+        <span class="text-danger" id="errorMessage"></span>
+    </div>
     <div class="text-center mt-3 mb-3">
-        <button class="btn btn-primary" type="submit">
+        <button class="btn btn-primary" id="submitFormBtn" type="submit">
             Finalise
         </button>
     </div>
 </form>
 
+<script src="~/js/Common/finaliseGameModal.js" asp-append-version="true"></script>
 
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+
+
+
+<script></script>
