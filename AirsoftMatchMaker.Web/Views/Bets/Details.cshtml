@@ -52,7 +52,7 @@
     </div>
 </article>
 
-@if (Model.BetStatus != BetStatus.Finished)
+@if (Model.BetStatus == BetStatus.Active && Model.GameStatus != GameStatus.Finished)
 {
     <div class="text-center mt-3 mb-3">
 
