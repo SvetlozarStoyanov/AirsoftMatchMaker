@@ -89,6 +89,7 @@ namespace AirsoftMatchMaker.Core.Services
                     ChosenTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
                     Odds = b.Odds,
                     BetStatus = b.BetStatus,
+                    GameStatus = b.Game.GameStatus
                 })
                 .ToListAsync();
             return bets;
@@ -162,6 +163,7 @@ namespace AirsoftMatchMaker.Core.Services
         {
             var bet = await repository.AllReadOnly<Bet>()
                 .Where(b => b.Id == id)
+                .Include(b => b.Game)
                 .Select(b => new BetViewModel()
                 {
                     Id = b.Id,
@@ -169,6 +171,7 @@ namespace AirsoftMatchMaker.Core.Services
                     GameId = b.GameId,
                     BetStatus = b.BetStatus,
                     GameName = b.Game.Name,
+                    GameStatus = b.Game.GameStatus,
                     WinningTeamId = b.WinningTeamId,
                     WinningTeamName = b.Game.TeamRedId == b.WinningTeamId ? b.Game.TeamRed.Name : b.Game.TeamBlue.Name,
                     CreditsBet = b.CreditsBet,
