@@ -11,6 +11,7 @@ namespace AirsoftMatchMaker.Core.Models.Bets
         public int GameId { get; set; }
         public BetStatus BetStatus { get; set; }
         public string GameName { get; set; }
+        public GameStatus GameStatus { get; set; }
         public int WinningTeamId { get; set; }
         public string WinningTeamName { get; set; }
         public decimal CreditsBet { get; set; }
