@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "HA/XQxze+z/O1S+NyvKwmFxorggQZtbHDUL7sVmWFmo=",
+  "Hash": "A/AsL852ABQzw6Q0R/Vvl2EQS0wRy1kJO9SwShAPjL4=",
   "Source": "AirsoftMatchMaker.Web",
   "BasePath": "_content/AirsoftMatchMaker.Web",
   "Mode": "Default",
@@ -1511,6 +1511,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Areas\\Vendor\\Views\\Weapons\\calculateImportPrice.js"
+    },
+    {
+      "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Common\\calculateBetPayout.js",
+      "SourceId": "AirsoftMatchMaker.Web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\",
+      "BasePath": "_content/AirsoftMatchMaker.Web",
+      "RelativePath": "js/Common/calculateBetPayout.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Common\\calculateBetPayout.js"
     },
     {
       "Identity": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Common\\collapseArrow.js",

@@ -109,6 +109,10 @@
       "PackagePath": "staticwebassets\\js\\Areas\\Vendor\\Views\\Weapons\\calculateImportPrice.js"
     },
     {
+      "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Common\\calculateBetPayout.js",
+      "PackagePath": "staticwebassets\\js\\Common\\calculateBetPayout.js"
+    },
+    {
       "Id": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\wwwroot\\js\\Common\\collapseArrow.js",
       "PackagePath": "staticwebassets\\js\\Common\\collapseArrow.js"
     },
