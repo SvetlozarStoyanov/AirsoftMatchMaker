@@ -1,10 +1,12 @@
 ﻿@model BetCreateModel
+
 @{
     ViewBag.Title = "Place bet";
 }
 <h2 class="text-center mt-3 mb-3">
     @ViewBag.Title
 </h2>
+
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
         <form asp-area="Player" asp-controller="Bets" asp-action="Create" method="post">
@@ -21,32 +23,37 @@
             <span asp-validation-for="CreditsPlaced" class="small text-danger"></span>
             </div>*@
             <div class="form-group">
-                <label asp-for="TeamRedOdds">Odds for red team</label>
+                <label asp-for="TeamRedOdds">Odds for @Model.TeamRedName</label>
                 <input asp-for="TeamRedOdds" class="form-control" disabled>
-                <input asp-for="TeamRedOdds" class="form-control" hidden>
+                <input id="teamRedOdds" asp-for="TeamRedOdds" class="form-control" hidden>
                 <span asp-validation-for="TeamRedOdds" class="small text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TeamBlueOdds">Odds for blue team</label>
+                <label asp-for="TeamBlueOdds">Odds for @Model.TeamBlueName</label>
                 <input asp-for="TeamBlueOdds" class="form-control" disabled>
-                <input asp-for="TeamBlueOdds" class="form-control" hidden>
+                <input id="teamBlueOdds" asp-for="TeamBlueOdds" class="form-control" hidden>
                 <span asp-validation-for="TeamBlueOdds" class="small text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="WinningTeamId">Select a team</label>
-                <select asp-for="WinningTeamId" class="form-control">
-                    <option value="@Model.TeamRedId">@Model.TeamRedName</option>
-                    <option value="@Model.TeamBlueId">@Model.TeamBlueName</option>
+                <select id="chosenTeamId" asp-for="WinningTeamId" class="form-control">
+                    <option id="teamRedId" value="@Model.TeamRedId">@Model.TeamRedName</option>
+                    <option id="teamBlueId" value="@Model.TeamBlueId">@Model.TeamBlueName</option>
                 </select>
             </div>
             <div class="form-group">
                 <label asp-for="CreditsPlaced">Credits bet</label>
-                <select asp-for="CreditsPlaced" class="form-control">
+                <select id="creditsPlaced" asp-for="CreditsPlaced" class="form-control">
                     @for (int i = 1; i <= Model.UserCredits; i++)
                     {
                         <option value="@i">@i</option>
                     }
                 </select>
+            </div>
+            <div class="form-group">
+                <label>Payout</label>
+                <input id="payout" disabled class="form-control">
+                <span class="small text-danger"></span>
             </div>
             <div class="text-center">
                 <input class="btn btn-primary mt-3" type="submit" value="Place bet" />
@@ -55,4 +62,4 @@
     </div>
 </div>
 
-@*<script src="~/js/Areas/Vendor/Views/AmmoBoxes/calculateFinalImportPrice.js"></script>*@
+<script src="~/js/Common/calculateBetPayout.js"></script>
