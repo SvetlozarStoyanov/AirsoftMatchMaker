@@ -20,7 +20,7 @@
                 </h3>
             </div>
     }
-    @if (Model.IsAcceptingBets && userCanBet)
+    @if (Model.IsAcceptingBets && userCanBet && !ViewBag.GameIdsOfGamesUserHasBetOn.Contains(Model.Id))
     {
             <div class="d-flex align-items-center justify-content-around mt-3 mb-3">
                 <a asp-area="Player" asp-controller="Bets" asp-action="Create" asp-route-gameId="@Model.Id"
