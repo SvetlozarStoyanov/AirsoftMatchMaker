@@ -66,6 +66,14 @@ namespace AirsoftMatchMaker.Core.Contracts
         Task<int> GetGameIdByBetAsync(int id);
 
         /// <summary>
+        /// Gets the <see cref="Game.Id"/>'s of the <see cref="Game"/> the user with <paramref name="userId"/>
+        /// has placed a bet on
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns><see cref="IEnumerable{Int32}"/></returns>
+        Task<IEnumerable<int>> GetGamesIdsWhichUserHasBetOnAsync(string userId);
+
+        /// <summary>
         /// Returns all bets created by <see cref="User"/> with given id
         /// </summary>
         /// <param name="userId"></param>

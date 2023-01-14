@@ -75,6 +75,15 @@ namespace AirsoftMatchMaker.Core.Services
             return bet.GameId;
         }
 
+        public async Task<IEnumerable<int>> GetGamesIdsWhichUserHasBetOnAsync(string userId)
+        {
+            var gameIds = await repository.AllReadOnly<Game>()
+                .Where(g => g.GameStatus == GameStatus.Upcoming && g.Bets.Any(b => b.UserId == userId))
+                .Select(g => g.Id)
+                .ToListAsync();
+            return gameIds;
+        }
+
         public async Task<IEnumerable<BetListModel>> GetUserBetsAsync(string userId)
         {
             var bets = await repository.AllReadOnly<Bet>()
@@ -321,7 +330,5 @@ namespace AirsoftMatchMaker.Core.Services
             }
             return Math.Round(profit, 2);
         }
-
-
     }
 }
