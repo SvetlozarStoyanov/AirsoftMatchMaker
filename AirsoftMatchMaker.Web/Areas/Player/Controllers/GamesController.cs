@@ -15,13 +15,15 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         private readonly IMapService mapService;
         private readonly IGameModeService gameModeService;
         private readonly IPlayerService playerService;
+        private readonly IBetService betService;
 
-        public GamesController(IGameService gameService, IMapService mapService, IGameModeService gameModeService, IPlayerService playerService)
+        public GamesController(IGameService gameService, IMapService mapService, IGameModeService gameModeService, IPlayerService playerService, IBetService betService)
         {
             this.gameService = gameService;
             this.mapService = mapService;
             this.gameModeService = gameModeService;
             this.playerService = playerService;
+            this.betService = betService;
         }
 
         public async Task<IActionResult> Index([FromQuery] GamesQueryModel model)
@@ -42,6 +44,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
             model.SortingOptions = queryResult.SortingOptions;
             ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());
             ViewBag.UserTeamId = await playerService.GetPlayersTeamIdAsync(User.Id());
+            ViewBag.GameIdsOfGamesUserHasBetOn = await betService.GetGamesIdsWhichUserHasBetOnAsync(User.Id());
             return View(model);
         }
 
@@ -53,11 +56,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
                 return RedirectToAction(nameof(Index));
             }
             var model = await gameService.GetGameByIdAsync(id);
-            if (model == null)
-            {
-                TempData["error"] = $"Game with {id} id does not exist!";
-                return RedirectToAction(nameof(Index));
-            }
+            ViewBag.GameIdsOfGamesUserHasBetOn = await betService.GetGamesIdsWhichUserHasBetOnAsync(User.Id());
             ViewBag.Map = await mapService.GetMapByIdAsync(model.Map.Id);
             ViewBag.GameMode = await gameModeService.GetGameModeByIdAsync(model.Map.GameModeId);
             ViewBag.UserCredits = await playerService.GetPlayersAvailableCreditsAsync(User.Id());

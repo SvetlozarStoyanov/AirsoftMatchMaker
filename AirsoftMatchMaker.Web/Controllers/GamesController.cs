@@ -1,6 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Games;
-using AirsoftMatchMaker.Infrastructure.Data.Enums;
+using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AirsoftMatchMaker.Web.Controllers
@@ -10,12 +10,14 @@ namespace AirsoftMatchMaker.Web.Controllers
         private readonly IGameService gameService;
         private readonly IMapService mapService;
         private readonly IGameModeService gameModeService;
+        private readonly IBetService betService;
 
-        public GamesController(IGameService gameService, IMapService mapService, IGameModeService gameModeService)
+        public GamesController(IGameService gameService, IMapService mapService, IGameModeService gameModeService, IBetService betService)
         {
             this.gameService = gameService;
             this.mapService = mapService;
             this.gameModeService = gameModeService;
+            this.betService = betService;
         }
 
         public async Task<IActionResult> Index([FromQuery] GamesQueryModel model)
@@ -34,6 +36,10 @@ namespace AirsoftMatchMaker.Web.Controllers
             model.GameModeNames = queryResult.GameModeNames;
             model.TeamNames = queryResult.TeamNames;
             model.SortingOptions = queryResult.SortingOptions;
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.GameIdsOfGamesUserHasBetOn = await betService.GetGamesIdsWhichUserHasBetOnAsync(User.Id());
+            }
             return View(model);
         }
         public async Task<IActionResult> Details(int id)
@@ -42,6 +48,10 @@ namespace AirsoftMatchMaker.Web.Controllers
             {
                 TempData["error"] = "Game does not exist!";
                 return RedirectToAction(nameof(Index));
+            }
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.GameIdsOfGamesUserHasBetOn = await betService.GetGamesIdsWhichUserHasBetOnAsync(User.Id());
             }
             var model = await gameService.GetGameByIdAsync(id);
             ViewBag.Map = await mapService.GetMapByIdAsync(model.Map.Id);

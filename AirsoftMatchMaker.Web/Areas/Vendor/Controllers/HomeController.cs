@@ -1,5 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
-using AirsoftMatchMaker.Core.Services;
+using AirsoftMatchMaker.Web.Extensions;
 using AirsoftMatchMaker.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +13,19 @@ namespace AirsoftMatchMaker.Web.Areas.Vendor.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IGameService gameService;
+        private readonly IBetService betService;
 
-        public HomeController(ILogger<HomeController> logger, IGameService gameService)
+        public HomeController(ILogger<HomeController> logger, IGameService gameService,IBetService betService)
         {
             _logger = logger;
             this.gameService = gameService;
+            this.betService = betService;
         }
 
         public async Task<IActionResult> Index()
         {
             var model = await gameService.GetUpcomingGamesByDateAsync();
+            ViewBag.GameIdsOfGamesUserHasBetOn = await betService.GetGamesIdsWhichUserHasBetOnAsync(User.Id());
             return View(model);
         }
 

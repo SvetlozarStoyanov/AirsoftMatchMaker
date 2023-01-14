@@ -17,12 +17,14 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         private readonly IGameService gameService;
         private readonly ITeamService teamService;
         private readonly IPlayerService playerService;
-        public HomeController(ILogger<HomeController> logger, IGameService gameService, ITeamService teamService, IPlayerService playerService)
+        private readonly IBetService betService;
+        public HomeController(ILogger<HomeController> logger, IGameService gameService, ITeamService teamService, IPlayerService playerService, IBetService betService)
         {
             _logger = logger;
             this.gameService = gameService;
             this.teamService = teamService;
             this.playerService = playerService;
+            this.betService = betService;
         }
 
         public async Task<IActionResult> Index()
@@ -35,6 +37,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
                 if (playerGamesmodel.Count() == 0)
                 {
                     var defaultModel = await gameService.GetUpcomingGamesByDateAsync();
+                    ViewBag.GameIdsOfGamesUserHasBetOn = await betService.GetGamesIdsWhichUserHasBetOnAsync(User.Id());
                     return View(defaultModel);
                 }
 

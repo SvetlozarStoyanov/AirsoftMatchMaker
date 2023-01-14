@@ -1,6 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Bets;
-using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,18 +18,12 @@ namespace AirsoftMatchMaker.Web.Controllers
             this.gameService = gameService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         public async Task<IActionResult> Create(int gameId)
         {
             if (!(await gameService.GameExistsAsync(gameId)))
             {
                 TempData["error"] = "Game does not exist";
                 return RedirectToAction("Index", "Games");
-
             }
             if (await betService.IsUserMatchmakerAsync(User.Id()))
             {
