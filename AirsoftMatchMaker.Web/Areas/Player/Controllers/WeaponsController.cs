@@ -58,7 +58,7 @@ namespace AirsoftMatchMaker.Web.Areas.Player.Controllers
         [HttpPost]
         public async Task<IActionResult> Buy(int id)
         {
-            
+
             if (!(await weaponService.WeaponExistsAsync(id)))
             {
                 TempData.Add("error", "Weapon does not exist");

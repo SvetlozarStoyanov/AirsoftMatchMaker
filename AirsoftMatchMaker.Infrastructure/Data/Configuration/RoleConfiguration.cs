@@ -29,7 +29,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Configuration
                     Id = roleGuids[i],
                     ConcurrencyStamp = roleGuids[i++],
                     Name = "Administrator",
-                    NormalizedName ="ADMINISTRATOR",
+                    NormalizedName = "ADMINISTRATOR",
                     Description = "Responsible for granting roles."
                 },
                 new Role()

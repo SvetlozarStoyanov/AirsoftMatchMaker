@@ -2,6 +2,7 @@
 using AirsoftMatchMaker.Core.Models.Users;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Web.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -98,7 +99,6 @@ namespace AirsoftMatchMaker.Web.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Logout()
