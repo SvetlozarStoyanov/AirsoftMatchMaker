@@ -1,6 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.RoleRequests;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,15 +8,15 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class RoleRequestService : IRoleRequestService
     {
-        private readonly IRepository repository;
-        public RoleRequestService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public RoleRequestService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task CreateRoleRequestAsync(string roleId, string userId)
         {
-            if (repository.All<RoleRequest>().Any(rrq => rrq.RoleId == roleId && rrq.UserId == userId))
+            if (unitOfWork.RoleRequestRepository.All().Any(rrq => rrq.RoleId == roleId && rrq.UserId == userId))
             {
                 return;
             }
@@ -26,39 +26,39 @@ namespace AirsoftMatchMaker.Core.Services
                 RoleId = roleId,
                 UserId = userId
             };
-            await repository.AddAsync<RoleRequest>(roleRequest);
-            await repository.SaveChangesAsync();
+            await unitOfWork.RoleRequestRepository.AddAsync(roleRequest);
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteRoleRequestAsync(string roleId, string userId)
         {
-            if (!repository.All<RoleRequest>().Any(rrq => rrq.RoleId == roleId && rrq.UserId == userId))
+            if (!unitOfWork.RoleRequestRepository.All().Any(rrq => rrq.RoleId == roleId && rrq.UserId == userId))
             {
                 return;
             }
-            var roleRequest = await repository.All<RoleRequest>().FirstOrDefaultAsync(rrq => rrq.RoleId == roleId && rrq.UserId == userId);
+            var roleRequest = await unitOfWork.RoleRequestRepository.All().FirstOrDefaultAsync(rrq => rrq.RoleId == roleId && rrq.UserId == userId);
             if (roleRequest == null)
             {
                 return;
             }
-            repository.Delete<RoleRequest>(roleRequest);
-            await repository.SaveChangesAsync();
+            unitOfWork.RoleRequestRepository.Delete(roleRequest);
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteRoleRequestAsync(int id)
         {
-            var roleRequest = await repository.GetByIdAsync<RoleRequest>(id);
+            var roleRequest = await unitOfWork.RoleRequestRepository.GetByIdAsync(id);
             if (roleRequest == null)
             {
                 return;
             }
-            repository.Delete<RoleRequest>(roleRequest);
-            await repository.SaveChangesAsync();
+            unitOfWork.RoleRequestRepository.Delete(roleRequest);
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<RoleRequestListModel>> GetAllRoleRequestsAsync()
         {
-            var roleRequests = await repository.AllReadOnly<RoleRequest>()
+            var roleRequests = await unitOfWork.RoleRequestRepository.AllReadOnly()
                 .Include(rrq => rrq.Role)
                 .Include(rrq => rrq.User)
                 .Select(rrq => new RoleRequestListModel()
@@ -75,7 +75,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<RoleRequestViewModel> GetRoleRequestByIdAsync(int id)
         {
-            var roleRequest = await repository.AllReadOnly<RoleRequest>()
+            var roleRequest = await unitOfWork.RoleRequestRepository.AllReadOnly()
            .Include(rrq => rrq.Role)
            .Include(rrq => rrq.User)
            .Select(rrq => new RoleRequestViewModel()
@@ -92,7 +92,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<IEnumerable<RoleRequestListModel>> GetRequestedRolesByUserIdAsync(string userId)
         {
-            var requestedRoles = await repository.AllReadOnly<RoleRequest>()
+            var requestedRoles = await unitOfWork.RoleRequestRepository.AllReadOnly()
                 .Where(rrq => rrq.UserId == userId)
                 .Select(rrq => new RoleRequestListModel()
                 {

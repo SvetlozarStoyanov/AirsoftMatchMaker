@@ -1,5 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
 using AirsoftMatchMaker.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 using AirsoftMatchMaker.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 
 namespace AirsoftMatchMaker.Tests.UnitTests
 {
     public class PlayerClassServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IPlayerClassService playerClassService;
         private AirsoftMatchmakerDbContext context;
         [SetUp]
@@ -30,10 +31,10 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            playerClassService = new PlayerClassService(repository);
+            unitOfWork = new UnitOfWork(context);
+            playerClassService = new PlayerClassService(unitOfWork);
 
-            await repository.AddRangeAsync<PlayerClass>(new List<PlayerClass>()
+            await unitOfWork.PlayerClassRepository.AddRangeAsync(new List<PlayerClass>()
             {
                 new PlayerClass()
                 {
@@ -78,7 +79,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     Description = "Excels in attacking, lacks in defending."
                 }
             });
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -90,7 +91,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 Credits = 200
                 },
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -99,7 +100,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = true
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         [Test]
@@ -134,7 +135,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         public async Task Test_GetAllPlayerClassesAsync_ReturnsAllPlayerClasses()
         {
             var result = await playerClassService.GetAllPlayerClassesAsync();
-            var playerClasses = await repository.AllReadOnly<PlayerClass>().ToListAsync();
+            var playerClasses = await unitOfWork.PlayerClassRepository.AllReadOnly().ToListAsync();
             Assert.That(result.Count(), Is.EqualTo(playerClasses.Count - 1));
         }
         [Test]
@@ -146,7 +147,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_ChangePlayerClassAsync_ChangesPlayerClassCorrectly()
         {
-            var player = await repository.GetByIdAsync<Player>(1);
+            var player = await unitOfWork.PlayerRepository.GetByIdAsync(1);
             await playerClassService.ChangePlayerClassAsync(player.UserId, 3);
             Assert.That(player.PlayerClassId, Is.EqualTo(3));
         }

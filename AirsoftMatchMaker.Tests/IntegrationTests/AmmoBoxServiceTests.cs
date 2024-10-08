@@ -3,16 +3,15 @@ using AirsoftMatchMaker.Core.Models.AmmoBoxes;
 using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 
 namespace AirsoftMatchMaker.Tests.IntegrationTests
 {
     public class AmmoBoxServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IAmmoBoxService ammoBoxService;
         private AirsoftMatchmakerDbContext context;
 
@@ -29,10 +28,10 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            ammoBoxService = new AmmoBoxService(repository);
+            unitOfWork = new UnitOfWork(context);
+            ammoBoxService = new AmmoBoxService(unitOfWork);
 
-            await repository.AddRangeAsync<AmmoBox>(new List<AmmoBox>()
+            await unitOfWork.AmmoBoxRepository.AddRangeAsync(new List<AmmoBox>()
             {
                 new AmmoBox()
                 {
@@ -53,7 +52,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     VendorId = 1
                 },
             });
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -75,7 +74,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 Credits = 200
                 },
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -84,12 +83,12 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 PlayerClassId = 1,
                 IsActive = true
             });
-            await repository.AddAsync<Vendor>(new Vendor()
+            await unitOfWork.VendorRepository.AddAsync(new Vendor()
             {
                 Id = 1,
                 UserId = "77388c0c-698c-4df9-9ad9-cef29116b666"
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         [Test]
@@ -117,15 +116,15 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_BuyAmmoBoxAsync_WorksCorrectly()
         {
-            var player = await repository.All<Player>()
+            var player = await unitOfWork.PlayerRepository.All()
                 .Where(p => p.Id == 1)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync();
-            var vendor = await repository.All<Vendor>()
+            var vendor = await unitOfWork.VendorRepository.All()
                 .Where(v => v.Id == 1)
                 .Include(v => v.User)
                 .FirstOrDefaultAsync();
-            var ammoBox = await repository.GetByIdAsync<AmmoBox>(1);
+            var ammoBox = await unitOfWork.AmmoBoxRepository.GetByIdAsync(1);
             var model = new AmmoBoxBuyModel()
             {
                 Id = ammoBox.Id,
@@ -145,7 +144,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_CreateAmmoBoxAsync_WorksCorrectly()
         {
-            var vendor = await repository.All<Vendor>()
+            var vendor = await unitOfWork.VendorRepository.All()
                .Where(v => v.Id == 1)
                .Include(v => v.User)
                .FirstOrDefaultAsync();
@@ -160,7 +159,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
             await ammoBoxService.CreateAmmoBoxAsync(vendor.UserId, model);
 
             Assert.That(vendor.User.Credits, Is.EqualTo(150));
-            var ammoBoxes = await repository.AllReadOnly<AmmoBox>().ToListAsync();
+            var ammoBoxes = await unitOfWork.AmmoBoxRepository.AllReadOnly().ToListAsync();
             Assert.That(ammoBoxes.Count, Is.EqualTo(3));
             Assert.That(ammoBoxes.Any(ab => ab.Id == 3), Is.EqualTo(true));
         }
@@ -168,7 +167,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_RestockAmmoBoxAsync_WorksCorrectly()
         {
-            var vendor = await repository.All<Vendor>()
+            var vendor = await unitOfWork.VendorRepository.All()
                .Where(v => v.Id == 1)
                .Include(v => v.User)
                .FirstOrDefaultAsync();
@@ -179,7 +178,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 FinalImportPrice = 10
             };
             await ammoBoxService.RestockAmmoBox(vendor.UserId, model);
-            var ammoBox = await repository.GetByIdAsync<AmmoBox>(1);
+            var ammoBox = await unitOfWork.AmmoBoxRepository.GetByIdAsync(1);
             Assert.That(vendor.User.Credits, Is.EqualTo(190));
             Assert.That(ammoBox.Quantity, Is.EqualTo(902));
         }

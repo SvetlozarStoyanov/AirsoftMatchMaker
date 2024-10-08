@@ -3,33 +3,30 @@ using AirsoftMatchMaker.Core.Models.AmmoBoxes;
 using AirsoftMatchMaker.Core.Models.Clothes;
 using AirsoftMatchMaker.Core.Models.Inventory;
 using AirsoftMatchMaker.Core.Models.Weapons;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirsoftMatchMaker.Core.Services
 {
     public class InventoryService : IInventoryService
     {
-        private readonly IRepository repository;
-        public InventoryService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public InventoryService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<InventoryPlayerIndexModel> GetPlayerItemsAsync(string userId)
         {
             var model = new InventoryPlayerIndexModel();
-            var player = await repository.AllReadOnly<Player>()
+
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .Include(p => p.Clothes)
                 .Include(p => p.Weapons)
                 .FirstOrDefaultAsync();
+
             if (player != null)
             {
                 model.Ammo = player.Ammo;
@@ -61,7 +58,7 @@ namespace AirsoftMatchMaker.Core.Services
         public async Task<InventoryVendorIndexModel> GetVendorItemsAsync(string userId)
         {
             var model = new InventoryVendorIndexModel();
-            var vendor = await repository.AllReadOnly<Vendor>()
+            var vendor = await unitOfWork.VendorRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .Include(p => p.AmmoBoxes)
                 .Include(p => p.Clothes)

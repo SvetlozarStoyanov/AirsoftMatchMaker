@@ -1,16 +1,15 @@
 using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 
 namespace AirsoftMatchMaker.Tests.UnitTests
 {
     public class AmmoBoxServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IAmmoBoxService ammoBoxService;
         private AirsoftMatchmakerDbContext context;
 
@@ -27,10 +26,10 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            ammoBoxService = new AmmoBoxService(repository);
+            unitOfWork = new UnitOfWork(context);
+            ammoBoxService = new AmmoBoxService(unitOfWork);
 
-            await repository.AddRangeAsync<AmmoBox>(new List<AmmoBox>()
+            await unitOfWork.AmmoBoxRepository.AddRangeAsync(new List<AmmoBox>()
             {
                 new AmmoBox()
                 {
@@ -42,7 +41,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     VendorId = 1
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
 
@@ -50,7 +49,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_GetAmmoBoxByIdAsync_ReturnsNullWhenIdDoesNotExist()
         {
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var gameModel = await ammoBoxService.GetAmmoBoxByIdAsync(30);
             Assert.That(gameModel, Is.EqualTo(null));
         }
@@ -72,7 +71,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_UserCanBuyAmmoBoxAsync_ReturnsTrueWhenUserCanBuyBox()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -95,7 +94,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 Credits = 200
                 },
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -104,12 +103,12 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = true
             });
-            await repository.AddAsync<Vendor>(new Vendor()
+            await unitOfWork.VendorRepository.AddAsync(new Vendor()
                 {
                     Id = 1,
                     UserId = "77388c0c-698c-4df9-9ad9-cef29116b666"
                 });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
 
             var result = await ammoBoxService.UserCanBuyAmmoBoxAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 1);
             Assert.That(result, Is.EqualTo(true));
@@ -118,7 +117,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_UserCanBuyAmmoBoxAsync_ReturnsFalseWhenUserCannotBuyBox()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -131,7 +130,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 Credits = 200
                 },
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -140,12 +139,12 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = false
             });
-            await repository.AddAsync<Vendor>(new Vendor()
+            await unitOfWork.VendorRepository.AddAsync(new Vendor()
             {
                 Id = 1,
                 UserId = "202efe8b-7748-49ca-834c-fd1c37978ab2"
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
 
             var result = await ammoBoxService.UserCanBuyAmmoBoxAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 1);
             Assert.That(result, Is.EqualTo(false));
@@ -154,7 +153,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_UserHasEnoughCreditsAsync_ReturnsTrueWhenUserHasEnoughCredits()
         {
-            await repository.AddAsync<User>(new User()
+            await unitOfWork.UserRepository.AddAsync(new User()
             {
                 Id = "202efe8b-7748-49ca-834c-fd1c37978ab2",
                 UserName = "Ivan",
@@ -163,7 +162,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 NormalizedEmail = "IVAN@GMAIL.COM",
                 Credits = 200
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -171,12 +170,12 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 TeamId = 1,
                 PlayerClassId = 1
             });
-            await repository.AddAsync<Team>(new Team()
+            await unitOfWork.TeamRepository.AddAsync(new Team()
             {
                 Id = 1,
                 Name = "Test1",
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await ammoBoxService.UserHasEnoughCreditsAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 1, 2);
             Assert.That(result, Is.EqualTo(true));
         }
@@ -184,7 +183,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_UserHasEnoughCreditsAsync_ReturnsFalseWhenUserDoesNotHaveEnoughCredits()
         {
-            await repository.AddAsync<User>(new User()
+            await unitOfWork.UserRepository.AddAsync(new User()
             {
                 Id = "202efe8b-7748-49ca-834c-fd1c37978ab2",
                 UserName = "Ivan",
@@ -193,7 +192,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 NormalizedEmail = "IVAN@GMAIL.COM",
                 Credits = 20
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -201,12 +200,12 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 TeamId = 1,
                 PlayerClassId = 1
             });
-            await repository.AddAsync<Team>(new Team()
+            await unitOfWork.TeamRepository.AddAsync(new Team()
             {
                 Id = 1,
                 Name = "Test1",
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await ammoBoxService.UserHasEnoughCreditsAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 1, 3);
             Assert.That(result, Is.EqualTo(false));
         }

@@ -2368,7 +2368,10 @@
           "HtmlSanitizer": "8.0.601"
         },
         "runtime": {
-          "AirsoftMatchMaker.Core.dll": {}
+          "AirsoftMatchMaker.Core.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "AirsoftMatchMaker.Infrastructure/1.0.0": {
@@ -2379,7 +2382,10 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.10"
         },
         "runtime": {
-          "AirsoftMatchMaker.Infrastructure.dll": {}
+          "AirsoftMatchMaker.Infrastructure.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

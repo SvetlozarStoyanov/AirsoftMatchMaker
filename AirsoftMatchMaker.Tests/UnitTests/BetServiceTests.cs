@@ -1,6 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Services;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +11,13 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 
 namespace AirsoftMatchMaker.Tests.UnitTests
 {
     public class BetServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IBetService betService;
         private AirsoftMatchmakerDbContext context;
 
@@ -33,10 +34,10 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            betService = new BetService(repository);
+            unitOfWork = new UnitOfWork(context);
+            betService = new BetService(unitOfWork);
 
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -59,7 +60,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 },
             });
 
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -79,7 +80,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     OddsAreUpdated = true,
                 }
             });
-            await repository.AddRangeAsync<Bet>(new List<Bet>()
+            await unitOfWork.BetRepository.AddRangeAsync(new List<Bet>()
             {
                 new Bet()
                 {
@@ -92,7 +93,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 },
             });
 
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         [Test]
@@ -138,7 +139,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_IsUserInOneOfTheTeamsInTheGameAsync_ReturnsFalseWhenUserIsnt()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User()
                 {
@@ -157,7 +158,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     NormalizedEmail = $"PLAYER2@GMAIL.COM",
                 },
             });
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -170,7 +171,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     Name = "Test2"
                 },
             });
-            await repository.AddRangeAsync<Player>(new List<Player>()
+            await unitOfWork.PlayerRepository.AddRangeAsync(new List<Player>()
             {
                 new Player()
                 {
@@ -195,7 +196,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     SkillPoints = 200,
                 }
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await betService.IsUserInOneOfTheTeamsInTheGameAsync("cc1cb39b-c0cf-41ed-856c-d3943aec605a", 1);
             Assert.That(result, Is.EqualTo(false));
         }
@@ -203,7 +204,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_IsUserInOneOfTheTeamsInTheGameAsync_ReturnsTrueWhenUserIs()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User()
                 {
@@ -222,7 +223,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     NormalizedEmail = $"PLAYER2@GMAIL.COM",
                 },
             });
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -235,7 +236,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     Name = "Test2"
                 },
             });
-            await repository.AddRangeAsync<Player>(new List<Player>()
+            await unitOfWork.PlayerRepository.AddRangeAsync(new List<Player>()
             {
                 new Player()
                 {
@@ -260,7 +261,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     SkillPoints = 200,
                 }
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await betService.IsUserInOneOfTheTeamsInTheGameAsync("0b532089-f327-4dfa-a718-bc8bf8bad9a5", 1);
             Assert.That(result, Is.EqualTo(true));
         }
@@ -276,7 +277,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_IsGameFinished_ReturnsFalseWhenGameIsNotFinished()
         {
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -297,7 +298,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 }
             });
 
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await betService.IsGameFinishedAsync(2);
             Assert.That(result, Is.EqualTo(false));
         }
@@ -305,7 +306,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_DoesGameStillAcceptBetsAsync_ReturnTrueWhenGameAcceptsBets()
         {
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -333,7 +334,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_DoesGameStillAcceptBetsAsync_ReturnFalseWhenGameDoesNotAcceptBets()
         {
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -360,7 +361,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_IsUserMatchmakerAsync_ReturnTrueWhenUserIsMatchmaker()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User()
                 {
@@ -371,13 +372,13 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     NormalizedEmail = $"MATCHMAKER@GMAIL.COM",
                 },
             });
-            await repository.AddAsync<Matchmaker>(new Matchmaker()
+            await unitOfWork.MatchmakerRepository.AddAsync(new Matchmaker()
             {
                 Id = 1,
                 UserId = "c5d9e543-7c2f-4345-a014-ebd860eef718",
                 IsActive = true,
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await betService.IsUserMatchmakerAsync("c5d9e543-7c2f-4345-a014-ebd860eef718");
             Assert.That(result, Is.EqualTo(true));
         }
@@ -385,7 +386,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_IsUserMatchmakerAsync_ReturnFalseWhenUserIsNotMatchmaker()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User()
                 {
@@ -404,13 +405,13 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     NormalizedEmail = $"PLAYER1@GMAIL.COM",
                 },
             });
-            await repository.AddAsync<Matchmaker>(new Matchmaker()
+            await unitOfWork.MatchmakerRepository.AddAsync(new Matchmaker()
             {
                 Id = 1,
                 UserId = "c5d9e543-7c2f-4345-a014-ebd860eef718",
                 IsActive = true,
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await betService.IsUserMatchmakerAsync("0274ded9-003a-48eb-b608-7477597ec876");
             Assert.That(result, Is.EqualTo(false));
         }
@@ -425,7 +426,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_GetUserBetsAsync_ReturnsCorrectBets()
         {
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -438,7 +439,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     Name = "Test2"
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await betService.GetUserBetsAsync("cc1cb39b-c0cf-41ed-856c-d3943aec605a");
             Assert.That(result.Count(), Is.EqualTo(1));
             Assert.That(result.ElementAt(0).Id, Is.EqualTo(1));
@@ -449,7 +450,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_CreateBetCreateModelAsync_ReturnsCorrectModel()
         {
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -462,7 +463,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     Name = "Test2"
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var model = await betService.CreateBetCreateModelAsync("77388c0c-698c-4df9-9ad9-cef29116b666", 1);
 
             Assert.That(model.UserCredits, Is.EqualTo(200));
@@ -475,7 +476,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_GetBetByIdAsync_ReturnsCorrectModel()
         {
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -488,7 +489,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     Name = "Test2"
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var model = await betService.GetBetByIdAsync(1);
 
             Assert.That(model.CreditsBet, Is.EqualTo(20));
@@ -499,7 +500,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_GetBetToDeleteByIdAsync_ReturnsCorrectModel()
         {
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -512,7 +513,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     Name = "Test2"
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var model = await betService.GetBetToDeleteByIdAsync(1);
 
             Assert.That(model.CreditsBet, Is.EqualTo(20));

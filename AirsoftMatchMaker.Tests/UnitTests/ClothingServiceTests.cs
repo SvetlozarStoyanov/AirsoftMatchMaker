@@ -1,7 +1,7 @@
 using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
 {
     public class ClothingServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IClothingService clothingService;
         private AirsoftMatchmakerDbContext context;
 
@@ -27,10 +27,10 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            clothingService = new ClothingService(repository);
+            unitOfWork = new UnitOfWork(context);
+            clothingService = new ClothingService(unitOfWork);
 
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await unitOfWork.ClothingRepository.AddRangeAsync(new List<Clothing>()
             {
                 new Clothing()
                 {
@@ -44,12 +44,8 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 },
 
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
-
-
-
-      
 
         [Test]
         public async Task Test_ClothingExistsAsync_ReturnsTrueWhenAmmoBoxExists()
@@ -67,7 +63,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_UserCanBuyClothingAsync_ReturnsTrueWhenUserCanBuyClothing()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -90,7 +86,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 Credits = 200
                 },
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -99,12 +95,12 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = true
             });
-            await repository.AddAsync<Vendor>(new Vendor()
+            await unitOfWork.VendorRepository.AddAsync(new Vendor()
             {
                 Id = 1,
                 UserId = "77388c0c-698c-4df9-9ad9-cef29116b666"
             });
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await unitOfWork.ClothingRepository.AddRangeAsync(new List<Clothing>()
             {
                 new Clothing()
                 {
@@ -117,7 +113,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     VendorId = 1
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
 
             var result = await clothingService.UserCanBuyClothingAsync("202efe8b-7748-49ca-834c-fd1c37978ab2", 2);
             Assert.That(result, Is.EqualTo(true));
@@ -126,7 +122,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_UserCanBuyClothingAsync_ReturnsFalseWhenUserCannotBuyClothing()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -149,7 +145,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 Credits = 200
                 },
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -158,13 +154,13 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = true
             });
-            await repository.AddAsync<Vendor>(new Vendor()
+            await unitOfWork.VendorRepository.AddAsync(new Vendor()
             {
                 Id = 1,
                 UserId = "77388c0c-698c-4df9-9ad9-cef29116b666",
                 IsActive = false
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 2,
                 Ammo = 200,
@@ -173,7 +169,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = true
             });
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await unitOfWork.ClothingRepository.AddRangeAsync(new List<Clothing>()
             {
                 new Clothing()
                 {
@@ -186,7 +182,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     VendorId = 1
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
 
             var result = await clothingService.UserCanBuyClothingAsync("77388c0c-698c-4df9-9ad9-cef29116b666", 2);
             Assert.That(result, Is.EqualTo(false));
@@ -195,7 +191,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_UserCanSellClothingAsync_ReturnsTrueWhenUserCanSellClothing()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -218,7 +214,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 Credits = 200
                 },
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -227,7 +223,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = true
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 2,
                 Ammo = 200,
@@ -236,13 +232,13 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = false
             });
-            await repository.AddAsync<Vendor>(new Vendor()
+            await unitOfWork.VendorRepository.AddAsync(new Vendor()
             {
                 Id = 1,
                 UserId = "77388c0c-698c-4df9-9ad9-cef29116b666",
                 IsActive = true
             });
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await unitOfWork.ClothingRepository.AddRangeAsync(new List<Clothing>()
             {
                 new Clothing()
                 {
@@ -255,7 +251,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     PlayerId = 2
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
 
             var result = await clothingService.UserCanSellClothingAsync("77388c0c-698c-4df9-9ad9-cef29116b666", 2);
             Assert.That(result, Is.EqualTo(true));
@@ -264,7 +260,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_UserCanSellClothingAsync_ReturnsFalseWhenUserCannotSellClothing()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -287,7 +283,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 Credits = 200
                 }
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -296,7 +292,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = true
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 2,
                 Ammo = 200,
@@ -305,13 +301,13 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = false
             });
-            await repository.AddAsync<Vendor>(new Vendor()
+            await unitOfWork.VendorRepository.AddAsync(new Vendor()
             {
                 Id = 1,
                 UserId = "77388c0c-698c-4df9-9ad9-cef29116b666",
                 IsActive = true
             });
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await unitOfWork.ClothingRepository.AddRangeAsync(new List<Clothing>()
             {
                 new Clothing()
                 {
@@ -324,7 +320,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     PlayerId = 1
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
 
             var result = await clothingService.UserCanSellClothingAsync("77388c0c-698c-4df9-9ad9-cef29116b666", 2);
             Assert.That(result, Is.EqualTo(false));
@@ -333,7 +329,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_IsClothingForSaleAsync_ReturnsTrueWhenClothingIsForSale()
         {
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await unitOfWork.ClothingRepository.AddRangeAsync(new List<Clothing>()
             {
                 new Clothing()
                 {
@@ -346,7 +342,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     VendorId = 1
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await clothingService.ClothingIsForSaleAsync(2);
             Assert.That(result, Is.EqualTo(true));
         }
@@ -383,7 +379,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_GetClothingByIdAsync_ReturnsCorrectModel()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -406,7 +402,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 Credits = 200
                 },
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 1,
                 Ammo = 200,
@@ -415,7 +411,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = true
             });
-            await repository.AddAsync<Player>(new Player()
+            await unitOfWork.PlayerRepository.AddAsync(new Player()
             {
                 Id = 2,
                 Ammo = 200,
@@ -424,7 +420,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 PlayerClassId = 1,
                 IsActive = false
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var gameModel = await clothingService.GetClothingByIdAsync(1);
             Assert.That(gameModel.Id, Is.EqualTo(1));
             Assert.That(gameModel.PlayerId, Is.EqualTo(2));

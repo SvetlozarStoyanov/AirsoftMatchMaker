@@ -1,7 +1,8 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Matchmakers;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,29 +10,31 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class MatchmakerService : IMatchmakerService
     {
-        private readonly IRepository repository;
-        public MatchmakerService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public MatchmakerService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<int> GetMatchmakerIdAsync(string userId)
         {
-            var matchmakerId = await repository.AllReadOnly<Matchmaker>()
+            var matchmakerId = await unitOfWork.MatchmakerRepository.AllReadOnly()
                 .Where(mm => mm.UserId == userId)
                 .Select(mm => mm.Id)
                 .FirstOrDefaultAsync();
+
             return matchmakerId;
         }
 
         public async Task CreateMatchmakerAsync(string userId)
         {
-            var matchmaker = await repository.All<Matchmaker>()
+            var matchmaker = await unitOfWork.MatchmakerRepository.All()
                 .FirstOrDefaultAsync(p => p.UserId == userId);
+
             if (matchmaker != null)
             {
                 matchmaker.IsActive = true;
-                await repository.SaveChangesAsync();
+                await unitOfWork.SaveChangesAsync();
                 return;
             }
 
@@ -44,25 +47,25 @@ namespace AirsoftMatchMaker.Core.Services
             //{
             //    player.IsActive = false;
             //}
-            await repository.AddAsync<Matchmaker>(newMatchmaker);
-            await repository.SaveChangesAsync();
+            await unitOfWork.MatchmakerRepository.AddAsync(newMatchmaker);
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task RetireMatchmakerAsync(string userId)
         {
-            var matchmaker = await repository.All<Matchmaker>()
+            var matchmaker = await unitOfWork.MatchmakerRepository.All()
                     .FirstOrDefaultAsync(p => p.UserId == userId);
             if (matchmaker == null)
             {
                 return;
             }
             matchmaker.IsActive = false;
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<MatchmakerListModel>> GetAllMatchmakersAsync()
         {
-            var matchmakers = await repository.AllReadOnly<Matchmaker>()
+            var matchmakers = await unitOfWork.MatchmakerRepository.AllReadOnly()
                     .Where(mm => mm.IsActive)
                     .Include(mm => mm.User)
                     .Select(mm => new MatchmakerListModel()
@@ -79,7 +82,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<MatchmakerViewModel> GetMatchmakerByIdAsync(int id)
         {
-            var matchmaker = await repository.AllReadOnly<Matchmaker>()
+            var matchmaker = await unitOfWork.MatchmakerRepository.AllReadOnly()
                     .Where(mm => mm.Id == id)
                     .Select(mm => new MatchmakerViewModel()
                     {
@@ -98,9 +101,8 @@ namespace AirsoftMatchMaker.Core.Services
                         .ToList()
                     })
                     .FirstOrDefaultAsync();
+
             return matchmaker;
         }
-
-
     }
 }

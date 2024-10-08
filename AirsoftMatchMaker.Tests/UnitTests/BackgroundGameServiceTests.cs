@@ -1,21 +1,16 @@
 ﻿using AirsoftMatchMaker.Core.Services;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
-using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
+using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirsoftMatchMaker.Tests.UnitTests
 {
     internal class BackgroundGameServiceTests
     {
         private AirsoftMatchmakerDbContext context;
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private BackgroundGameService backgroundGameservice;
         [SetUp]
         public async Task Setup()
@@ -29,10 +24,10 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            backgroundGameservice = new BackgroundGameService(repository);
+            unitOfWork = new UnitOfWork(context);
+            backgroundGameservice = new BackgroundGameService(unitOfWork);
 
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -69,14 +64,14 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     OddsAreUpdated = false,
                 }
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         [Test]
         public async Task Test_MarkGamesAsFinishedAsync_MarksCorrectGames()
         {
             await backgroundGameservice.MarkGamesAsFinishedAsync(DateTime.Now);
-            var games = await repository.AllReadOnly<Game>()
+            var games = await unitOfWork.GameRepository.AllReadOnly()
                 .ToListAsync();
 
             Assert.That(games.Count(g => g.GameStatus == GameStatus.Upcoming), Is.EqualTo(1));

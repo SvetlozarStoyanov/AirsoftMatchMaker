@@ -1,7 +1,8 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
 {
     public class InvetoryServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IInventoryService invetoryService;
         private AirsoftMatchmakerDbContext context;
 
@@ -27,10 +28,10 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            invetoryService = new InventoryService(repository);
+            unitOfWork = new UnitOfWork(context);
+            invetoryService = new InventoryService(unitOfWork);
 
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -51,7 +52,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Credits = 200
                 },
             });
-            await repository.AddRangeAsync<Player>(new List<Player>()
+            await unitOfWork.PlayerRepository.AddRangeAsync(new List<Player>()
             {
                 new Player()
                 {
@@ -72,12 +73,12 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     IsActive = false
                 }
             });
-            await repository.AddAsync<Vendor>(new Vendor()
+            await unitOfWork.VendorRepository.AddAsync(new Vendor()
             {
                 Id = 1,
                 UserId = "77388c0c-698c-4df9-9ad9-cef29116b666"
             });
-            await repository.AddRangeAsync<AmmoBox>(new List<AmmoBox>()
+            await unitOfWork.AmmoBoxRepository.AddRangeAsync(new List<AmmoBox>()
             {
                 new AmmoBox()
                 {
@@ -99,7 +100,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 },
 
             });
-            await repository.AddRangeAsync<Clothing>(new List<Clothing>()
+            await unitOfWork.ClothingRepository.AddRangeAsync(new List<Clothing>()
             {
                 new Clothing()
                 {
@@ -129,7 +130,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     PlayerId = 2,
                 },
             });
-            await repository.AddRangeAsync<Weapon>(new List<Weapon>()
+            await unitOfWork.WeaponRepository.AddRangeAsync(new List<Weapon>()
             {
                 new Weapon()
                 {
@@ -163,7 +164,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     PlayerId = 2
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         [Test]

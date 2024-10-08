@@ -3,7 +3,8 @@ using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Maps;
 using AirsoftMatchMaker.Core.Models.Teams;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -12,32 +13,35 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class GameService : IGameService
     {
-        private readonly IRepository repository;
-        public GameService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public GameService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
 
         public async Task<bool> GameExistsAsync(int id)
         {
-            var game = await repository.GetByIdAsync<Game>(id);
+            var game = await unitOfWork.GameRepository.GetByIdAsync(id);
             return game != null;
         }
 
         public async Task<bool> AreTeamPlayerCountsSimilarAsync(int teamRedId, int teamBlueId)
         {
-            var teamRed = await repository.AllReadOnly<Team>()
+            var teamRed = await unitOfWork.TeamRepository.AllReadOnly()
                 .Where(t => t.Id == teamRedId)
                 .Include(t => t.Players)
                 .ThenInclude(p => p.Weapons)
                 .FirstOrDefaultAsync();
+
             int teamRedPlayersCount = teamRed.Players.Count(p => p.Weapons.Any());
-            var teamBlue = await repository.AllReadOnly<Team>()
+
+            var teamBlue = await unitOfWork.TeamRepository.AllReadOnly()
                .Where(t => t.Id == teamBlueId)
                .Include(t => t.Players)
                .ThenInclude(p => p.Weapons)
                .FirstOrDefaultAsync();
+
             int teamBluePlayersCount = teamBlue.Players.Count(p => p.Weapons.Any());
 
             return Math.Abs(teamRedPlayersCount - teamBluePlayersCount) <= 2;
@@ -45,7 +49,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<bool> GameCanBeFinalisedAsync(string userId, int gameId)
         {
-            var game = await repository.AllReadOnly<Game>()
+            var game = await unitOfWork.GameRepository.AllReadOnly()
                 .Where(g => g.Id == gameId)
                 .Include(g => g.Matchmaker)
                 .ThenInclude(mm => mm.User)
@@ -56,10 +60,11 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<bool> GameIsFinishedButNotFinalisedAsync(int id)
         {
-            var game = await repository.AllReadOnly<Game>()
+            var game = await unitOfWork.GameRepository.AllReadOnly()
                  .Where(g => g.Id == id)
                  .Include(g => g.GameBetCreditsContainer)
                  .FirstOrDefaultAsync();
+
             return game.GameStatus == GameStatus.Finished && game.Result == null;
         }
 
@@ -75,7 +80,7 @@ namespace AirsoftMatchMaker.Core.Services
         {
             //var allGames = await repository.AllReadOnly<Game>()
             //    .ToListAsync();
-            var games = await repository.AllReadOnly<Game>()
+            var games = await unitOfWork.GameRepository.AllReadOnly()
                 .Where(g =>
                 ((!g.GameBetCreditsContainer.BetsArePaidOut && g.GameStatus == GameStatus.Upcoming)
                 || (g.GameBetCreditsContainer.BetsArePaidOut && g.GameStatus == GameStatus.Finished))
@@ -141,7 +146,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<GameViewModel> GetGameByIdAsync(int id)
         {
-            var game = await repository.AllReadOnly<Game>()
+            var game = await unitOfWork.GameRepository.AllReadOnly()
                         .Where(g => g.Id == id)
                         .Include(g => g.TeamRed)
                         .ThenInclude(t => t.Players)
@@ -199,12 +204,12 @@ namespace AirsoftMatchMaker.Core.Services
             DateTime dateTime = DateTime.Today.AddHours(36);
             HashSet<DateTime> availableDates = new HashSet<DateTime>();
 
-            var maps = await repository.AllReadOnly<Map>()
+            var maps = await unitOfWork.MapRepository.AllReadOnly()
                  .Include(m => m.GameMode)
                  .Include(m => m.Games)
                  .ToListAsync();
 
-            var teams = await repository.AllReadOnly<Team>()
+            var teams = await unitOfWork.TeamRepository.AllReadOnly()
                 .Where(t => t.Players.Count > 0 && t.Players.Any(p => p.Weapons.Count > 0) && t.GamesAsTeamRed.All(g => g.GameStatus != GameStatus.Upcoming) && t.GamesAsTeamBlue.All(g => g.GameStatus != GameStatus.Upcoming))
                 .Include(t => t.Players)
                 .Include(t => t.GamesAsTeamRed)
@@ -254,7 +259,7 @@ namespace AirsoftMatchMaker.Core.Services
         public async Task<GameCreateModel> CreateGameCreateModelAsync(string dateTimeString)
         {
             DateTime dateTime = DateTime.Parse(dateTimeString);
-            var maps = await repository.AllReadOnly<Map>()
+            var maps = await unitOfWork.MapRepository.AllReadOnly()
                 .Where(m => m.Games.Any(g => g.Date.Date != dateTime.Date))
                 .Include(m => m.GameMode)
                 .Include(m => m.Games)
@@ -265,7 +270,7 @@ namespace AirsoftMatchMaker.Core.Services
             //}
             //maps = maps.Where(m => m.Games.Count == 0).ToList();
 
-            var teams = await repository.AllReadOnly<Team>()
+            var teams = await unitOfWork.TeamRepository.AllReadOnly()
                 .Where(t => t.Players.Any(p => p.IsActive) && t.Players.Any(p => p.Weapons.Count > 0) && t.GamesAsTeamRed.All(g => g.Date.Date != dateTime.Date) && t.GamesAsTeamRed.All(g => g.Date.Date != dateTime.Date && g.GameStatus != GameStatus.Upcoming)
                     && t.GamesAsTeamBlue.All(g => g.Date.Date != dateTime.Date && g.GameStatus != GameStatus.Upcoming))
                 .Include(t => t.Players)
@@ -295,10 +300,10 @@ namespace AirsoftMatchMaker.Core.Services
         }
         public async Task CreateGameAsync(string matchmakerUserId, GameCreateModel model)
         {
-            var matchmaker = await repository.All<Matchmaker>()
+            var matchmaker = await unitOfWork.MatchmakerRepository.All()
                 .FirstOrDefaultAsync(mm => mm.UserId == matchmakerUserId);
 
-            var teamRed = await repository.All<Team>()
+            var teamRed = await unitOfWork.TeamRepository.All()
                 .Where(t => t.Id == model.TeamRedId)
                 .Include(t => t.Players.Where(p => p.IsActive && p.Weapons.Any()))
                 .ThenInclude(t => t.Weapons)
@@ -306,7 +311,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Include(t => t.GamesAsTeamBlue)
                 .FirstOrDefaultAsync();
 
-            var teamBlue = await repository.All<Team>()
+            var teamBlue = await unitOfWork.TeamRepository.All()
               .Where(t => t.Id == model.TeamBlueId)
               .Include(t => t.Players.Where(p => p.IsActive && p.Weapons.Any()))
               .ThenInclude(t => t.Weapons)
@@ -317,7 +322,7 @@ namespace AirsoftMatchMaker.Core.Services
             DateTime dateTime = DateTime.Parse(model.DateString);
 
 
-            var map = await repository.All<Map>()
+            var map = await unitOfWork.MapRepository.All()
                 .Where(m => m.Id == model.MapId)
                 .Include(m => m.GameMode)
                 .FirstOrDefaultAsync();
@@ -341,8 +346,8 @@ namespace AirsoftMatchMaker.Core.Services
                 OddsAreUpdated = false
             };
             matchmaker.OrganisedGames.Add(game);
-            await repository.SaveChangesAsync();
-            var gameId = await repository.AllReadOnly<Game>()
+            await unitOfWork.SaveChangesAsync();
+            var gameId = await unitOfWork.GameRepository.AllReadOnly()
                 .OrderByDescending(g => g.Id)
                 .Select(g => g.Id)
                 .FirstOrDefaultAsync();
@@ -351,14 +356,14 @@ namespace AirsoftMatchMaker.Core.Services
                 GameId = gameId,
                 BetsArePaidOut = false
             };
-            await repository.AddAsync<GameBetCreditsContainer>(container);
-            await repository.SaveChangesAsync();
+            await unitOfWork.GameBetCreditsContainerRepository.AddAsync(container);
+            await unitOfWork.SaveChangesAsync();
 
         }
 
         public async Task<IEnumerable<GameListModel>> GetUpcomingGamesByDateAsync()
         {
-            var games = await repository.AllReadOnly<Game>()
+            var games = await unitOfWork.GameRepository.AllReadOnly()
                .Where(g => g.GameStatus != GameStatus.Finished && (g.TeamRedOdds != 0 && g.TeamBlueOdds != 0))
                .Include(g => g.TeamRed)
                .Include(g => g.TeamBlue)
@@ -390,7 +395,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<IEnumerable<GameListModel>> GetPlayersLastFinishedAndFirstUpcomingGameAsync(string userId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
 
@@ -399,10 +404,10 @@ namespace AirsoftMatchMaker.Core.Services
                 return new List<GameListModel>();
             }
 
-            var team = await repository.AllReadOnly<Team>()
+            var team = await unitOfWork.TeamRepository.AllReadOnly()
                 .Where(t => t.Id == player.TeamId)
                 .FirstOrDefaultAsync();
-            var games = await repository.AllReadOnly<Game>()
+            var games = await unitOfWork.GameRepository.AllReadOnly()
                 .Where(g => g.TeamRedId == team.Id || g.TeamBlueId == team.Id)
                 .Include(g => g.Map)
                 .Include(g => g.GameMode)
@@ -456,7 +461,7 @@ namespace AirsoftMatchMaker.Core.Services
             int gamesPerPage = 6,
             int currentPage = 1)
         {
-            var games = await repository.AllReadOnly<Game>()
+            var games = await unitOfWork.GameRepository.AllReadOnly()
             .Include(g => g.TeamRed)
             .Include(g => g.TeamBlue)
             .Include(g => g.GameMode)
@@ -527,7 +532,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<GameFinaliseModel> CreateGameFinaliseModelAsync(int id)
         {
-            var model = await repository.AllReadOnly<Game>()
+            var model = await unitOfWork.GameRepository.AllReadOnly()
                 .Where(g => g.Id == id)
                 .Select(g => new GameFinaliseModel()
                 {
@@ -542,7 +547,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task FinalizeGameAsync(GameFinaliseModel model)
         {
-            var game = await repository.All<Game>()
+            var game = await unitOfWork.GameRepository.All()
                 .Where(g => g.Id == model.Id)
                 .Include(g => g.Matchmaker)
                 .ThenInclude(mm => mm.User)
@@ -558,7 +563,7 @@ namespace AirsoftMatchMaker.Core.Services
             var teamRed = game.TeamRed;
 
 
-            var teamRedPlayers = await repository.All<Player>()
+            var teamRedPlayers = await unitOfWork.PlayerRepository.All()
                 .Where(p => p.TeamId.HasValue && p.TeamId == teamRed.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
                 .Include(p => p.User)
                 .Include(p => p.Weapons)
@@ -566,7 +571,7 @@ namespace AirsoftMatchMaker.Core.Services
 
             var teamBlue = game.TeamBlue;
 
-            var teamBluePlayers = await repository.All<Player>()
+            var teamBluePlayers = await unitOfWork.PlayerRepository.All()
             .Where(p => p.TeamId.HasValue && p.TeamId == teamBlue.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
             .Include(p => p.User)
             .Include(p => p.Weapons)
@@ -592,7 +597,7 @@ namespace AirsoftMatchMaker.Core.Services
 
             int totalPlayerCount = teamRedPlayers.Count + teamBluePlayers.Count;
             TakeEntryFeeFromPlayers(teamRedPlayers, teamBluePlayers, matchmaker, game.EntryFee);
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
 
@@ -611,7 +616,7 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 "All"
             };
-            modelTeamNames.AddRange(await repository.AllReadOnly<Team>()
+            modelTeamNames.AddRange(await unitOfWork.TeamRepository.AllReadOnly()
                 .Select(t => t.Name)
                 .ToListAsync());
             model.TeamNames = modelTeamNames;
@@ -619,7 +624,7 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 "All"
             };
-            modelGameModeNames.AddRange(await repository.AllReadOnly<GameMode>()
+            modelGameModeNames.AddRange(await unitOfWork.GameModeRepository.AllReadOnly()
                 .Select(t => t.Name)
                 .ToListAsync());
             model.GameModeNames = modelGameModeNames;

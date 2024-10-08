@@ -1,45 +1,47 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace AirsoftMatchMaker.Core.Services
 {
     public class BackgroundGameService : IBackgroundGameService
     {
-        private readonly IRepository repository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public BackgroundGameService(IRepository repository)
+        public BackgroundGameService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task MarkGamesAsFinishedAsync(DateTime dateTime)
         {
-            var games = await repository.All<Game>()
+            var games = await unitOfWork.GameRepository.All()
                 .Where(g => g.Date.AddHours(5) < dateTime && g.GameStatus == GameStatus.Upcoming)
                 .ToListAsync();
+
             foreach (var game in games)
             {
                 game.GameStatus = GameStatus.Finished;
             }
-            await repository.SaveChangesAsync();
+
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<int>> GetGameIdsOfGamesWithNotUpDoDateOddsAsync()
         {
-            var gamesIds = await repository.AllReadOnly<Game>()
+            var gamesIds = await unitOfWork.GameRepository.AllReadOnly()
                 .Where(g => g.GameStatus == GameStatus.Upcoming && g.OddsAreUpdated == false)
                 .Select(g => g.Id)
                 .ToListAsync();
+
             return gamesIds;
         }
 
         public async Task CalculateBettingOddsAsync(int gameId)
         {
-            var game = await repository.All<Game>()
+            var game = await unitOfWork.GameRepository.All()
                 .Where(g => g.Id == gameId)
                 .Include(g => g.Map)
                 .ThenInclude(m => m.GameMode)
@@ -51,7 +53,7 @@ namespace AirsoftMatchMaker.Core.Services
 
             var teamRed = game.TeamRed;
 
-            var teamRedPlayers = await repository.All<Player>()
+            var teamRedPlayers = await unitOfWork.PlayerRepository.All()
                 .Where(p => p.TeamId.HasValue && p.TeamId == teamRed.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
                 .Include(p => p.User)
                 .Include(p => p.Weapons)
@@ -60,7 +62,7 @@ namespace AirsoftMatchMaker.Core.Services
 
             var teamBlue = game.TeamBlue;
 
-            var teamBluePlayers = await repository.All<Player>()
+            var teamBluePlayers = await unitOfWork.PlayerRepository.All()
                 .Where(p => p.TeamId.HasValue && p.TeamId == teamBlue.Id && p.IsActive && p.Weapons.Any() && p.User.Credits >= game.EntryFee)
                 .Include(p => p.User)
                 .Include(p => p.Weapons)
@@ -87,7 +89,7 @@ namespace AirsoftMatchMaker.Core.Services
             game.TeamRedOdds = odds.teamRedOdds;
             game.TeamBlueOdds = odds.teamBlueOdds;
             game.OddsAreUpdated = true;
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
 
