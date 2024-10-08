@@ -3,7 +3,8 @@ using AirsoftMatchMaker.Core.Models.GameModes;
 using AirsoftMatchMaker.Core.Models.Maps;
 using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
 {
     public class MapServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IMapService mapService;
         private AirsoftMatchmakerDbContext context;
         [SetUp]
@@ -33,10 +34,10 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            mapService = new MapService(repository);
+            unitOfWork = new UnitOfWork(context);
+            mapService = new MapService(unitOfWork);
 
-            await repository.AddRangeAsync<GameMode>(new List<GameMode>()
+            await unitOfWork.GameModeRepository.AddRangeAsync(new List<GameMode>()
             {
                 new GameMode()
                 {
@@ -53,7 +54,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     PointsToWin = 2
                 }
             });
-            await repository.AddRangeAsync<Map>(new List<Map>()
+            await unitOfWork.MapRepository.AddRangeAsync(new List<Map>()
             {
                 new Map
                 {
@@ -78,7 +79,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     GameModeId = 2
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
 
@@ -131,7 +132,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 GameModeId = 1,
             };
             await mapService.CreateMapAsync(model);
-            var maps = await repository.AllReadOnly<Map>().ToListAsync();
+            var maps = await unitOfWork.MapRepository.AllReadOnly().ToListAsync();
             Assert.That(maps.Count, Is.EqualTo(3));
         }
         [TearDown]

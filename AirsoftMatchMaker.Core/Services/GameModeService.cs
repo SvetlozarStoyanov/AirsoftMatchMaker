@@ -3,7 +3,8 @@ using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.GameModes;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Maps;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -12,21 +13,21 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class GameModeService : IGameModeService
     {
-        private readonly IRepository repository;
-        public GameModeService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public GameModeService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
 
         public async Task<bool> GameModeExistsAsync(int id)
         {
-            var gameMode = await repository.GetByIdAsync<GameMode>(id);
+            var gameMode = await unitOfWork.GameModeRepository.GetByIdAsync(id);
             return gameMode != null;
         }
         public async Task<bool> IsGameModeNameAlreadyTaken(string gameModeName)
         {
-            return await repository.AllReadOnly<GameMode>()
+            return await unitOfWork.GameModeRepository.AllReadOnly()
                 .AnyAsync(gm => gm.Name == gameModeName);
         }
 
@@ -37,7 +38,7 @@ namespace AirsoftMatchMaker.Core.Services
             int currentPage = 1
             )
         {
-            var gameModes = await repository.AllReadOnly<GameMode>()
+            var gameModes = await unitOfWork.GameModeRepository.AllReadOnly()
                 .Include(gm => gm.Maps)
                 .Include(gm => gm.Games)
                 .ToListAsync();
@@ -88,7 +89,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<GameModeViewModel> GetGameModeByIdAsync(int id)
         {
-            var gameMode = await repository.AllReadOnly<GameMode>()
+            var gameMode = await unitOfWork.GameModeRepository.AllReadOnly()
                 .Where(gm => gm.Id == id)
                 .Include(gm => gm.Maps)
                 .Include(gm => gm.Games)
@@ -131,8 +132,8 @@ namespace AirsoftMatchMaker.Core.Services
                 PointsToWin = model.PointsToWin
             };
 
-            await repository.AddAsync<GameMode>(gameMode);
-            await repository.SaveChangesAsync();
+            await unitOfWork.GameModeRepository.AddAsync(gameMode);
+            await unitOfWork.SaveChangesAsync();
         }
 
 

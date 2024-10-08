@@ -5,18 +5,16 @@ using AirsoftMatchMaker.Core.Models.Maps;
 using AirsoftMatchMaker.Core.Models.Teams;
 using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
-using AngleSharp.Text;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 
 namespace AirsoftMatchMaker.Tests.IntegrationTests
 {
     public class GameServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IGameService gameService;
         private AirsoftMatchmakerDbContext context;
 
@@ -33,14 +31,14 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            gameService = new GameService(repository);
+            unitOfWork = new UnitOfWork(context);
+            gameService = new GameService(unitOfWork);
         }
 
         [Test]
         public async Task Test_GetGameByIdAsync_ReturnsGameWhenIdExists()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User()
                 {
@@ -68,7 +66,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 },
             });
 
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -81,14 +79,14 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Name = "Test2"
                 },
             });
-            await repository.AddAsync<GameMode>(new GameMode()
+            await unitOfWork.GameModeRepository.AddAsync(new GameMode()
             {
                 Id = 1,
                 Name = "TestMode",
                 Description = "",
 
             });
-            await repository.AddAsync<Map>(new Map()
+            await unitOfWork.MapRepository.AddAsync(new Map()
             {
                 Id = 1,
                 Name = "TestMap",
@@ -98,13 +96,13 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 GameModeId = 1
 
             });
-            await repository.AddAsync<Matchmaker>(new Matchmaker()
+            await unitOfWork.MatchmakerRepository.AddAsync(new Matchmaker()
             {
                 Id = 1,
                 UserId = "c5d9e543-7c2f-4345-a014-ebd860eef718",
                 IsActive = true,
             });
-            await repository.AddRangeAsync<Player>(new List<Player>()
+            await unitOfWork.PlayerRepository.AddRangeAsync(new List<Player>()
             {
                 new Player()
                 {
@@ -129,7 +127,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     SkillPoints = 200,
                 }
             });
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -148,7 +146,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     OddsAreUpdated = true,
                 }
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var gameModel = await gameService.GetGameByIdAsync(1);
             var expectedResult = new GameViewModel()
             {
@@ -198,7 +196,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_GetAllGamesAsync_ReturnsCorrectGames()
         {
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -211,7 +209,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Name = "Test2"
                 },
             });
-            await repository.AddRangeAsync<GameMode>(new List<GameMode>()
+            await unitOfWork.GameModeRepository.AddRangeAsync(new List<GameMode>()
                 {
                     new GameMode()
                     {
@@ -226,7 +224,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                         Description = "",
                     },
             });
-            await repository.AddAsync<Map>(new Map()
+            await unitOfWork.MapRepository.AddAsync(new Map()
             {
                 Id = 1,
                 Name = "TestMap",
@@ -235,7 +233,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 Terrain = TerrainType.Forest,
                 GameModeId = 1
             });
-            await repository.AddRangeAsync<GameBetCreditsContainer>(new List<GameBetCreditsContainer>()
+            await unitOfWork.GameBetCreditsContainerRepository.AddRangeAsync(new List<GameBetCreditsContainer>()
             {
                 new GameBetCreditsContainer()
                 {
@@ -256,7 +254,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     BetsArePaidOut = false,
                 },
             });
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -315,7 +313,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 }
             });
 
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
 
             var model = await gameService.GetAllGamesAsync(
                    null,
@@ -392,7 +390,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_CreateGameAsync()
         {
-            await repository.AddAsync<User>(
+            await unitOfWork.UserRepository.AddAsync(
 
                 new User()
                 {
@@ -403,14 +401,14 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     NormalizedEmail = $"MATCHMAKER@GMAIL.COM",
                 });
 
-            await repository.AddAsync<Matchmaker>(
+            await unitOfWork.MatchmakerRepository.AddAsync(
                 new Matchmaker
                 {
                     Id = 1,
                     UserId = "c5d9e543-7c2f-4345-a014-ebd860eef718",
                     IsActive = true,
                 });
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -423,14 +421,14 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Name = "Test2"
                 },
             });
-            await repository.AddAsync<GameMode>(new GameMode()
+            await unitOfWork.GameModeRepository.AddAsync(new GameMode()
             {
                 Id = 1,
                 Name = "TestMode",
                 Description = "",
 
             });
-            await repository.AddAsync<Map>(new Map()
+            await unitOfWork.MapRepository.AddAsync(new Map()
             {
                 Id = 1,
                 Name = "TestMap",
@@ -451,11 +449,11 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
             };
 
 
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
 
             await gameService.CreateGameAsync("c5d9e543-7c2f-4345-a014-ebd860eef718", gameCreateModel);
 
-            var gamesCount = await repository.AllReadOnly<Game>()
+            var gamesCount = await unitOfWork.GameRepository.AllReadOnly()
                 .CountAsync();
 
             Assert.That(gamesCount, Is.EqualTo(1));
@@ -464,7 +462,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_GetUpcomingGamesByDateAsync()
         {
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -477,7 +475,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Name = "Test2"
                 },
             });
-            await repository.AddRangeAsync<GameMode>(new List<GameMode>()
+            await unitOfWork.GameModeRepository.AddRangeAsync(new List<GameMode>()
                 {
                     new GameMode()
                     {
@@ -492,7 +490,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                         Description = "",
                     },
             });
-            await repository.AddAsync<Map>(new Map()
+            await unitOfWork.MapRepository.AddAsync(new Map()
             {
                 Id = 1,
                 Name = "TestMap",
@@ -501,7 +499,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 Terrain = TerrainType.Forest,
                 GameModeId = 1
             });
-            await repository.AddRangeAsync<GameBetCreditsContainer>(new List<GameBetCreditsContainer>()
+            await unitOfWork.GameBetCreditsContainerRepository.AddRangeAsync(new List<GameBetCreditsContainer>()
             {
                 new GameBetCreditsContainer()
                 {
@@ -522,7 +520,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     BetsArePaidOut = false,
                 },
             });
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -580,7 +578,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     OddsAreUpdated = true,
                 }
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var games = await gameService.GetUpcomingGamesByDateAsync();
             Assert.That(games.Count(), Is.EqualTo(1));
         }
@@ -588,7 +586,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_GetPlayersLastFinishedAndFirstUpcomingGameAsync()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User()
                 {
@@ -624,7 +622,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 },
             });
 
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -642,14 +640,14 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Name = "Test3"
                 },
             });
-            await repository.AddAsync<GameMode>(new GameMode()
+            await unitOfWork.GameModeRepository.AddAsync(new GameMode()
             {
                 Id = 1,
                 Name = "TestMode",
                 Description = "",
 
             });
-            await repository.AddAsync<Map>(new Map()
+            await unitOfWork.MapRepository.AddAsync(new Map()
             {
                 Id = 1,
                 Name = "TestMap",
@@ -660,7 +658,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
 
             });
 
-            await repository.AddRangeAsync<Player>(new List<Player>()
+            await unitOfWork.PlayerRepository.AddRangeAsync(new List<Player>()
             {
                 new Player()
                 {
@@ -707,7 +705,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     SkillPoints = 200,
                 }
             });
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                     new Game()
                 {
@@ -765,7 +763,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     OddsAreUpdated = true,
                 }
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var games = await gameService.GetPlayersLastFinishedAndFirstUpcomingGameAsync("0274ded9-003a-48eb-b608-7477597ec876");
 
             var ids = games.Select(g => g.Id).ToList();
@@ -782,7 +780,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_GetMatchmakersOrganisedGamesAsync_ReturnsCorrectGames()
         {
-            await repository.AddRangeAsync<User>(new List<User>() {
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>() {
                 new User()
                 {
                     Id = "c5d9e543-7c2f-4345-a014-ebd860eef718",
@@ -801,7 +799,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 }
             });
 
-            await repository.AddRangeAsync<Matchmaker>(new List<Matchmaker>()
+            await unitOfWork.MatchmakerRepository.AddRangeAsync(new List<Matchmaker>()
             {
                 new Matchmaker()
                 {
@@ -818,7 +816,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
             });
 
 
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -831,7 +829,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Name = "Test2"
                 },
             });
-            await repository.AddRangeAsync<GameMode>(new List<GameMode>()
+            await unitOfWork.GameModeRepository.AddRangeAsync(new List<GameMode>()
                 {
                     new GameMode()
                 {
@@ -846,7 +844,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Description = "",
                 },
             });
-            await repository.AddAsync<Map>(new Map()
+            await unitOfWork.MapRepository.AddAsync(new Map()
             {
                 Id = 1,
                 Name = "TestMap",
@@ -855,7 +853,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 Terrain = TerrainType.Forest,
                 GameModeId = 1
             });
-            await repository.AddRangeAsync<GameBetCreditsContainer>(new List<GameBetCreditsContainer>()
+            await unitOfWork.GameBetCreditsContainerRepository.AddRangeAsync(new List<GameBetCreditsContainer>()
             {
                 new GameBetCreditsContainer()
                 {
@@ -876,7 +874,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     BetsArePaidOut = false,
                 },
             });
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -935,7 +933,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 }
             });
 
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var model = await gameService.GetAllGamesForAdminAndMatchmakerAsync(
                 1,
                 MatchmakerGameStatus.Finalized,
@@ -965,7 +963,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_FinaliseGameAsync_FinalisesGameCorrectly()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User()
                 {
@@ -993,7 +991,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 },
             });
 
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -1006,7 +1004,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Name = "Test2"
                 },
             });
-            await repository.AddAsync<GameMode>(new GameMode()
+            await unitOfWork.GameModeRepository.AddAsync(new GameMode()
             {
                 Id = 1,
                 Name = "TestMode",
@@ -1014,7 +1012,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 Description = "",
 
             });
-            await repository.AddAsync<Map>(new Map()
+            await unitOfWork.MapRepository.AddAsync(new Map()
             {
                 Id = 1,
                 Name = "TestMap",
@@ -1024,13 +1022,13 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 GameModeId = 1
 
             });
-            await repository.AddAsync<Matchmaker>(new Matchmaker()
+            await unitOfWork.MatchmakerRepository.AddAsync(new Matchmaker()
             {
                 Id = 1,
                 UserId = "c5d9e543-7c2f-4345-a014-ebd860eef718",
                 IsActive = true,
             });
-            await repository.AddRangeAsync<Player>(new List<Player>()
+            await unitOfWork.PlayerRepository.AddRangeAsync(new List<Player>()
             {
                 new Player()
                 {
@@ -1055,7 +1053,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     SkillPoints = 200,
                 }
             });
-            await repository.AddRangeAsync<Weapon>(new List<Weapon>()
+            await unitOfWork.WeaponRepository.AddRangeAsync(new List<Weapon>()
             {
                 new Weapon()
                 {
@@ -1086,7 +1084,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     WeaponType = WeaponType.Heavy
                 }
             });
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -1106,7 +1104,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     OddsAreUpdated = true,
                 }
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var model = new GameFinaliseModel()
             {
                 Id = 1,
@@ -1115,16 +1113,16 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 TeamBluePoints = 2
             };
             await gameService.FinalizeGameAsync(model);
-            var matchmaker = await repository.AllReadOnly<Matchmaker>()
+            var matchmaker = await unitOfWork.MatchmakerRepository.AllReadOnly()
                 .Where(mm => mm.Id == 1)
                 .Include(mm => mm.User)
                 .FirstOrDefaultAsync();
-            var game = await repository.GetByIdAsync<Game>(1);
-            var player1 = await repository.AllReadOnly<Player>()
+            var game = await unitOfWork.GameRepository.GetByIdAsync(1);
+            var player1 = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.Id == 1)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync();
-            var player2 = await repository.AllReadOnly<Player>()
+            var player2 = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.Id == 2)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync();

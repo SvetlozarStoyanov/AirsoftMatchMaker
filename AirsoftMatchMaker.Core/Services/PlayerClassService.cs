@@ -1,6 +1,7 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.PlayerClasses;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,32 +9,34 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class PlayerClassService : IPlayerClassService
     {
-        private readonly IRepository repository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public PlayerClassService(IRepository repository)
+        public PlayerClassService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<bool> PlayerClassExists(int id)
         {
-            return await repository.GetByIdAsync<PlayerClass>(id) != null;
+            return await unitOfWork.PlayerClassRepository.GetByIdAsync(id) != null;
         }
 
         public async Task<bool> IsPlayerAlreadyInPlayerClass(string userId, int playerClassId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .FirstOrDefaultAsync(p => p.UserId == userId);
+
             if (player.PlayerClassId == playerClassId)
             {
                 return true;
             }
+
             return false;
         }
 
         public async Task<IEnumerable<PlayerClassListModel>> GetAllPlayerClassesAsync()
         {
-            var playerClasses = await repository.AllReadOnly<PlayerClass>()
+            var playerClasses = await unitOfWork.PlayerClassRepository.AllReadOnly()
                 .Where(p => p.Id > 1)
                 .Select(p => new PlayerClassListModel()
                 {
@@ -42,12 +45,13 @@ namespace AirsoftMatchMaker.Core.Services
                     Description = p.Description
                 })
                 .ToListAsync();
+
             return playerClasses;
         }
 
         public async Task<int> GetPlayersPlayerClassIdByUserIdAsync(string userId)
         {
-            var playerClassId = await repository.AllReadOnly<Player>()
+            var playerClassId = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .Select(p => p.PlayerClassId)
                 .FirstOrDefaultAsync();
@@ -56,10 +60,10 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task ChangePlayerClassAsync(string userId, int playerClassId)
         {
-            var player = await repository.All<Player>()
+            var player = await unitOfWork.PlayerRepository.All()
                 .FirstOrDefaultAsync(p => p.UserId == userId);
             player.PlayerClassId = playerClassId;
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         //public async Task RemovePlayerFromPlayerClassAsync(string userId, int playerClassId)

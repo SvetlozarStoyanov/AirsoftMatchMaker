@@ -1,7 +1,7 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Clothes;
 using AirsoftMatchMaker.Core.Models.Enums;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -10,41 +10,44 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class ClothingService : IClothingService
     {
-        private readonly IRepository repository;
-        public ClothingService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public ClothingService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<bool> ClothingExistsAsync(int id)
         {
-            if (await repository.GetByIdAsync<Clothing>(id) == null)
+            if (await unitOfWork.ClothingRepository.GetByIdAsync(id) == null)
                 return false;
+
             return true;
         }
         public async Task<bool> UserCanBuyClothingAsync(string userId, int clothingId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
 
-            var clothing = await repository.AllReadOnly<Clothing>()
+            var clothing = await unitOfWork.ClothingRepository.AllReadOnly()
                 .Where(c => c.Id == clothingId)
                 .Include(c => c.Vendor)
                 .FirstOrDefaultAsync();
+
             if (clothing.Vendor.UserId == player.UserId)
                 return false;
+
             return true;
         }
 
 
         public async Task<bool> UserCanSellClothingAsync(string userId, int clothingId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
 
-            var clothing = await repository.GetByIdAsync<Clothing>(clothingId);
+            var clothing = await unitOfWork.ClothingRepository.GetByIdAsync(clothingId);
             if (clothing.PlayerId != player.Id)
                 return false;
 
@@ -53,13 +56,13 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<bool> ClothingIsForSaleAsync(int id)
         {
-            var clothing = await repository.GetByIdAsync<Clothing>(id);
+            var clothing = await unitOfWork.ClothingRepository.GetByIdAsync(id);
             return clothing.VendorId != null;
         }
 
         public async Task<bool> UserHasEnoughCreditsAsync(string userId, int clothingId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
               .Where(p => p.UserId == userId)
               .Include(p => p.User)
               .Include(p => p.Team)
@@ -68,10 +71,10 @@ namespace AirsoftMatchMaker.Core.Services
               .ThenInclude(p => p.GamesAsTeamBlue)
               .FirstOrDefaultAsync();
 
-            var clothing = await repository.GetByIdAsync<Clothing>(clothingId);
+            var clothing = await unitOfWork.ClothingRepository.GetByIdAsync(clothingId);
             if (player == null)
             {
-                var user = await repository.GetByIdAsync<User>(userId);
+                var user = await unitOfWork.UserRepository.GetByIdAsync(userId);
                 if (clothing.Price > user.Credits)
                 {
                     return false;
@@ -84,6 +87,7 @@ namespace AirsoftMatchMaker.Core.Services
                 .Union(player.Team.GamesAsTeamBlue)
                 .Where(g => g.GameStatus == GameStatus.Upcoming)
                 .Sum(g => g.EntryFee);
+
                 if (gamesEntryFeeSum + clothing.Price > player.User.Credits)
                     return false;
             }
@@ -97,7 +101,7 @@ namespace AirsoftMatchMaker.Core.Services
             int clothesPerPage = 6,
             int currentPage = 1)
         {
-            var clothes = await repository.AllReadOnly<Clothing>()
+            var clothes = await unitOfWork.ClothingRepository.AllReadOnly()
                 .Where(c => c.PlayerId == null && c.VendorId != null)
                 .ToListAsync();
             if (clothingColor != null)
@@ -145,7 +149,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<ClothingViewModel> GetClothingByIdAsync(int id)
         {
-            var clothing = await repository.AllReadOnly<Clothing>()
+            var clothing = await unitOfWork.ClothingRepository.AllReadOnly()
                 .Where(c => c.Id == id)
                 .Include(c => c.Vendor)
                 .ThenInclude(v => v.User)
@@ -169,7 +173,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<ClothingListModel> GetClothingListModelForBuyAsync(int id)
         {
-            var clothing = await repository.AllReadOnly<Clothing>()
+            var clothing = await unitOfWork.ClothingRepository.AllReadOnly()
                 .Where(c => c.Id == id)
                 .Select(c => new ClothingListModel()
                 {
@@ -183,25 +187,28 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task BuyClothingAsync(string buyerId, int clothingId)
         {
-            var buyer = await repository.All<Player>()
+            var buyer = await unitOfWork.PlayerRepository.All()
                 .Where(p => p.UserId == buyerId)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync();
-            var clothing = await repository.GetByIdAsync<Clothing>(clothingId);
-            var vendor = await repository.All<Vendor>()
+
+            var clothing = await unitOfWork.ClothingRepository.GetByIdAsync(clothingId);
+
+            var vendor = await unitOfWork.VendorRepository.All()
                 .Where(v => v.Id == clothing.VendorId)
                 .Include(v => v.User)
                 .FirstOrDefaultAsync();
+
             buyer.User.Credits -= clothing.Price;
             vendor.User.Credits += clothing.Price;
             buyer.Clothes.Add(clothing);
             vendor.Clothes.Remove(clothing);
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task CreateClothingAsync(string vendorUserId, ClothingCreateModel model)
         {
-            var vendor = await repository.All<Vendor>()
+            var vendor = await unitOfWork.VendorRepository.All()
                 .Where(v => v.UserId == vendorUserId && v.IsActive)
                 .Include(v => v.User)
                 .Include(v => v.Clothes)
@@ -217,13 +224,13 @@ namespace AirsoftMatchMaker.Core.Services
             };
             vendor.User.Credits -= model.FinalImportPrice;
             vendor.Clothes.Add(clothing);
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
 
         public async Task<ClothingSellModel> CreateClothingSellModelAsync(int id)
         {
-            var clothing = await repository.AllReadOnly<Clothing>()
+            var clothing = await unitOfWork.ClothingRepository.AllReadOnly()
                 .Where(c => c.Id == id)
                 .Select(c => new ClothingSellModel()
                 {
@@ -242,10 +249,11 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task SellClothingAsync(string vendorUserId, ClothingSellModel model)
         {
-            var vendor = await repository.AllReadOnly<Vendor>()
+            var vendor = await unitOfWork.VendorRepository.AllReadOnly()
                 .Where(v => v.UserId == vendorUserId)
                 .FirstOrDefaultAsync();
-            var clothing = await repository.GetByIdAsync<Clothing>(model.Id);
+
+            var clothing = await unitOfWork.ClothingRepository.GetByIdAsync(model.Id);
 
             clothing.Name = model.Name;
             clothing.Price = model.Price;
@@ -253,7 +261,7 @@ namespace AirsoftMatchMaker.Core.Services
             clothing.ImageUrl = model.ImageUrl;
             clothing.PlayerId = null;
             clothing.VendorId = vendor.Id;
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         private ClothesQueryModel CreateClothesQueryModel()

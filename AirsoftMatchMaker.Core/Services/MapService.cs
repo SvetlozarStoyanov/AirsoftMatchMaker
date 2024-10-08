@@ -2,7 +2,7 @@
 using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Maps;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -11,22 +11,22 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class MapService : IMapService
     {
-        private readonly IRepository repository;
-        public MapService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public MapService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
 
         public async Task<bool> MapExistsAsync(int id)
         {
-            var map = await repository.GetByIdAsync<Map>(id);
+            var map = await unitOfWork.MapRepository.GetByIdAsync(id);
             return map != null;
         }
 
         public async Task<bool> IsMapNameAlreadyTaken(string mapName)
         {
-            return await repository.AllReadOnly<Map>()
+            return await unitOfWork.MapRepository.AllReadOnly()
                 .AnyAsync(m => m.Name == mapName);
         }
 
@@ -38,10 +38,11 @@ namespace AirsoftMatchMaker.Core.Services
             int currentPage = 1
             )
         {
-            var maps = await repository.AllReadOnly<Map>()
+            var maps = await unitOfWork.MapRepository.AllReadOnly()
                 .Include(m => m.GameMode)
                 .Include(m => m.Games)
                 .ToListAsync();
+
             if (!string.IsNullOrWhiteSpace(gameModeName))
             {
                 maps = maps.Where(m => m.GameMode.Name.ToLower() == gameModeName.ToLower()).ToList();
@@ -50,6 +51,7 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 maps = maps.Where(m => m.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
             }
+
             switch (sorting)
             {
                 case MapSorting.Newest:
@@ -64,8 +66,8 @@ namespace AirsoftMatchMaker.Core.Services
                 case MapSorting.GamesPlayedDescending:
                     maps = maps.OrderByDescending(m => m.Games.Count).ToList();
                     break;
-
             }
+
             var filteredMaps = maps
                 .Skip((currentPage - 1) * mapsPerPage)
                 .Take(mapsPerPage)
@@ -82,7 +84,8 @@ namespace AirsoftMatchMaker.Core.Services
                     GamesPlayed = m.Games.Count
                 })
                 .ToList();
-            var model =await CreateMapsQueryModel();
+
+            var model = await CreateMapsQueryModel();
             model.MapsCount = maps.Count;
             model.Maps = filteredMaps;
             return model;
@@ -92,7 +95,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<MapViewModel> GetMapByIdAsync(int id)
         {
-            var map = await repository.AllReadOnly<Map>()
+            var map = await unitOfWork.MapRepository.AllReadOnly()
                 .Where(m => m.Id == id)
                 .Include(m => m.GameMode)
                 .Include(m => m.Games)
@@ -127,16 +130,13 @@ namespace AirsoftMatchMaker.Core.Services
             return map;
         }
 
-
-
-
         public async Task<MapCreateModel> CreateMapCreateModelAsync()
         {
             var model = new MapCreateModel();
             model.TerrainTypes = Enum.GetValues<TerrainType>().ToList();
             model.AverageEngagementDistances = Enum.GetValues<AverageEngagementDistance>().ToList();
             model.Mapsizes = Enum.GetValues<Mapsize>().ToList();
-            var gameModes = await repository.AllReadOnly<GameMode>()
+            var gameModes = await unitOfWork.GameModeRepository.AllReadOnly()
                 .Select(gm => new
                 {
                     Id = gm.Id,
@@ -161,8 +161,8 @@ namespace AirsoftMatchMaker.Core.Services
                 AverageEngagementDistance = model.AverageEngagementDistance,
                 GameModeId = model.GameModeId,
             };
-            await repository.AddAsync<Map>(map);
-            await repository.SaveChangesAsync();
+            await unitOfWork.MapRepository.AddAsync(map);
+            await unitOfWork.SaveChangesAsync();
         }
 
         private async Task<MapsQueryModel> CreateMapsQueryModel()
@@ -172,7 +172,7 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 "All"
             };
-            var gameModeNames = await repository.AllReadOnly<GameMode>()
+            var gameModeNames = await unitOfWork.GameModeRepository.AllReadOnly()
                 .Select(gm => gm.Name)
                 .ToListAsync();
             modelGameModeNames.AddRange(gameModeNames);
@@ -180,7 +180,5 @@ namespace AirsoftMatchMaker.Core.Services
             model.SortingOptions = Enum.GetValues<MapSorting>().ToList();
             return model;
         }
-
-
     }
 }

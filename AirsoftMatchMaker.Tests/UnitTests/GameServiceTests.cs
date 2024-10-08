@@ -1,7 +1,7 @@
 using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +9,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
 {
     public class GameServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IGameService gameService;
         private AirsoftMatchmakerDbContext context;
 
@@ -26,10 +26,10 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            gameService = new GameService(repository);
+            unitOfWork = new UnitOfWork(context);
+            gameService = new GameService(unitOfWork);
 
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -48,15 +48,13 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     OddsAreUpdated = true,
                 }
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
-
-
 
         [Test]
         public async Task Test_GetGameByIdAsync_ReturnsNullWhenIdDoesNotExist()
         {
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var gameModel = await gameService.GetGameByIdAsync(1);
             Assert.That(gameModel, Is.EqualTo(null));
         }
@@ -78,7 +76,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_GameCanBeFinalisedAsync_ReturnsTrueWhenUserIdIsCorrect()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User()
                 {
@@ -89,13 +87,13 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     NormalizedEmail = $"MATCHMAKER@GMAIL.COM",
                 },
             });
-            await repository.AddAsync<Matchmaker>(new Matchmaker()
+            await unitOfWork.MatchmakerRepository.AddAsync(new Matchmaker()
             {
                 Id = 1,
                 UserId = "c5d9e543-7c2f-4345-a014-ebd860eef718",
                 IsActive = true,
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await gameService.GameCanBeFinalisedAsync("c5d9e543-7c2f-4345-a014-ebd860eef718", 1);
             
             Assert.That(result, Is.EqualTo(true));
@@ -105,7 +103,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         [Test]
         public async Task Test_GameCanBeFinalisedAsync_ReturnsTrueWhenUserIdIsIncorrect()
         {
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User()
                 {
@@ -124,13 +122,13 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     NormalizedEmail = $"PLAYER1@GMAIL.COM",
                 },
             });
-            await repository.AddAsync<Matchmaker>(new Matchmaker()
+            await unitOfWork.MatchmakerRepository.AddAsync(new Matchmaker()
             {
                 Id = 1,
                 UserId = "c5d9e543-7c2f-4345-a014-ebd860eef718",
                 IsActive = true,
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             var result = await gameService.GameCanBeFinalisedAsync("0274ded9-003a-48eb-b608-7477597ec876", 1);
 
             Assert.That(result, Is.EqualTo(false));

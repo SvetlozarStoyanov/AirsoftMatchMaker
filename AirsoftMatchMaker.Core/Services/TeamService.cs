@@ -3,7 +3,8 @@ using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Models.Games;
 using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Core.Models.Teams;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -15,20 +16,20 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class TeamService : ITeamService
     {
-        private readonly IRepository repository;
-        public TeamService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public TeamService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<bool> TeamExistsAsync(int id)
         {
-            return await repository.GetByIdAsync<Team>(id) != null;
+            return await unitOfWork.TeamRepository.GetByIdAsync(id) != null;
         }
 
         public async Task<bool> DoesUserHaveTeamAsync(string userId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .Include(p => p.TeamRequests)
                 .FirstOrDefaultAsync();
@@ -38,7 +39,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<bool> DoesTeamWithSameNameExistAsync(string name)
         {
-            return await repository.AllReadOnly<Team>()
+            return await unitOfWork.TeamRepository.AllReadOnly()
                 .AnyAsync(t => t.Name.ToLower() == name.ToLower());
         }
 
@@ -49,7 +50,7 @@ namespace AirsoftMatchMaker.Core.Services
             int currentPage = 1
             )
         {
-            var teams = await repository.AllReadOnly<Team>()
+            var teams = await unitOfWork.TeamRepository.AllReadOnly()
                 .Include(t => t.Players)
                 .ToListAsync();
 
@@ -99,7 +100,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<TeamViewModel> GetTeamByIdAsync(int id)
         {
-            var team = await repository.AllReadOnly<Team>()
+            var team = await unitOfWork.TeamRepository.AllReadOnly()
                 .Where(t => t.Id == id)
                 .Include(t => t.Players)
                 .ThenInclude(t => t.PlayerClass)
@@ -143,11 +144,11 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<TeamViewModel> GetPlayersTeamAsync(string userId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
 
-            var team = await repository.AllReadOnly<Team>()
+            var team = await unitOfWork.TeamRepository.AllReadOnly()
                 .Where(t => t.Players.Contains(player))
                 .Include(t => t.Players)
                 .ThenInclude(t => t.PlayerClass)
@@ -190,7 +191,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task CreateTeamAsync(string userId, TeamCreateModel model)
         {
-            var player = await repository.All<Player>()
+            var player = await unitOfWork.PlayerRepository.All()
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
 
@@ -198,9 +199,9 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 Name = model.Name,
             };
-            await repository.AddAsync<Team>(team);
+            await unitOfWork.TeamRepository.AddAsync(team);
             team.Players.Add(player);
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
 

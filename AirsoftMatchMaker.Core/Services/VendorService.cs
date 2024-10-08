@@ -3,7 +3,8 @@ using AirsoftMatchMaker.Core.Models.AmmoBoxes;
 using AirsoftMatchMaker.Core.Models.Clothes;
 using AirsoftMatchMaker.Core.Models.Vendors;
 using AirsoftMatchMaker.Core.Models.Weapons;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,16 +12,16 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class VendorService : IVendorService
     {
-        private readonly IRepository repository;
-        public VendorService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public VendorService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
 
         public async Task<bool> CheckIfVendorHasEnoughCreditsAsync(string vendorUserId, decimal finalPrice)
         {
-            var user = await repository.GetByIdAsync<User>(vendorUserId);
+            var user = await unitOfWork.UserRepository.GetByIdAsync(vendorUserId);
             if (user.Credits < finalPrice)
                 return false;
             return true;
@@ -28,7 +29,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<int> GetVendorIdAsync(string userId)
         {
-            var vendorId = await repository.AllReadOnly<Vendor>()
+            var vendorId = await unitOfWork.VendorRepository.AllReadOnly()
                 .Where(v => v.UserId == userId)
                 .Select(v => v.Id)
                 .FirstOrDefaultAsync();
@@ -38,11 +39,11 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task GrantVendorRoleAsync(string userId)
         {
-            var vendor = await repository.All<Vendor>().FirstOrDefaultAsync(v => v.UserId == userId);
+            var vendor = await unitOfWork.VendorRepository.All().FirstOrDefaultAsync(v => v.UserId == userId);
             if (vendor != null)
             {
                 vendor.IsActive = true;
-                await repository.SaveChangesAsync();
+                await unitOfWork.SaveChangesAsync();
                 return;
             }
 
@@ -55,25 +56,25 @@ namespace AirsoftMatchMaker.Core.Services
             //{
             //    player.IsActive = false;
             //}
-            await repository.AddAsync<Vendor>(newVendor);
-            await repository.SaveChangesAsync();
+            await unitOfWork.VendorRepository.AddAsync(newVendor);
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task RemoveFromVendorRoleAsync(string userId)
         {
-            var vendor = await repository.All<Vendor>()
+            var vendor = await unitOfWork.VendorRepository.All()
                 .FirstOrDefaultAsync(v => v.UserId == userId);
             if (vendor == null)
             {
                 return;
             }
             vendor.IsActive = false;
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<VendorListModel>> GetAllVendorsAsync()
         {
-            var vendors = await repository.AllReadOnly<Vendor>()
+            var vendors = await unitOfWork.VendorRepository.AllReadOnly()
                 .Where(v => v.IsActive)
                 .Include(v => v.User)
                 .Include(v => v.AmmoBoxes)
@@ -94,7 +95,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<VendorViewModel> GetVendorByIdAsync(int id)
         {
-            var vendor = await repository.AllReadOnly<Vendor>()
+            var vendor = await unitOfWork.VendorRepository.AllReadOnly()
                 .Where(v => v.Id == id)
                 .Select(v => new VendorViewModel()
                 {

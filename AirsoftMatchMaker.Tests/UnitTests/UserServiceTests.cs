@@ -1,5 +1,5 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
 using AirsoftMatchMaker.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 using AirsoftMatchMaker.Core.Services;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 
 namespace AirsoftMatchMaker.Tests.UnitTests
 {
     public class UserServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IUserService userService;
         private AirsoftMatchmakerDbContext context;
 
@@ -31,10 +32,10 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            userService = new UserService(repository);
+            unitOfWork = new UnitOfWork(context);
+            userService = new UserService(unitOfWork);
 
-            await repository.AddAsync<User>(new User()
+            await unitOfWork.UserRepository.AddAsync(new User()
             {
 
                 Id = "202efe8b-7748-49ca-834c-fd1c37978ab2",
@@ -44,7 +45,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 NormalizedEmail = "IVAN@GMAIL.COM",
                 Credits = 190
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         [Test]
@@ -58,7 +59,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
         public async Task Test_GetCurrentUserProfileAsync_ReturnsCorrectModel()
         {
             var result = await userService.GetCurrentUserProfileAsync("202efe8b-7748-49ca-834c-fd1c37978ab2");
-            var user = await repository.GetByIdAsync<User>("202efe8b-7748-49ca-834c-fd1c37978ab2");
+            var user = await unitOfWork.UserRepository.GetByIdAsync("202efe8b-7748-49ca-834c-fd1c37978ab2");
             Assert.That(result.UserName, Is.EqualTo(user.UserName));
             Assert.That(result.Email, Is.EqualTo(user.Email));
             Assert.That(result.Credits, Is.EqualTo(user.Credits));

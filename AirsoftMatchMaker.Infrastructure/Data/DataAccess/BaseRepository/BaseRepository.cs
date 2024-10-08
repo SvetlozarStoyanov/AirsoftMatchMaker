@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 
-namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
+namespace AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository
 {
     /// <summary>
     /// Implementation of repository access methods
@@ -10,7 +10,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
     /// </summary>
     /// <typeparam name="T">Type of the data table to which 
     /// current reposity is attached</typeparam>
-    public class Repository : IRepository
+    public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         /// <summary>
         /// Entity framework DB context holding connection information and properties
@@ -26,7 +26,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
             return this.Context.Set<T>();
         }
 
-        public Repository(AirsoftMatchmakerDbContext context)
+        public BaseRepository(AirsoftMatchmakerDbContext context)
         {
             Context = context;
         }
@@ -35,7 +35,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
         /// Adds entity to the database
         /// </summary>
         /// <param name="entity">Entity to add</param>
-        public async Task AddAsync<T>(T entity) where T : class
+        public async Task AddAsync(T entity)
         {
             await DbSet<T>().AddAsync(entity);
         }
@@ -44,7 +44,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
         /// Ads collection of entities to the database
         /// </summary>
         /// <param name="entities">Enumerable list of entities</param>
-        public async Task AddRangeAsync<T>(IEnumerable<T> entities) where T : class
+        public async Task AddRangeAsync(IEnumerable<T> entities)
         {
             await DbSet<T>().AddRangeAsync(entities);
         }
@@ -53,12 +53,12 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
         /// All records in a table
         /// </summary>
         /// <returns>Queryable expression tree</returns>
-        public IQueryable<T> All<T>() where T : class
+        public IQueryable<T> All()
         {
             return DbSet<T>().AsQueryable();
         }
 
-        public IQueryable<T> All<T>(Expression<Func<T, bool>> search) where T : class
+        public IQueryable<T> All(Expression<Func<T, bool>> search)
         {
             return this.DbSet<T>().Where(search);
         }
@@ -67,12 +67,13 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
         /// The result collection won't be tracked by the context
         /// </summary>
         /// <returns>Expression tree</returns>
-        public IQueryable<T> AllReadOnly<T>() where T : class
+        public IQueryable<T> AllReadOnly()
         {
             return this.DbSet<T>()
                 .AsNoTracking();
         }
-        public IQueryable<T> AllReadOnly<T>(Expression<Func<T, bool>> search) where T : class
+
+        public IQueryable<T> AllReadOnly(Expression<Func<T, bool>> search)
         {
             return this.DbSet<T>()
                 .Where(search)
@@ -83,18 +84,18 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
         /// Deletes a record from database
         /// </summary>
         /// <param name="id">Identificator of record to be deleted</param>
-        public async Task DeleteAsync<T>(object id) where T : class
+        public async Task DeleteAsync(object id)
         {
-            T entity = await GetByIdAsync<T>(id);
+            T entity = await GetByIdAsync(id);
 
-            Delete<T>(entity);
+            Delete(entity);
         }
 
         /// <summary>
         /// Deletes a record from database
         /// </summary>
         /// <param name="entity">Entity representing record to be deleted</param>
-        public void Delete<T>(T entity) where T : class
+        public void Delete(T entity)
         {
             EntityEntry entry = this.Context.Entry(entity);
 
@@ -110,7 +111,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
         /// Detaches given entity from the context
         /// </summary>
         /// <param name="entity">Entity to be detached</param>
-        public void Detach<T>(T entity) where T : class
+        public void Detach(T entity)
         {
             EntityEntry entry = this.Context.Entry(entity);
 
@@ -132,12 +133,12 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
         /// </summary>
         /// <param name="id">record identificator</param>
         /// <returns>Single record</returns>
-        public async Task<T> GetByIdAsync<T>(object id) where T : class
+        public async Task<T> GetByIdAsync(object id)
         {
             return await DbSet<T>().FindAsync(id);
         }
 
-        public async Task<T> GetByIdsAsync<T>(object[] id) where T : class
+        public async Task<T> GetByIdsAsync(object[] id)
         {
             return await DbSet<T>().FindAsync(id);
         }
@@ -155,7 +156,7 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
         /// Updates a record in database
         /// </summary>
         /// <param name="entity">Entity for record to be updated</param>
-        public void Update<T>(T entity) where T : class
+        public void Update(T entity)
         {
             this.DbSet<T>().Update(entity);
         }
@@ -164,20 +165,15 @@ namespace AirsoftMatchMaker.Infrastructure.Data.Common.Repository
         /// Updates set of records in the database
         /// </summary>
         /// <param name="entities">Enumerable collection of entities to be updated</param>
-        public void UpdateRange<T>(IEnumerable<T> entities) where T : class
+        public void UpdateRange(IEnumerable<T> entities)
         {
             this.DbSet<T>().UpdateRange(entities);
         }
 
-        public void DeleteRange<T>(IEnumerable<T> entities) where T : class
+        public void DeleteRange(IEnumerable<T> entities)
         {
             this.DbSet<T>().RemoveRange(entities);
         }
 
-        public void DeleteRange<T>(Expression<Func<T, bool>> deleteWhereClause) where T : class
-        {
-            var entities = All<T>(deleteWhereClause);
-            DeleteRange(entities);
-        }
     }
 }

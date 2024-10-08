@@ -1,10 +1,9 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Clothes;
 using AirsoftMatchMaker.Core.Models.Enums;
-using AirsoftMatchMaker.Core.Models.PlayerClasses;
 using AirsoftMatchMaker.Core.Models.Players;
 using AirsoftMatchMaker.Core.Models.Weapons;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -13,47 +12,51 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class PlayerService : IPlayerService
     {
-        private readonly IRepository repository;
-        public PlayerService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public PlayerService(IUnitOfWork repository)
         {
-            this.repository = repository;
+            this.unitOfWork = repository;
         }
 
 
         public async Task<bool> PlayerExistsAsync(int id)
         {
-            var player = await repository.GetByIdAsync<Player>(id);
+            var player = await unitOfWork.PlayerRepository.GetByIdAsync(id);
             return player != null;
         }
+
         public async Task<bool> CanUserLeavePlayerRole(string userId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .Include(p => p.Team)
                 .ThenInclude(p => p.GamesAsTeamRed)
                 .Include(p => p.Team)
                 .ThenInclude(p => p.GamesAsTeamBlue)
                 .FirstOrDefaultAsync();
+
             if (player.Team == null)
                 return true;
+
             if (player.Team.GamesAsTeamRed.Any(g => g.GameStatus == GameStatus.Upcoming) || player.Team.GamesAsTeamBlue.Any(g => g.GameStatus == GameStatus.Upcoming))
                 return false;
+
             return true;
         }
 
         public async Task<int?> GetPlayersTeamIdAsync(int id)
         {
-            var player = await repository.GetByIdAsync<Player>(id);
+            var player = await unitOfWork.PlayerRepository.GetByIdAsync(id);
             return player.TeamId;
         }
 
         public async Task GrantPlayerRoleAsync(string userId)
         {
-            var player = await repository.All<Player>().FirstOrDefaultAsync(p => p.UserId == userId);
+            var player = await unitOfWork.PlayerRepository.All().FirstOrDefaultAsync(p => p.UserId == userId);
             if (player != null)
             {
                 player.IsActive = true;
-                await repository.SaveChangesAsync();
+                await unitOfWork.SaveChangesAsync();
                 return;
             }
 
@@ -61,24 +64,28 @@ namespace AirsoftMatchMaker.Core.Services
             {
                 UserId = userId,
             };
-            await repository.AddAsync<Player>(newPlayer);
-            await repository.SaveChangesAsync();
+
+            await unitOfWork.PlayerRepository.AddAsync(newPlayer);
+            await unitOfWork.SaveChangesAsync();
         }
         public async Task RemoveFromPlayerRoleAsync(string userId)
         {
-            var player = await repository.All<Player>()
+            var player = await unitOfWork.PlayerRepository.All()
                 .FirstOrDefaultAsync(p => p.UserId == userId);
+
             if (player == null)
             {
                 return;
             }
+
             player.IsActive = false;
-            await repository.SaveChangesAsync();
+
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<decimal> GetPlayersAvailableCreditsAsync(string userId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .Include(p => p.Team)
                 .ThenInclude(p => p.GamesAsTeamRed)
@@ -104,9 +111,10 @@ namespace AirsoftMatchMaker.Core.Services
         }
         public async Task<int?> GetPlayersTeamIdAsync(string userId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                             .Where(p => p.UserId == userId)
                             .FirstOrDefaultAsync();
+
             return player.TeamId;
         }
         public async Task<PlayersQueryModel> GetAllPlayersAsync(
@@ -116,12 +124,13 @@ namespace AirsoftMatchMaker.Core.Services
             int currentPage = 1
             )
         {
-            var players = await repository.AllReadOnly<Player>()
+            var players = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.IsActive == true)
                 .Include(p => p.User)
                 .Include(p => p.Team)
                 .Include(p => p.Weapons)
                 .ToListAsync();
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 players = players.Where(p => p.User.UserName.ToLower().Contains(searchTerm.ToLower())).ToList();
@@ -163,12 +172,11 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<PlayerViewModel> GetPlayerByIdAsync(int id)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.Id == id)
                 .Include(p => p.Weapons)
                 .Include(p => p.User)
                 .Include(p => p.PlayerClass)
-
                 .Select(p => new PlayerViewModel()
                 {
                     Id = p.Id,
