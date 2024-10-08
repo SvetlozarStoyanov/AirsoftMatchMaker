@@ -15,3 +15,4 @@ C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\ne
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\ref\AirsoftMatchMaker.Core.dll
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\bin\Debug\net6.0\AirsoftMatchMaker.Core.xml
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\AirsoftMatchMaker.Core.xml
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Core\obj\Debug\net6.0\AirsoftMatchMaker.Core.sourcelink.json

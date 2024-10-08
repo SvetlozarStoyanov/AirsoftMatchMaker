@@ -11,7 +11,7 @@ namespace AirsoftMatchMaker.Core.Services
             Services = services;
         }
         public IServiceProvider Services { get; }
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync  (CancellationToken stoppingToken)
         {
             Console.WriteLine("Consume Scoped Service Hosted Service is working");
             await DoWork(stoppingToken);

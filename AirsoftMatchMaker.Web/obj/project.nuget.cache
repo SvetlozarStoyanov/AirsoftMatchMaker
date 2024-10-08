@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "QIVNA2lmDAvICltzO/1zNdxNnwo7iBKX2B71GrVYaAwh8uPltTyzTzIWnae+oqc0qd1M6kX1Pc522p5dk5p1Ug==",
+  "dgSpecHash": "jX0XBxYdN1I=",
   "success": true,
   "projectFilePath": "C:\\Users\\User\\source\\repos\\AirsoftMatchMaker\\AirsoftMatchMaker.Web\\AirsoftMatchMaker.Web.csproj",
   "expectedPackageFiles": [
@@ -188,5 +188,16 @@
     "C:\\Users\\User\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'HtmlSanitizer' 8.0.601 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-43cp-6p3q-2pc4",
+      "libraryId": "HtmlSanitizer",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }

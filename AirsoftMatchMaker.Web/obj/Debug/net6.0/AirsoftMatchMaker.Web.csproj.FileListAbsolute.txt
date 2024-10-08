@@ -289,3 +289,4 @@ C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net6.0\HtmlSanitizer.dll
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.InMemory.dll
 C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\bin\Debug\net6.0\AirsoftMatchMaker.Core.xml
+C:\Users\User\source\repos\AirsoftMatchMaker\AirsoftMatchMaker.Web\obj\Debug\net6.0\AirsoftMatchMaker.Web.sourcelink.json
