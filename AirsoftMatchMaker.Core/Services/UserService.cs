@@ -1,6 +1,7 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Users;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,23 +9,23 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class UserService : IUserService
     {
-        private readonly IRepository repository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public UserService(IRepository repository)
+        public UserService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<decimal> GetUserCreditsAsync(string userId)
         {
-            var user = await repository.GetByIdAsync<User>(userId);
+            var user = await unitOfWork.UserRepository.GetByIdAsync(userId);
 
             return user.Credits;
         }
 
         public async Task<UserViewModel> GetCurrentUserProfileAsync(string userId)
         {
-            var user = await repository.AllReadOnly<User>()
+            var user = await unitOfWork.UserRepository.AllReadOnly()
                 .Where(u => u.Id == userId)
                 .Select(u => new UserViewModel()
                 {

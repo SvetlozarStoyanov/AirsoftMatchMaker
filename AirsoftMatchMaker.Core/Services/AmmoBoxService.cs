@@ -1,7 +1,7 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.AmmoBoxes;
 using AirsoftMatchMaker.Core.Models.Enums;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -10,38 +10,40 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class AmmoBoxService : IAmmoBoxService
     {
-        private readonly IRepository repository;
-        public AmmoBoxService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public AmmoBoxService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<bool> AmmoBoxExistsAsync(int id)
         {
-            if (await repository.GetByIdAsync<AmmoBox>(id) == null)
+            if (await unitOfWork.AmmoBoxRepository.GetByIdAsync(id) == null)
                 return false;
             return true;
         }
 
         public async Task<bool> UserCanBuyAmmoBoxAsync(string userId, int ammoBoxId)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync();
 
-            var ammoBox = await repository.AllReadOnly<AmmoBox>()
+            var ammoBox = await unitOfWork.AmmoBoxRepository.AllReadOnly()
                 .Where(w => w.Id == ammoBoxId)
                 .Include(w => w.Vendor)
                 .FirstOrDefaultAsync();
+
             if (ammoBox.Vendor.UserId == player.UserId)
                 return false;
+
             return true;
         }
 
 
         public async Task<bool> UserHasEnoughCreditsAsync(string userId, int ammoBoxId, int quantity)
         {
-            var player = await repository.AllReadOnly<Player>()
+            var player = await unitOfWork.PlayerRepository.AllReadOnly()
               .Where(p => p.UserId == userId)
               .Include(p => p.User)
               .Include(p => p.Team)
@@ -49,10 +51,10 @@ namespace AirsoftMatchMaker.Core.Services
               .Include(p => p.Team)
               .ThenInclude(p => p.GamesAsTeamBlue)
               .FirstOrDefaultAsync();
-            var ammoBox = await repository.GetByIdAsync<AmmoBox>(ammoBoxId);
+            var ammoBox = await unitOfWork.AmmoBoxRepository.GetByIdAsync(ammoBoxId);
             if (player == null)
             {
-                var user = await repository.GetByIdAsync<User>(userId);
+                var user = await unitOfWork.UserRepository.GetByIdAsync(userId);
                 if (ammoBox.Price * quantity > user.Credits)
                 {
                     return false;
@@ -77,7 +79,7 @@ namespace AirsoftMatchMaker.Core.Services
             int ammoBoxesPerPage = 6,
             int currentPage = 1)
         {
-            var ammoBoxes = await repository.AllReadOnly<AmmoBox>()
+            var ammoBoxes = await unitOfWork.AmmoBoxRepository.AllReadOnly()
                 .Where(ab => ab.Quantity > 0)
                 .ToListAsync();
             if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -130,7 +132,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<AmmoBoxViewModel> GetAmmoBoxByIdAsync(int id)
         {
-            var ammoBox = await repository.AllReadOnly<AmmoBox>()
+            var ammoBox = await unitOfWork.AmmoBoxRepository.AllReadOnly()
                 .Where(ab => ab.Id == id)
                 .Include(ab => ab.Vendor)
                 .ThenInclude(ab => ab.User)
@@ -151,7 +153,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<AmmoBoxBuyModel> GetAmmoBoxToBuyByIdAsync(int id)
         {
-            var ammoBox = await repository.AllReadOnly<AmmoBox>()
+            var ammoBox = await unitOfWork.AmmoBoxRepository.AllReadOnly()
                 .Where(ab => ab.Id == id)
                 .Include(ab => ab.Vendor)
                 .Select(ab => new AmmoBoxBuyModel()
@@ -171,27 +173,30 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task BuyAmmoBoxAsync(string playerUserId, AmmoBoxBuyModel model)
         {
-            var player = await repository.All<Player>()
+            var player = await unitOfWork.PlayerRepository.All()
                 .Where(p => p.UserId == playerUserId)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync();
-            var vendor = await repository.All<Vendor>()
+
+            var vendor = await unitOfWork.VendorRepository.All()
                 .Where(v => v.Id == model.VendorId)
                 .Include(v => v.User)
                 .FirstOrDefaultAsync();
+
             player.User.Credits -= model.Price * model.QuantityToBuy;
             vendor.User.Credits += model.Price * model.QuantityToBuy;
             player.Ammo += model.AmmoAmount * model.QuantityToBuy;
-            var ammoBox = await repository.GetByIdAsync<AmmoBox>(model.Id);
+
+            var ammoBox = await unitOfWork.AmmoBoxRepository.GetByIdAsync(model.Id);
             ammoBox.Quantity -= model.QuantityToBuy;
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
 
 
         public async Task CreateAmmoBoxAsync(string vendorUserId, AmmoBoxCreateModel model)
         {
-            var vendor = await repository.All<Vendor>()
+            var vendor = await unitOfWork.VendorRepository.All()
                 .Where(v => v.UserId == vendorUserId && v.IsActive)
                 .Include(v => v.User)
                 .Include(v => v.AmmoBoxes)
@@ -206,12 +211,12 @@ namespace AirsoftMatchMaker.Core.Services
             };
             vendor.User.Credits -= model.FinalImportPrice;
             vendor.AmmoBoxes.Add(ammoBox);
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<AmmoBoxRestockModel> GetAmmoBoxForRestockByIdAsync(int id)
         {
-            var ammoBox = await repository.AllReadOnly<AmmoBox>()
+            var ammoBox = await unitOfWork.AmmoBoxRepository.AllReadOnly()
                 .Where(ab => ab.Id == id)
                 .Select(ab => new AmmoBoxRestockModel()
                 {
@@ -223,19 +228,22 @@ namespace AirsoftMatchMaker.Core.Services
                     VendorId = ab.VendorId.Value
                 })
                 .FirstOrDefaultAsync();
+
             return ammoBox;
         }
 
         public async Task RestockAmmoBox(string vendorUserId, AmmoBoxRestockModel model)
         {
-            var vendor = await repository.All<Vendor>()
+            var vendor = await unitOfWork.VendorRepository.All()
                 .Where(v => v.UserId == vendorUserId)
                 .Include(v => v.User)
                 .FirstOrDefaultAsync();
-            var ammoBox = await repository.GetByIdAsync<AmmoBox>(model.Id);
+
+            var ammoBox = await unitOfWork.AmmoBoxRepository.GetByIdAsync(model.Id);
             vendor.User.Credits -= model.FinalImportPrice;
             ammoBox.Quantity += model.QuantityAdded;
-            await repository.SaveChangesAsync();
+
+            await unitOfWork.SaveChangesAsync();
         }
 
         private AmmoBoxesQueryModel CreateAmmoBoxesQueryModel()

@@ -1,6 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Services;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +12,13 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using AirsoftMatchMaker.Core.Models.Bets;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 
 namespace AirsoftMatchMaker.Tests.IntegrationTests
 {
     public class BetServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IBetService betService;
         private AirsoftMatchmakerDbContext context;
 
@@ -34,11 +35,11 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            betService = new BetService(repository);
+            unitOfWork = new UnitOfWork(context);
+            betService = new BetService(unitOfWork);
 
 
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User()
                 {
@@ -68,14 +69,14 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 },
             });
 
-            await repository.AddAsync<Matchmaker>(new Matchmaker()
+            await unitOfWork.MatchmakerRepository.AddAsync(new Matchmaker()
             {
                 Id = 1,
                 UserId = "c5d9e543-7c2f-4345-a014-ebd860eef718",
                 IsActive = true,
             });
 
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -98,7 +99,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Name = "Test2"
                 },
             });
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -135,7 +136,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     OddsAreUpdated = true,
                 }
             });
-            await repository.AddRangeAsync<Bet>(new List<Bet>()
+            await unitOfWork.BetRepository.AddRangeAsync(new List<Bet>()
             {
                 new Bet()
                 {
@@ -165,7 +166,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Odds = -122
                 },
             });
-            await repository.AddRangeAsync<GameBetCreditsContainer>(new List<GameBetCreditsContainer>()
+            await unitOfWork.GameBetCreditsContainerRepository.AddRangeAsync(new List<GameBetCreditsContainer>()
             {
                 new GameBetCreditsContainer()
                 {
@@ -183,14 +184,14 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 },
             });
 
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         [Test]
         public async Task Test_CreateBetAsync_WorksCorrectly()
         {
-            var user = await repository.GetByIdAsync<User>("c5d9e543-7c2f-4345-a014-ebd860eef718");
-            var betCreditsContainer = await repository.GetByIdAsync<GameBetCreditsContainer>(2);
+            var user = await unitOfWork.UserRepository.GetByIdAsync("c5d9e543-7c2f-4345-a014-ebd860eef718");
+            var betCreditsContainer = await unitOfWork.GameBetCreditsContainerRepository.GetByIdAsync(2);
             var model = new BetCreateModel()
             {
                 GameId = 2,
@@ -199,7 +200,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 UserId = "c5d9e543-7c2f-4345-a014-ebd860eef718",
             };
             await betService.CreateBetAsync("c5d9e543-7c2f-4345-a014-ebd860eef718", model);
-            var game = await repository.GetByIdAsync<Game>(2);
+            var game = await unitOfWork.GameRepository.GetByIdAsync(2);
             Assert.That(user.Credits, Is.EqualTo(180));
             Assert.That(betCreditsContainer.TeamRedCreditsBet, Is.EqualTo(20));
             Assert.That(game.OddsAreUpdated, Is.EqualTo(false));
@@ -208,11 +209,11 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_DeleteBetAsync_WorksCorrectly()
         {
-            var user = await repository.GetByIdAsync<User>("cc1cb39b-c0cf-41ed-856c-d3943aec605a");
-            var betCreditsContainer = await repository.GetByIdAsync<GameBetCreditsContainer>(2);
+            var user = await unitOfWork.UserRepository.GetByIdAsync("cc1cb39b-c0cf-41ed-856c-d3943aec605a");
+            var betCreditsContainer = await unitOfWork.GameBetCreditsContainerRepository.GetByIdAsync(2);
 
             await betService.DeleteBetAsync(3);
-            var game = await repository.GetByIdAsync<Game>(2);
+            var game = await unitOfWork.GameRepository.GetByIdAsync(2);
             Assert.That(user.Credits, Is.EqualTo(220));
             Assert.That(betCreditsContainer.TeamRedCreditsBet, Is.EqualTo(0));
             Assert.That(game.OddsAreUpdated, Is.EqualTo(false));
@@ -221,10 +222,10 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
         [Test]
         public async Task Test_PayoutBetsAsync_WorksCorrectly()
         {
-            var user = await repository.GetByIdAsync<User>("cc1cb39b-c0cf-41ed-856c-d3943aec605a");
-            var betCreditsContainer = await repository.GetByIdAsync<GameBetCreditsContainer>(1);
+            var user = await unitOfWork.UserRepository.GetByIdAsync("cc1cb39b-c0cf-41ed-856c-d3943aec605a");
+            var betCreditsContainer = await unitOfWork.GameBetCreditsContainerRepository.GetByIdAsync(1);
             
-            var game = await repository.GetByIdAsync<Game>(1);
+            var game = await unitOfWork.GameRepository.GetByIdAsync(1);
             game.Result = "3:2";
             game.TeamRedPoints = 3;
             game.TeamBluePoints = 2;

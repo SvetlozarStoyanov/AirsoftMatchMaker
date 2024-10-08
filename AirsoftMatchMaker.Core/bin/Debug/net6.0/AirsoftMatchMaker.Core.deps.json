@@ -537,7 +537,10 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.10"
         },
         "runtime": {
-          "AirsoftMatchMaker.Infrastructure.dll": {}
+          "AirsoftMatchMaker.Infrastructure.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

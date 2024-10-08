@@ -1,5 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -8,33 +9,36 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class BackgroundTeamService : IBackgroundTeamService
     {
-        private readonly IRepository repository;
-        public BackgroundTeamService(IRepository repository)
+        private readonly IUnitOfWork unitOfWork;
+        public BackgroundTeamService(IUnitOfWork unitOfWork)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<int>> GetPlayersToAssignOrRemoveFromTeamsTeamRequestIdsAsync()
         {
-            var teamRequests = await repository.AllReadOnly<TeamRequest>()
+            var teamRequests = await unitOfWork.TeamRequestRepository.AllReadOnly()
                 .Where(tr => tr.TeamRequestStatus == TeamRequestStatus.Accepted)
                 .Include(tr => tr.Team)
                 .ThenInclude(t => t.GamesAsTeamRed)
                 .Include(tr => tr.Team)
                 .ThenInclude(t => t.GamesAsTeamBlue)
                 .ToListAsync();
+
             List<int> teamRequestIds = new List<int>();
+
             foreach (var teamRequest in teamRequests)
             {
                 if (teamRequest.Team.GamesAsTeamRed.All(g => g.GameStatus != GameStatus.Upcoming) && teamRequest.Team.GamesAsTeamBlue.All(g => g.GameStatus != GameStatus.Upcoming))
                     teamRequestIds.Add(teamRequest.Id);
             }
+
             return teamRequestIds;
         }
 
         public async Task AssignOrRemovePlayerFromTeamByTeamRequestIdsAsync(IEnumerable<int> ids)
         {
-            var teamRequests = await repository.All<TeamRequest>()
+            var teamRequests = await unitOfWork.TeamRequestRepository.All()
                 .Where(tr => ids.Contains(tr.Id))
                 .Include(tr => tr.Player)
                 .Include(tr => tr.Team)
@@ -52,8 +56,8 @@ namespace AirsoftMatchMaker.Core.Services
                         break;
                 }
             }
-            repository.DeleteRange<TeamRequest>(teamRequests);
-            await repository.SaveChangesAsync();
+            unitOfWork.TeamRequestRepository.DeleteRange(teamRequests);
+            await unitOfWork.SaveChangesAsync();
 
         }
     }

@@ -1,6 +1,6 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Services;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +11,13 @@ using System.Text;
 using System.Threading.Tasks;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using AirsoftMatchMaker.Core.Models.Enums;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 
 namespace AirsoftMatchMaker.Tests.UnitTests
 {
     public class TeamServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private ITeamService teamService;
         private AirsoftMatchmakerDbContext context;
 
@@ -33,10 +34,10 @@ namespace AirsoftMatchMaker.Tests.UnitTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            teamService = new TeamService(repository);
+            unitOfWork = new UnitOfWork(context);
+            teamService = new TeamService(unitOfWork);
 
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -49,7 +50,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     Name = "Test2"
                 },
             });
-            await repository.AddRangeAsync<User>(new List<User>()
+            await unitOfWork.UserRepository.AddRangeAsync(new List<User>()
             {
                 new User
                 {
@@ -77,7 +78,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                     NormalizedEmail = $"PLAYER2@GMAIL.COM",
                 },
             });
-            await repository.AddRangeAsync<Player>(new List<Player>()
+            await unitOfWork.PlayerRepository.AddRangeAsync(new List<Player>()
             {
                 new Player()
                 {
@@ -112,7 +113,7 @@ namespace AirsoftMatchMaker.Tests.UnitTests
                 },
             });
 
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         [Test]

@@ -1,6 +1,7 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
 using AirsoftMatchMaker.Core.Models.Bets;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.BaseRepository;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -9,60 +10,62 @@ namespace AirsoftMatchMaker.Core.Services
 {
     public class BetService : IBetService
     {
-        private readonly IRepository repository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public BetService(IRepository repository)
+        public BetService(IUnitOfWork repository)
         {
-            this.repository = repository;
+            this.unitOfWork = repository;
         }
 
 
         public async Task<bool> BetExistsAsync(int id)
         {
-            var bet = await repository.GetByIdAsync<Bet>(id);
+            var bet = await unitOfWork.BetRepository.GetByIdAsync(id);
             return bet != null;
         }
 
         public async Task<bool> UserCanAccessBetAsync(string userId, int betId)
         {
-            var bet = await repository.GetByIdAsync<Bet>(betId);
+            var bet = await unitOfWork.BetRepository.GetByIdAsync(betId);
             return bet.UserId == userId;
         }
         public async Task<bool> HasUserAlreadyBetOnGameAsync(string userId, int gameId)
         {
-            return await repository.AllReadOnly<Bet>()
+            return await unitOfWork.BetRepository.AllReadOnly()
                 .AnyAsync(b => b.UserId == userId && b.GameId == gameId);
         }
 
         public async Task<bool> IsUserInOneOfTheTeamsInTheGameAsync(string userId, int gameId)
         {
-            var game = await repository.AllReadOnly<Game>()
+            var game = await unitOfWork.GameRepository.AllReadOnly()
                 .Where(g => g.Id == gameId)
                 .Include(g => g.TeamRed)
                 .ThenInclude(t => t.Players)
                 .Include(g => g.TeamBlue)
                 .ThenInclude(t => t.Players)
                 .FirstOrDefaultAsync();
+
             var IsUserInTeam = game.TeamRed.Players.Any(p => p.UserId == userId) || game.TeamBlue.Players.Any(p => p.UserId == userId);
+
             return IsUserInTeam;
         }
 
         public async Task<bool> IsGameFinishedAsync(int gameId)
         {
-            var game = await repository.GetByIdAsync<Game>(gameId);
+            var game = await unitOfWork.GameRepository.GetByIdAsync(gameId);
             return game.GameStatus == GameStatus.Finished;
         }
 
         public async Task<bool> DoesGameStillAcceptBetsAsync(int gameId)
         {
-            var game = await repository.GetByIdAsync<Game>(gameId);
+            var game = await unitOfWork.GameRepository.GetByIdAsync(gameId);
 
             return game.Date.Date > DateTime.Now.Date;
         }
 
         public async Task<bool> IsUserMatchmakerAsync(string userId)
         {
-            var matchmaker = await repository.AllReadOnly<Matchmaker>()
+            var matchmaker = await unitOfWork.MatchmakerRepository.AllReadOnly()
                 .Where(mm => mm.UserId == userId)
                 .FirstOrDefaultAsync();
 
@@ -71,13 +74,13 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<int> GetGameIdByBetAsync(int id)
         {
-            var bet = await repository.GetByIdAsync<Bet>(id);
+            var bet = await unitOfWork.BetRepository.GetByIdAsync(id);
             return bet.GameId;
         }
 
         public async Task<IEnumerable<int>> GetGamesIdsWhichUserHasBetOnAsync(string userId)
         {
-            var gameIds = await repository.AllReadOnly<Game>()
+            var gameIds = await unitOfWork.GameRepository.AllReadOnly()
                 .Where(g => g.GameStatus == GameStatus.Upcoming && g.Bets.Any(b => b.UserId == userId))
                 .Select(g => g.Id)
                 .ToListAsync();
@@ -86,7 +89,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<IEnumerable<BetListModel>> GetUserBetsAsync(string userId)
         {
-            var bets = await repository.AllReadOnly<Bet>()
+            var bets = await unitOfWork.BetRepository.AllReadOnly()
                 .Where(b => b.UserId == userId)
                 .Include(b => b.Game)
                 .Select(b => new BetListModel()
@@ -108,8 +111,9 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<BetCreateModel> CreateBetCreateModelAsync(string userId, int gameId)
         {
-            var user = await repository.GetByIdAsync<User>(userId);
-            var game = await repository.AllReadOnly<Game>()
+            var user = await unitOfWork.UserRepository.GetByIdAsync(userId);
+
+            var game = await unitOfWork.GameRepository.AllReadOnly()
                 .Where(g => g.Id == gameId)
                 .Include(g => g.TeamRed)
                 .Include(g => g.TeamBlue)
@@ -133,9 +137,9 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task CreateBetAsync(string userId, BetCreateModel model)
         {
-            var user = await repository.GetByIdAsync<User>(userId);
+            var user = await unitOfWork.UserRepository.GetByIdAsync(userId);
 
-            var game = await repository.All<Game>()
+            var game = await unitOfWork.GameRepository.All()
                 .Where(g => g.Id == model.GameId)
                 .Include(g => g.TeamBlue)
                 .Include(g => g.TeamRed)
@@ -165,12 +169,12 @@ namespace AirsoftMatchMaker.Core.Services
                 game.GameBetCreditsContainer.TeamBlueCreditsBet += bet.CreditsBet;
             }
             game.OddsAreUpdated = false;
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<BetViewModel> GetBetByIdAsync(int id)
         {
-            var bet = await repository.AllReadOnly<Bet>()
+            var bet = await unitOfWork.BetRepository.AllReadOnly()
                 .Where(b => b.Id == id)
                 .Include(b => b.Game)
                 .Select(b => new BetViewModel()
@@ -193,7 +197,7 @@ namespace AirsoftMatchMaker.Core.Services
 
         public async Task<BetDeleteModel> GetBetToDeleteByIdAsync(int id)
         {
-            var bet = await repository.AllReadOnly<Bet>()
+            var bet = await unitOfWork.BetRepository.AllReadOnly()
                 .Where(b => b.Id == id)
                 .Include(b => b.User)
                 .Include(b => b.Game)
@@ -210,12 +214,13 @@ namespace AirsoftMatchMaker.Core.Services
                     Odds = b.Odds
                 })
                 .FirstOrDefaultAsync();
+
             return bet;
         }
 
         public async Task DeleteBetAsync(int id)
         {
-            var bet = await repository.All<Bet>()
+            var bet = await unitOfWork.BetRepository.All()
                 .Where(b => b.Id == id)
                 .Include(b => b.Game)
                 .ThenInclude(b => b.GameBetCreditsContainer)
@@ -234,14 +239,14 @@ namespace AirsoftMatchMaker.Core.Services
 
             var user = bet.User;
             user.Credits += bet.CreditsBet;
-            await repository.DeleteAsync<Bet>(bet.Id);
+            await unitOfWork.BetRepository.DeleteAsync(bet.Id);
             game.OddsAreUpdated = false;
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task PayoutBetsByGameIdAsync(int gameId)
         {
-            var game = await repository.All<Game>()
+            var game = await unitOfWork.GameRepository.All()
                 .Where(g => g.Id == gameId)
                 .Include(g => g.Bets)
                 .ThenInclude(b => b.User)
@@ -299,7 +304,7 @@ namespace AirsoftMatchMaker.Core.Services
                 bet.BetStatus = BetStatus.Finished;
             }
             container.BetsArePaidOut = true;
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         private static decimal CalculateBetProfit(int odds, decimal creditsBet)

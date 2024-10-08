@@ -1,22 +1,17 @@
 ﻿using AirsoftMatchMaker.Core.Contracts;
+using AirsoftMatchMaker.Core.Models.Enums;
 using AirsoftMatchMaker.Core.Services;
-using AirsoftMatchMaker.Infrastructure.Data.Common.Repository;
 using AirsoftMatchMaker.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AirsoftMatchMaker.Infrastructure.Data.DataAccess.UnitOfWork;
 using AirsoftMatchMaker.Infrastructure.Data.Entities;
 using AirsoftMatchMaker.Infrastructure.Data.Enums;
-using AirsoftMatchMaker.Core.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirsoftMatchMaker.Tests.IntegrationTests
 {
     public class MapServiceTests
     {
-        private IRepository repository;
+        private IUnitOfWork unitOfWork;
         private IMapService mapService;
         private AirsoftMatchmakerDbContext context;
 
@@ -33,11 +28,11 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            repository = new Repository(context);
-            mapService = new MapService(repository);
+            unitOfWork = new UnitOfWork(context);
+            mapService = new MapService(unitOfWork);
 
 
-            await repository.AddRangeAsync<GameMode>(new List<GameMode>()
+            await unitOfWork.GameModeRepository.AddRangeAsync(new List<GameMode>()
             {
                 new GameMode()
                 {
@@ -55,7 +50,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                 }
             });
 
-            await repository.AddRangeAsync<Team>(new List<Team>()
+            await unitOfWork.TeamRepository.AddRangeAsync(new List<Team>()
             {
                 new Team()
                 {
@@ -78,7 +73,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     Name = "Test4"
                 },
             });
-            await repository.AddRangeAsync<Map>(new List<Map>()
+            await unitOfWork.MapRepository.AddRangeAsync(new List<Map>()
             {
                 new Map
                 {
@@ -103,7 +98,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     GameModeId = 2
                 },
             });
-            await repository.AddRangeAsync<Game>(new List<Game>()
+            await unitOfWork.GameRepository.AddRangeAsync(new List<Game>()
             {
                 new Game()
                 {
@@ -138,7 +133,7 @@ namespace AirsoftMatchMaker.Tests.IntegrationTests
                     OddsAreUpdated = true,
                 },
             });
-            await repository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         [Test]
