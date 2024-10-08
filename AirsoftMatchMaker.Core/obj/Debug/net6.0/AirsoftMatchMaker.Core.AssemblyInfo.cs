@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AirsoftMatchMaker.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2d99c80a5f32f60341c239f24518812cb728c131")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b60e64be966286dc25e2d07c979b2fb1b4b26e61")]
 [assembly: System.Reflection.AssemblyProductAttribute("AirsoftMatchMaker.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AirsoftMatchMaker.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
